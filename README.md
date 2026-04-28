@@ -24,53 +24,6 @@ Static lookups: `broad-category.csv`, `broad-category-kr.csv`, `categories.csv`,
 
 The pipeline is orchestrated by `master_analysis.R`, which sources all other scripts in sequence.
 
-### Dependency flow
-
-```mermaid
-flowchart TD
-    subgraph Foundation
-        C[00_constants.R]
-        U[01_utils.R]
-        P[02_csv_table_png.R]
-    end
-
-    subgraph MainPipeline
-        L[10_load_data.R]
-        F[20_filter_data.R]
-        S[30_stat_vars.R]
-        I[40_interactions.R]
-        R[50_regressions.R]
-        W[60_waterfall.R]
-        S7[70_S7.R]
-    end
-
-    subgraph Robustness
-        D[80_deferred_consumption_tests.R]
-        SI[90_SI.R]
-        IP[91_interaction_plot.R]
-        CD[92_category_decomposition_esi.R]
-        SF[93_si_figures.R]
-    end
-
-    M[master_analysis.R]
-
-    C --> M
-    U --> M
-    P --> M
-    L --> M
-    F --> M
-    S --> M
-    I --> M
-    R --> M
-    W --> M
-    S7 --> M
-    D --> M
-    SI --> M
-    IP --> M
-    CD --> M
-    SF --> M
-```
-
 ### Execution order
 
 | Phase | Scripts |
