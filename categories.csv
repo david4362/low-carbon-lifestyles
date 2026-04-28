@@ -1,0 +1,143 @@
+lifestyle_variable;broad_category;category;label;broad_label
+no_flying;Aviation_LDT_co2e;aviation.co2e;Aviation;Aviation
+no_flying;Aviation_LDT_kr;aviation.kr;Aviation;Aviation
+no_car;Car_Public_co2e;bus.co2e;Bus;Car
+no_car;Car_Public_co2e;car_maint.co2e;Car Maint;Car
+no_car;Car_Public_co2e;car_rent.co2e;Car Rent;Car
+no_car;Car_Public_co2e;escooter.co2e;Escooter;Car
+no_car;Car_Public_co2e;fuel.co2e;Fuel;Car
+no_car;Car_Public_co2e;public_trans.co2e;Public Trans;Car
+no_car;Car_Public_co2e;taxi.co2e;Taxi;Car
+no_car;Car_Public_co2e;transport_other.co2e;Transport Other;Car
+no_car;Car_Public_co2e;vehicles.co2e;Vehicles;Car
+no_car;Car_Public_kr;bus.kr;Bus;Car
+no_car;Car_Public_kr;car_maint.kr;Car Maint;Car
+no_car;Car_Public_kr;car_rent.kr;Car Rent;Car
+no_car;Car_Public_kr;escooter.kr;Escooter;Car
+no_car;Car_Public_kr;fuel.kr;Fuel;Car
+no_car;Car_Public_kr;public_trans.kr;Public Trans;Car
+no_car;Car_Public_kr;taxi.kr;Taxi;Car
+no_car;Car_Public_kr;transport_other.kr;Transport Other;Car
+no_car;Car_Public_kr;vehicles.kr;Vehicles;Car
+NA;charity.co2e;charity.co2e;Charity;Charity
+NA;charity.kr;charity.kr;Charity;Charity
+NA;exclude.co2e;exclude.co2e;Exclude;Excluded
+NA;exclude.kr;exclude.kr;Exclude;Excluded
+no_meat;Food_co2e;alcohol.co2e;Alcohol;Food
+no_meat;Food_co2e;bar.co2e;Bar;Food
+no_meat;Food_co2e;food_other.co2e;Food Other;Food
+no_meat;Food_co2e;groceries.co2e;Groceries;Food
+no_meat;Food_co2e;restaurant.co2e;Restaurant;Food
+no_meat;Food_co2e;snacks.co2e;Snacks;Food
+no_meat;Food_co2e;tobacco.co2e;Tobacco;Food
+no_meat;Food_kr;alcohol.kr;Alcohol;Food
+no_meat;Food_kr;bar.kr;Bar;Food
+no_meat;Food_kr;food_other.kr;Food Other;Food
+no_meat;Food_kr;groceries.kr;Groceries;Food
+no_meat;Food_kr;restaurant.kr;Restaurant;Food
+no_meat;Food_kr;snacks.kr;Snacks;Food
+no_meat;Food_kr;tobacco.kr;Tobacco;Food
+NA;Housing_co2e;district_heating.co2e;District Heating;Housing
+NA;Housing_co2e;electricity.co2e;Electricity;Housing
+NA;Housing_co2e;gas.co2e;Gas;Housing
+NA;Housing_co2e;housing_other.co2e;Housing Other;Housing
+NA;Housing_co2e;liquid_fuels.co2e;Liquid Fuels;Housing
+NA;Housing_co2e;rent.co2e;Rent;Housing
+NA;Housing_co2e;repair_build.co2e;Repair Build;Housing
+NA;Housing_co2e;repair_home.co2e;Repair Home;Housing
+NA;Housing_co2e;solid_fuels.co2e;Solid Fuels;Housing
+NA;Housing_co2e;utilities_heating_other.co2e;Utilities Heating Other;Housing
+NA;Housing_kr;district_heating.kr;District Heating;Housing
+NA;Housing_kr;electricity.kr;Electricity;Housing
+NA;Housing_kr;gas.kr;Gas;Housing
+NA;Housing_kr;housing_other.kr;Housing Other;Housing
+NA;Housing_kr;liquid_fuels.kr;Liquid Fuels;Housing
+NA;Housing_kr;rent.kr;Rent;Housing
+NA;Housing_kr;repair_build.kr;Repair Build;Housing
+NA;Housing_kr;repair_home.kr;Repair Home;Housing
+NA;Housing_kr;solid_fuels.kr;Solid Fuels;Housing
+NA;Housing_kr;utilities_heating_other.kr;Utilities Heating Other;Housing
+NA;Income_financial;income_financial.co2e;Income Financial;Income Financial
+NA;Income_financial;income_financial.kr;Income Financial;Income Financial
+NA;Income_other;income_benefits.co2e;Income Benefits;Income Other
+NA;Income_other;income_other.co2e;Income Other;Income Other
+NA;Income_other;income_refund.co2e;Income Refund;Income Other
+NA;Income_other;income_benefits.kr;Income Benefits;Income Other
+NA;Income_other;income_other.kr;Income Other;Income Other
+NA;Income_other;income_refund.kr;Income Refund;Income Other
+NA;Income_salary_pension;income_pensions.co2e;Income Pensions;Income Salary/Pension
+NA;Income_salary_pension;income_salary.co2e;Income Salary;Income Salary/Pension
+NA;Income_salary_pension;income_pensions.kr;Income Pensions;Income Salary/Pension
+NA;Income_salary_pension;income_salary.kr;Income Salary;Income Salary/Pension
+NA;Other_misc_co2e;cash.co2e;Cash;Other Misc
+NA;Other_misc_co2e;other_other.co2e;Other Other;Other Misc
+NA;Other_misc_co2e;outlay.co2e;Outlay;Other Misc
+NA;Other_misc_co2e;transaction.co2e;Transaction;Other Misc
+NA;Other_misc_co2e;transfer_to_creditcard.co2e;Transfer To Creditcard;Other Misc
+NA;Other_misc_co2e;uncategorized.co2e;Uncategorized;Other Misc
+NA;Other_misc_kr;cash.kr;Cash;Other Misc
+NA;Other_misc_kr;other_other.kr;Other Other;Other Misc
+NA;Other_misc_kr;outlay.kr;Outlay;Other Misc
+NA;Other_misc_kr;transaction.kr;Transaction;Other Misc
+NA;Other_misc_kr;transfer_to_creditcard.kr;Transfer To Creditcard;Other Misc
+NA;Other_misc_kr;uncategorized.kr;Uncategorized;Other Misc
+NA;Other_products_co2e;agriculture.co2e;Agriculture;Other Products
+NA;Other_products_co2e;appliances.co2e;Appliances;Other Products
+NA;Other_products_co2e;books.co2e;Books;Other Products
+NA;Other_products_co2e;clothing.co2e;Clothing;Other Products
+NA;Other_products_co2e;electronics.co2e;Electronics;Other Products
+NA;Other_products_co2e;furniture.co2e;Furniture;Other Products
+NA;Other_products_co2e;glasses_lenses.co2e;Glasses Lenses;Other Products
+NA;Other_products_co2e;home_garden_other.co2e;Home Garden Other;Other Products
+NA;Other_products_co2e;jewelry.co2e;Jewelry;Other Products
+NA;Other_products_co2e;pets.co2e;Pets;Other Products
+NA;Other_products_co2e;pharmacy.co2e;Pharmacy;Other Products
+NA;Other_products_co2e;shopping_other.co2e;Shopping Other;Other Products
+NA;Other_products_co2e;sport_equip.co2e;Sport Equip;Other Products
+NA;Other_products_co2e;toys.co2e;Toys;Other Products
+NA;Other_products_kr;agriculture.kr;Agriculture;Other Products
+NA;Other_products_kr;appliances.kr;Appliances;Other Products
+NA;Other_products_kr;books.kr;Books;Other Products
+NA;Other_products_kr;clothing.kr;Clothing;Other Products
+NA;Other_products_kr;electronics.kr;Electronics;Other Products
+NA;Other_products_kr;furniture.kr;Furniture;Other Products
+NA;Other_products_kr;glasses_lenses.kr;Glasses Lenses;Other Products
+NA;Other_products_kr;home_garden_other.kr;Home Garden Other;Other Products
+NA;Other_products_kr;jewelry.kr;Jewelry;Other Products
+NA;Other_products_kr;pets.kr;Pets;Other Products
+NA;Other_products_kr;pharmacy.kr;Pharmacy;Other Products
+NA;Other_products_kr;shopping_other.kr;Shopping Other;Other Products
+NA;Other_products_kr;sport_equip.kr;Sport Equip;Other Products
+NA;Other_products_kr;toys.kr;Toys;Other Products
+NA;Other_services_co2e;beauty.co2e;Beauty;Other Services
+NA;Other_services_co2e;culture.co2e;Culture;Other Services
+NA;Other_services_co2e;financial_service.co2e;Financial Service;Other Services
+NA;Other_services_co2e;health.co2e;Health;Other Services
+NA;Other_services_co2e;health_care.co2e;Health Care;Other Services
+NA;Other_services_co2e;health_other.co2e;Health Other;Other Services
+NA;Other_services_co2e;insurance.co2e;Insurance;Other Services
+NA;Other_services_co2e;internet_tele.co2e;Internet Tele;Other Services
+NA;Other_services_co2e;leisure_other.co2e;Leisure Other;Other Services
+NA;Other_services_co2e;repair_rent.co2e;Repair Rent;Other Services
+NA;Other_services_co2e;services.co2e;Services;Other Services
+NA;Other_services_co2e;sports.co2e;Sports;Other Services
+NA;Other_services_kr;beauty.kr;Beauty;Other Services
+NA;Other_services_kr;culture.kr;Culture;Other Services
+NA;Other_services_kr;financial_service.kr;Financial Service;Other Services
+NA;Other_services_kr;health.kr;Health;Other Services
+NA;Other_services_kr;health_care.kr;Health Care;Other Services
+NA;Other_services_kr;health_other.kr;Health Other;Other Services
+NA;Other_services_kr;insurance.kr;Insurance;Other Services
+NA;Other_services_kr;internet_tele.kr;Internet Tele;Other Services
+NA;Other_services_kr;leisure_other.kr;Leisure Other;Other Services
+NA;Other_services_kr;repair_rent.kr;Repair Rent;Other Services
+NA;Other_services_kr;services.kr;Services;Other Services
+NA;Other_services_kr;sports.kr;Sports;Other Services
+NA;savings.co2e;savings.co2e;Savings;Savings
+NA;savings.kr;savings.kr;Savings;Savings
+NA;Vacation_LDT_co2e;ferry.co2e;Ferry;Vacation
+NA;Vacation_LDT_co2e;train_bus.co2e;Train Bus;Vacation
+NA;Vacation_LDT_co2e;travel.co2e;Travel;Vacation
+NA;Vacation_LDT_kr;ferry.kr;Ferry;Vacation
+NA;Vacation_LDT_kr;train_bus.kr;Train Bus;Vacation
+NA;Vacation_LDT_kr;travel.kr;Travel;Vacation
