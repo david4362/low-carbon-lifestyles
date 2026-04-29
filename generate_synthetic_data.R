@@ -43,6 +43,198 @@ generate_esi_items <- function(n, rho = 0.6) {
 }
 
 # ============================================================================
+# HELPER: Define category structure with spending weights and emission intensities
+# ============================================================================
+
+# All categories organized by broad category with weights (% of total spending)
+# Weights represent typical Swedish household spending patterns
+# Based on SCB household expenditure surveys
+
+get_category_params <- function() {
+  
+  # Weight definitions by broad category and specific categories
+  # Format: list(broad_category = list(category = weight), ...)
+  
+  list(
+    # === FOCAL: Car & Public Transport (no_car) ===
+    Car_Public = list(
+      fuel         = 0.050,      # Car fuel
+      car_maint    = 0.015,      # Car maintenance/repairs
+      car_rent     = 0.008,      # Car rental
+      vehicles     = 0.025,      # Vehicle purchase (amortized)
+      public_trans = 0.012,      # Public transportation
+      bus          = 0.003,      # Bus
+      taxi         = 0.005,      # Taxi
+      transport_other = 0.004,  # Other transport
+      escooter     = 0.003       # Escooter rentals
+    ),
+    
+    # === FOCAL: Aviation (no_flying) ===
+    Aviation_LDT = list(
+      aviation = 0.035          # Air travel
+    ),
+    
+    # === FOCAL: Food (no_meat) ===
+    Food = list(
+      groceries   = 0.140,       # Groceries (main food spending)
+      restaurant  = 0.055,       # Restaurants
+      alcohol     = 0.012,       # Alcohol
+      bar         = 0.008,       # Bars
+      snacks      = 0.010,       # Snacks
+      tobacco     = 0.006,       # Tobacco
+      food_other  = 0.009        # Other food
+    ),
+    
+    # === Housing ===
+    Housing = list(
+      rent               = 0.180,  # Rent
+      electricity        = 0.025,  # Electricity
+      gas                = 0.005,  # Natural gas
+      district_heating  = 0.035,  # District heating
+      solid_fuels       = 0.002,   # Wood/solid fuels
+      liquid_fuels      = 0.003,   # Heating oil
+      repair_home       = 0.015,  # Home repairs
+      repair_build      = 0.008,  # Building repairs
+      housing_other     = 0.010,  # Other housing
+      utilities_heating_other = 0.005  # Other heating utilities
+    ),
+    
+    # === Other Products ===
+    Other_products = list(
+      clothing       = 0.035,     # Clothing
+      electronics   = 0.020,     # Electronics
+      furniture     = 0.018,     # Furniture
+      appliances    = 0.012,     # Home appliances
+      books         = 0.006,      # Books
+      toys          = 0.005,      # Toys
+      sports        = 0.008,      # Sports equipment
+      pets          = 0.007,      # Pet supplies
+      agriculture   = 0.003,      # Agricultural products
+      pharmacy      = 0.008,      # Pharmacy
+      glasses_lenses = 0.004,     # Glasses/lenses
+      jewelry       = 0.004,      # Jewelry
+      shopping_other = 0.010,     # Other shopping
+      home_garden_other = 0.006   # Home/garden
+    ),
+    
+    # === Other Services ===
+    Other_services = list(
+      beauty         = 0.010,    # Beauty services
+      culture        = 0.015,    # Cultural activities
+      health         = 0.008,    # Health services
+      health_care    = 0.006,    # Healthcare
+      health_other   = 0.004,    # Other health
+      insurance      = 0.020,     # Insurance
+      financial_service = 0.008, # Financial services
+      internet_tele  = 0.012,    # Internet/telecom
+      leisure_other  = 0.008,    # Other leisure
+      repair_rent    = 0.005,    # Repair services
+      services       = 0.010,    # General services
+      sports         = 0.007      # Sports services
+    ),
+    
+    # === Vacation & Long-distance Travel ===
+    Vacation_LDT = list(
+      ferry     = 0.004,    # Ferry
+      train_bus = 0.008,    # Train/long-distance bus
+      travel    = 0.015     # Other travel
+    ),
+    
+    # === Other Misc ===
+    Other_misc = list(
+      uncategorized      = 0.050,  # Uncategorized transactions
+      transaction       = 0.030,  # General transactions
+      cash              = 0.015,  # Cash withdrawals
+      outlay            = 0.010,  # Outlays
+      transfer_to_creditcard = 0.025  # Credit card transfers
+    )
+  )
+}
+
+# Emission intensities (kg CO2e per SEK) by category
+# Based on Swedish environmental agency (Naturvårdsverket) and research
+get_emission_intensities <- function() {
+  list(
+    # Transport (high emissions)
+    fuel         = 0.0029,     # Petrol/diesel
+    car_maint    = 0.0015,
+    car_rent     = 0.0020,
+    vehicles     = 0.0015,
+    public_trans = 0.0004,
+    bus          = 0.0005,
+    taxi         = 0.0020,
+    transport_other = 0.0015,
+    escooter     = 0.0008,
+    aviation     = 0.0014,     # High-emission air travel
+    ferry        = 0.0008,
+    train_bus    = 0.0003,
+    travel       = 0.0010,
+    
+    # Food (medium-high emissions)
+    groceries   = 0.0012,     # Varies by diet
+    restaurant   = 0.0010,
+    alcohol      = 0.0008,
+    bar          = 0.0008,
+    snacks       = 0.0008,
+    tobacco      = 0.0020,
+    food_other   = 0.0008,
+    
+    # Housing (medium emissions)
+    rent         = 0.0002,
+    electricity  = 0.0003,     # Swedish grid (low carbon)
+    gas          = 0.0020,
+    district_heating = 0.0004,
+    solid_fuels  = 0.0010,
+    liquid_fuels = 0.0025,
+    repair_home  = 0.0010,
+    repair_build = 0.0010,
+    housing_other = 0.0008,
+    utilities_heating_other = 0.0005,
+    
+    # Other products (medium emissions)
+    clothing     = 0.0018,
+    electronics  = 0.0008,
+    furniture    = 0.0010,
+    appliances   = 0.0012,
+    books        = 0.0005,
+    toys         = 0.0010,
+    sports       = 0.0010,
+    pets         = 0.0010,
+    agriculture  = 0.0015,
+    pharmacy     = 0.0005,
+    glasses_lenses = 0.0005,
+    jewelry      = 0.0010,
+    shopping_other = 0.0010,
+    home_garden_other = 0.0010,
+    
+    # Other services (low-medium emissions)
+    beauty       = 0.0006,
+    culture      = 0.0005,
+    health       = 0.0005,
+    health_care  = 0.0005,
+    health_other = 0.0005,
+    insurance    = 0.0003,
+    financial_service = 0.0002,
+    internet_tele = 0.0004,
+    leisure_other = 0.0005,
+    repair_rent  = 0.0010,
+    services     = 0.0005,
+    sports       = 0.0005,
+    
+    # Misc (zero/low emissions - transfers)
+    uncategorized = 0.0003,
+    transaction  = 0.0,
+    cash         = 0.0,
+    outlay       = 0.0,
+    transfer_to_creditcard = 0.0,
+    
+    # Savings/excluded (zero)
+    savings      = 0.0,
+    exclude      = 0.0
+  )
+}
+
+# ============================================================================
 # MAIN
 # ============================================================================
 
@@ -189,37 +381,65 @@ monthly_incomes <- tibble(
 
 # --- Transactions -----------------------------------------------------------
 # Generate in wide format (one row per user-month)
+# Uses realistic category weights and emission intensities
 
-cat("  Creating transactions (vectorized)...\n")
+cat("  Creating transactions (with all categories)...\n")
 
 # Lifestyle indicators
 no_car <- n_cars == 0
 no_flying <- runif(N_USERS) < 0.15
 no_meat <- diets != "mixed"
 
-# Spending categories to generate
-cats <- c("groceries", "alcohol", "tobacco", "clothing", "rent", "electricity",
-          "fuel", "car_maint", "vehicles", "aviation", "restaurant", "culture",
-          "health", "insurance", "furniture", "electronics", "other_other",
-          "uncategorized", "transaction", "savings")
+# Get category parameters
+cat_params <- get_category_params()
+emission_intensities <- get_emission_intensities()
 
-# Build base weights for each user (vectorized)
-base_weights <- matrix(0.02, nrow = N_USERS, ncol = length(cats))
-colnames(base_weights) <- cats
+# Flatten all categories into a single list with their base weights
+all_cats <- character(0)
 
-# Adjust by lifestyle
-base_weights[, "groceries"] <- ifelse(no_meat, 0.14, 0.18)
-base_weights[, "rent"] <- 0.28
-base_weights[, "fuel"] <- ifelse(no_car, 0.005, 0.07)
-base_weights[, "car_maint"] <- ifelse(no_car, 0.003, 0.02)
-base_weights[, "vehicles"] <- ifelse(no_car, 0.001, 0.03)
-base_weights[, "aviation"] <- ifelse(no_flying, 0.002, 0.05)
-base_weights[, "restaurant"] <- 0.08
-base_weights[, "uncategorized"] <- 0.06
+for (broad in names(cat_params)) {
+  all_cats <- c(all_cats, names(cat_params[[broad]]))
+}
 
-# Normalize per user
-weight_sums <- rowSums(base_weights)
-base_weights <- base_weights / weight_sums
+# Build user-specific weight matrices with lifestyle adjustments
+# Start with base weights - extract properly
+base_weights_vec <- unlist(cat_params, recursive = TRUE)
+user_weights <- matrix(0, nrow = N_USERS, ncol = length(all_cats))
+colnames(user_weights) <- all_cats
+
+# Fill in base weights
+for (j in seq_along(all_cats)) {
+  user_weights[, j] <- base_weights_vec[all_cats[j]]
+}
+
+# Apply lifestyle adjustments
+# no_car: reduce car-related spending, increase public transport
+user_weights[, "fuel"] <- ifelse(no_car, 0.002, user_weights[, "fuel"])
+user_weights[, "car_maint"] <- ifelse(no_car, 0.003, user_weights[, "car_maint"])
+user_weights[, "car_rent"] <- ifelse(no_car, 0.001, user_weights[, "car_rent"])
+user_weights[, "vehicles"] <- ifelse(no_car, 0.002, user_weights[, "vehicles"])
+user_weights[, "public_trans"] <- ifelse(no_car, 0.020, user_weights[, "public_trans"])
+user_weights[, "taxi"] <- ifelse(no_car, 0.008, user_weights[, "taxi"])
+
+# no_flying: reduce aviation to near zero
+user_weights[, "aviation"] <- ifelse(no_flying, 0.001, user_weights[, "aviation"])
+user_weights[, "ferry"] <- ifelse(no_flying, 0.006, user_weights[, "ferry"])
+user_weights[, "travel"] <- ifelse(no_flying, 0.010, user_weights[, "travel"])
+
+# no_meat: reduce food categories (especially groceries, meat is implicit)
+user_weights[, "groceries"] <- ifelse(no_meat, 0.120, user_weights[, "groceries"])
+user_weights[, "restaurant"] <- ifelse(no_meat, 0.045, user_weights[, "restaurant"])
+user_weights[, "alcohol"] <- ifelse(no_meat, 0.008, user_weights[, "alcohol"])
+
+# Renters vs owners (affects housing spending patterns)
+is_renter <- hometypes == "Lägenhet"
+user_weights[, "rent"] <- ifelse(is_renter, 0.220, 0.120)
+user_weights[, "repair_home"] <- ifelse(is_renter, 0.005, 0.025)
+user_weights[, "repair_build"] <- ifelse(is_renter, 0.003, 0.015)
+
+# Normalize weights to sum to 1
+row_sums <- rowSums(user_weights)
+user_weights <- user_weights / row_sums
 
 # Create transaction data frame
 n_rows <- N_USERS * N_MONTHS
@@ -229,61 +449,64 @@ transactions <- tibble(
   date = rep(seq(as.Date("2018-01-01"), by = "month", length.out = N_MONTHS), N_USERS)
 )
 
-# Monthly spending total
-spend_ratio <- runif(N_USERS, 0.6, 0.85)
+# Monthly spending total (discretionary spending ratio varies by income)
+spend_ratio <- runif(N_USERS, 0.55, 0.80)
 monthly_total <- rep(base_income * spend_ratio, each = N_MONTHS) * runif(n_rows, 0.85, 1.15)
 
-# Add spending columns (vectorized)
-for (i in seq_along(cats)) {
-  cat_name <- cats[i]
-  
+# Generate spending for each category
+for (cat_name in all_cats) {
   # Get weights for this category (expanded to all months)
-  user_weights <- rep(base_weights[, i], each = N_MONTHS)
+  user_wts <- rep(user_weights[, cat_name], each = N_MONTHS)
   
   # Calculate spending with variation
-  kr_vals <- monthly_total * user_weights * runif(n_rows, 0.8, 1.2)
+  kr_vals <- monthly_total * user_wts * runif(n_rows, 0.7, 1.3)
   
-  # Special handling: non-flyers should have zero aviation spending
+  # Special handling: non-flyers should have minimal aviation spending
   if (cat_name == "aviation") {
-    # Expand no_flying flag to all months
     no_flying_expanded <- rep(no_flying, each = N_MONTHS)
-    kr_vals[no_flying_expanded] <- 0
+    kr_vals[no_flying_expanded] <- kr_vals[no_flying_expanded] * 0.1  # Keep 10% as error/misc
   }
   
+  # Non-car owners: minimal fuel/car spending
+  if (cat_name %in% c("fuel", "car_maint", "car_rent", "vehicles")) {
+    no_car_expanded <- rep(no_car, each = N_MONTHS)
+    kr_vals[no_car_expanded] <- kr_vals[no_car_expanded] * 0.15
+  }
+  
+  # Add to transactions
   transactions[[paste0(cat_name, ".kr")]] <- kr_vals
   
-  # Emissions (kg CO2e) with category-specific intensities
-  intensity <- switch(cat_name,
-    fuel = 0.003,
-    groceries = 0.001,
-    aviation = 0.0015,
-    electricity = 0.0003,
-    rent = 0.0002,
-    clothing = 0.0015,
-    0.0005  # default
-  )
+  # Calculate emissions with category-specific intensity
+  intensity <- emission_intensities[[cat_name]]
+  if (is.null(intensity)) intensity <- 0.0005  # default
   
   transactions[[paste0(cat_name, ".co2e")]] <- kr_vals * intensity * runif(n_rows, 0.8, 1.2)
 }
 
-# Add remaining required columns (set to 0 for simplicity)
-remaining_cats <- c("repair_rent", "repair_build", "gas", "liquid_fuels", "solid_fuels",
-                    "district_heating", "repair_home", "appliances", "services",
-                    "pharmacy", "glasses_lenses", "car_rent", "train_bus", "bus", "taxi",
-                    "ferry", "public_trans", "escooter", "internet_tele", "sport_equip",
-                    "toys", "agriculture", "pets", "sports", "books", "travel",
-                    "snacks", "bar", "beauty", "jewelry", "health_care",
-                    "financial_service", "food_other", "shopping_other", "housing_other",
-                    "home_garden_other", "utilities_heating_other", "health_other",
-                    "transport_other", "leisure_other", "charity", "cash", "outlay",
-                    "transfer_to_creditcard", "exclude",
-                    "income_salary", "income_financial", "income_benefits", 
-                    "income_pensions", "income_refund", "income_other")
+# Add savings and exclude columns (transfers, not spending)
+transactions$savings.kr <- monthly_total * runif(n_rows, 0.02, 0.08)
+transactions$savings.co2e <- 0
+transactions$exclude.kr <- 0
+transactions$exclude.co2e <- 0
 
-for (cat_name in remaining_cats) {
-  transactions[[paste0(cat_name, ".kr")]] <- 0
-  transactions[[paste0(cat_name, ".co2e")]] <- 0
-}
+# Add charity (small but non-zero)
+transactions$charity.kr <- monthly_total * runif(n_rows, 0.005, 0.02)
+transactions$charity.co2e <- transactions$charity.kr * 0.0003
+
+# Add income categories (as negative values / refunds in spending data)
+# These are typically excluded from consumption totals
+transactions$income_salary.kr <- 0
+transactions$income_salary.co2e <- 0
+transactions$income_financial.kr <- 0
+transactions$income_financial.co2e <- 0
+transactions$income_benefits.kr <- 0
+transactions$income_benefits.co2e <- 0
+transactions$income_pensions.kr <- 0
+transactions$income_pensions.co2e <- 0
+transactions$income_refund.kr <- 0
+transactions$income_refund.co2e <- 0
+transactions$income_other.kr <- 0
+transactions$income_other.co2e <- 0
 
 # --- Sampling Frame ---------------------------------------------------------
 
