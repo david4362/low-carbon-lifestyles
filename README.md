@@ -127,6 +127,24 @@ source("master_analysis.R")
 
 The data loader will detect the missing shared directory and fall back to the `.RData` file automatically.
 
+#### Generating synthetic data
+
+If you don't have access to the real data or `.RData` file, you can generate synthetic data:
+
+```r
+source("generate_synthetic_data.R")
+```
+
+This creates `default_filter.RData` with ~1,500 synthetic users and 42 months of transaction data. The synthetic data includes:
+
+- Realistic user demographics (age, sex, education, municipality, etc.)
+- Lifestyle indicators (car ownership, flying, diet)
+- Survey responses with correlated ESI items
+- Monthly income data
+- Transaction spending across all categories with realistic emission intensities
+
+You can adjust `N_USERS` and `N_MONTHS` at the top of `generate_synthetic_data.R` to modify the sample size.
+
 ### Individual steps
 
 Each script can also be sourced individually after the prerequisite steps have been run. For example, to regenerate only the waterfall plot:
