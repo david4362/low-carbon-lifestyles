@@ -401,8 +401,8 @@ sframe <- sframe_raw |>
   mutate(
     gender = haven::as_factor(gender) |> as.character(),
     gender = case_when(
-      gender == "Man"    ~ "male",
-      gender == "Kvinna" ~ "female",
+      gender %in% c("man","male","Man","Male") ~ "male",
+      gender %in% c("woman","female","kvinna","Woman","Female","Kvinna") ~ "female",
       TRUE ~ NA_character_
     ),
     postort = as.character(haven::as_factor(postort)),
@@ -656,7 +656,7 @@ for (lf in names(lifestyle_map)) {
   cat(sprintf("  %s (N=%d): raw %d kg, predicted at ESI=0 = %d kg (%.1ft)\n",
               info$label, nrow(na_data), round(raw_mean), round(pm), pm / 1000))
 }
-write.csv(non_adopter_baselines |> select(-predicted_co2e_t),
+write.csv(non_adopter_baselines,
           file.path(output, "non_adopter_baselines.csv"), row.names = FALSE)
 cat("  Saved: non_adopter_baselines.csv\n\n")
 

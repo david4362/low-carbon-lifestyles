@@ -29,6 +29,14 @@ if (dir.exists(.shared)) {
 	load(local_rdata)
 	# Expect objects: transactions, survey, users, monthly_incomes, selected_months, selected_aids, etc.
 	rm(.this_dir, .shared)
+	
+	# Load broad category lookups for local/synthetic data
+	if (file.exists("broad-category.csv")) {
+		broad_cat <- read.csv("broad-category.csv", stringsAsFactors = FALSE)
+	}
+	if (file.exists("broad-category-kr.csv")) {
+		broad_cat_kr <- read.csv("broad-category-kr.csv", stringsAsFactors = FALSE)
+	}
 }
 
 # --- Aviation emission-intensity override (applies after both branches) ---
