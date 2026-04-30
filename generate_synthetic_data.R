@@ -239,7 +239,7 @@ get_emission_intensities <- function() {
 # ============================================================================
 
 set.seed(SEED)
-cat("Generating synthetic data for Konsumptionskollen pipeline...\n\n")
+cat("Generating synthetic data for Konsumtionskollen pipeline...\n\n")
 
 # --- Users ------------------------------------------------------------------
 

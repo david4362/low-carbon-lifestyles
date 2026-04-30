@@ -1,4 +1,4 @@
-# Konsumptionskollen
+# Konsumtionskollen
 
 Analysis pipeline for the manuscript *"Low-carbon lifestyles deliver broad climate benefits strengthened by environmental self-identity"*.
 

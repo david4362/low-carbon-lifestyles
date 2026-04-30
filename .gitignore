@@ -39,3 +39,9 @@ results/*.html
 
 #
 notes
+
+Rplots.pdf
+default_filter.RData
+output/
+output_test/
+results/
