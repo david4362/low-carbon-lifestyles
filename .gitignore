@@ -5,6 +5,9 @@
 .Ruserdata
 .Rproj.user/
 
+# R data
+*.RData
+
 # RStudio
 *.Rproj
 
