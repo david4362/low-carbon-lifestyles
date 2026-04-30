@@ -1,0 +1,601 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{siunitx}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{url}
+
+\title{Supplementary Information\\
+Low-carbon lifestyles deliver broad emission reductions without automatic rebound}
+\date{}
+
+\begin{document}
+\maketitle
+\onehalfspacing
+
+\section*{Contents}
+S1. Data, recruitment, and ethical approvals \\
+S2. Sample construction, data quality, and descriptive characteristics \\
+S3. Carbon footprint estimation and domain mapping \\
+S4. Survey measures and identity construction \\
+S5. Variable construction \\
+S6. Model specification and robustness checks \\
+S7. Key regression coefficients \\
+S8. Distributional analysis of indirect effects \\
+S9. Proportional re-spending benchmark \\
+S10. Inverse-probability weighting robustness check \\
+S11. Income and urban/rural sensitivity \\
+S12. Composition of indirect differences across broad domains \\
+S13. Green-sample replication robustness \\
+S14. Recategorized-transactions robustness \\
+S15. Data and code availability
+
+% =========================================================
+% S1
+% =========================================================
+\section*{S1. Data, recruitment, and ethical approvals}
+
+Participants were recruited via Sweden’s national digital mailbox service (\emph{Mina meddelanden}), to which around 85\% of the adult population is connected \citep{digg_mina_meddelanden_2025w48,scb_befolk_manad_ckm_2025}. Invitations provided general information about a study on household consumption patterns and included a link to the baseline survey, followed by instructions for downloading the research app \emph{Konsumtionskollen}. Participants were not informed in advance that individual carbon footprints would be analysed, reducing the risk of priming or selection based on environmental concern. This procedure was covered by the approved consent and ethics protocol.
+
+The sampling frame was drawn from Statistics Sweden population registers. Two parallel invitation streams were used. (i)~A \emph{random-sample frame} of approximately 80{,}000 individuals drawn to be broadly representative of the Swedish adult population. (ii)~A \emph{green oversample frame} of approximately 100{,}000 individuals drawn from electoral districts (\emph{valkretsar}) where the Green Party (Milj\"opartiet) received a substantially higher vote share than the national average. The two streams together comprise an invitation frame of approximately 180{,}000 individuals. Eligibility required a smartphone with eID (BankID), account linkage via a secure banking interface, and consent for survey participation and registry linkage.
+
+The green oversample was recruited using the same procedure and eligibility criteria as the random sample but is non-random by design. It is used exclusively as a secondary verification test for the main results (Section~S13) and is not included in the primary analytical sample. All demographic benchmarks reported below refer to the random-sample frame ($N\approx 80{,}000$).
+
+The final analytical sample contains 1{,}311 single-adult households drawn from the random-sample frame (approximately 1.6\% of the 80{,}000 invitees in that stream). Ethical approval was granted by the Swedish Ethical Review Authority (Ref. 2024-01766-02).
+
+% =========================================================
+% S2
+% =========================================================
+\section*{S2. Sample construction, data quality, and descriptive characteristics}
+
+\subsection*{S2.1 Sample construction and data-quality filters}
+Table~\ref{tab:sample_flow} reports the exported sample-flow diagnostics from the current run.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Sample-flow diagnostics from exported results (current run).}
+\label{tab:sample_flow}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.30\textwidth}rrX@{}}
+\toprule
+\textbf{Filter} & \textbf{Excluded at step} & \textbf{N} & \textbf{Description} \\
+\midrule
+valid\_aids\_adults & 352 & -- & Household with $>$1 adult \\
+valid\_aids\_consecutivemonths & 682 & -- & $<$12 consecutive qualifying months \\
+random\_sample & 2008 & -- & Not in random sample \\
+not\_unknown\_edu & 2 & -- & Unknown education level \\
+all\_aids & 0 & 1311 & Final analytical sample after all active filters \\
+\bottomrule
+\end{tabularx}
+
+\vspace{2mm}
+\begin{flushleft}
+\footnotesize
+\textit{Notes:} Filters are applied to the random sample only. A separate non-random ``green sample'' recruited from Green Party stronghold electoral districts is excluded from this pipeline and analysed independently in Section~S13.
+\end{flushleft}
+\end{table}
+
+\subsection*{S2.2 Descriptive characteristics of the analytical sample}
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Continuous descriptive statistics from exported Table 1.}
+\label{tab:desc_cont}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Variable} & \textbf{Mean} & \textbf{SD} & \textbf{Median} \\
+\midrule
+Monthly CO$_2$e (kg) & 447.66 & 342.86 & 387.00 \\
+Monthly spending (SEK) & 29{,}045.71 & 17{,}810.06 & 26{,}634.58 \\
+Monthly income (SEK, SCB selected months) & 34{,}795.98 & 19{,}800.65 & 33{,}515.13 \\
+ESI score (z-standardized) & 0.00 & 1.00 & 0.03 \\
+N months & 12.00 & 0.00 & 12.00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Categorical descriptive statistics from exported Table 1.}
+\label{tab:desc_cat}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Variable} & \textbf{N} & \textbf{Percent} \\
+\midrule
+Sex: male & 573 & 44.2 \\
+Sex: female & 724 & 55.8 \\
+Age: 18--29 & 362 & 27.9 \\
+Age: 30--44 & 529 & 40.8 \\
+Age: 45--65 & 384 & 29.6 \\
+Age: 65+ & 22 & 1.7 \\
+No car & 730 & 56.3 \\
+No flying & 934 & 72.0 \\
+No meat & 177 & 13.6 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{S2.3 Benchmarking and external validity}
+
+Table~\ref{tab:benchmarking} compares the analytical sample with the random-sample frame ($N\approx 80{,}000$) for the demographics available in the registry extract, and reports a small set of interpretive external indicators for context. The comparisons are descriptive only and not used for identification.
+
+\begin{table}[!htbp]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.10}
+\caption{Analytical sample vs random-sample frame ($N\approx 80{,}000$). The green oversample frame ($\approx$100{,}000) is excluded from frame benchmarks (see Section~S1).}
+\label{tab:benchmarking}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+ & \textbf{Female} & \textbf{Age 18--29} & \textbf{Age 30--44} & \textbf{Age 45--65} & \textbf{Major city} & \textbf{No car} & \textbf{Post-sec.\ $\geq$2y} & \textbf{Income} \\
+ & (\%) & (\%) & (\%) & (\%) & (\%) & (\%) & (\%) & (SEK/mo) \\
+\midrule
+Analytical sample & 55.8 & 27.9 & 40.8 & 29.6 & 21.1 & 56.3 & 54.6 & 34{,}796 \\
+Random-sample frame & 47.0 & 27.7 & 34.7 & 37.6 & 16.2 & 53.7 & n/a & n/a \\
+\bottomrule
+\end{tabular}%
+}
+
+\vspace{2mm}
+\begin{flushleft}
+\footnotesize
+\textit{Notes:} Frame benchmarks are computed from the random-sample frame cross-classification reported in Table~\ref{tab:ipw_cells}. The frame is restricted to ages 18--65 by design; analytical-sample respondents aged 65+ (1.7\%) are not benchmarked. The no-car frame value is reported as the complement of the registry $\geq$1-car ownership rate (46.3\%). Education and income are not in the frame extract. Single-adult household share is 100\% by construction.
+\end{flushleft}
+\end{table}
+
+% =========================================================
+% S3
+% =========================================================
+\section*{S3. Carbon footprint estimation and domain mapping}
+
+Carbon footprints are calculated using a hybrid approach integrating transaction-level expenditures, category-specific emissions intensities, and targeted profile and registry refinements, following \citet{andersson2020novel}. Expenditures are mapped to footprint categories, harmonized over time, and aggregated to daily and annual totals.
+
+At the transaction level, emissions are obtained by multiplying expenditure by category-specific intensity factors (kg CO$_2$e/SEK). For selected domains where expenditure is an especially noisy proxy for physical quantities, registry and profile information is used to refine the mapping. In particular, transport and housing components are refined where relevant information is available, and food-related estimates are calibrated using diet information from the profile survey.
+
+\paragraph{Aviation emission intensity override.}
+The default input--output-based emission intensity for aviation is replaced with a bottom-up estimate that accounts for non-CO$_2$ climate effects (contrails, contrail-induced cirrus, NO$_x$-driven ozone formation, and water vapour). Aviation combustion emits approximately 0.08~kg~CO$_2$/pkm. To convert expenditure to physical units, we use an average ticket yield of 0.82~SEK/pkm. Non-CO$_2$ effects are incorporated via a multiplicative uplift factor of 1.5 applied to combustion CO$_2$, following the central estimate of \citet{lee2021contribution} for the ratio of aviation's total effective radiative forcing to its CO$_2$-only forcing expressed in GWP$^*$-equivalent terms. An additional 20\% of combustion CO$_2$ is added to account for upstream (well-to-tank) emissions from crude extraction, refining, and fuel transport, consistent with the conventional Jet~A life-cycle inventory of \citet{stratton2010lifecycle}. The resulting intensity is:
+\[
+  \frac{0.08 \times 1.5 + 0.08 \times 0.20}{0.82} \approx 0.166 \;\text{kg CO}_2\text{e/SEK}
+\]
+This override is applied to all aviation transactions before aggregation. The resulting intensity is approximately 42\% higher than the default environmentally-extended input--output (EE-IOA) value, which is itself a full life-cycle estimate but does not capture the non-CO$_2$ forcing components specific to high-altitude jet emissions. The adjustment therefore primarily affects the direct component of the no-flying contrast.
+
+For each focal lifestyle contrast, emissions are decomposed into:
+\begin{itemize}
+  \item \textbf{Direct emissions}: emissions in the focal domain.
+  \item \textbf{Indirect emissions}: total minus direct emissions.
+\end{itemize}
+
+Direct-domain mapping follows the main analysis design:
+\begin{itemize}
+  \item \textbf{No car}: the short-distance transport domain, comprising fuel, car maintenance, car rental, vehicle purchases, public transport, bus, taxi, e-scooter, and other local transport. This domain is defined broadly to include mode substitution within the transport system: if a car-free household uses public transit instead of driving, that substitution is captured within the direct component rather than appearing as apparent indirect rebound. This ensures that the indirect component reflects genuine cross-domain differences rather than within-transport mode shifts.
+  \item \textbf{No flying}: the aviation domain (a single transaction category). This is a deliberately narrow definition. Any substitution toward long-distance train travel cannot be separated from local public transit in transaction data and is therefore assigned to the indirect component. This makes the indirect estimate for non-flying households conservative: train-for-plane substitution would increase indirect emissions, working against a finding of cross-domain coherence.
+  \item \textbf{Non-meat}: the grocery domain only. Restaurant emissions are estimated as the service component only (not the food itself), to avoid double-counting with grocery-based food emissions. Alcohol is sold exclusively through the state monopoly (Systembolaget) and is a separate transaction category. Bar, snacks, and tobacco spending are similarly excluded from the direct domain. This narrow definition ensures that the direct component captures differences in food purchasing patterns attributable to diet, while other food-adjacent spending contributes to the indirect component.
+\end{itemize}
+
+% =========================================================
+% S4
+% =========================================================
+\section*{S4. Survey measures and identity construction}
+
+Environmental self-identity (ESI) is measured using three items adapted from \citet{VanDerWerff2013}: (i) ``Acting in an environmentally friendly way is an important part of who I am'', (ii) ``I am a person who acts in an environmentally friendly way'', and (iii) ``I perceive myself as an environmentally friendly person''. Responses are recorded on a 7-point Likert scale.
+
+For descriptive purposes, we summarize ESI using the mean of the three items on the original scale. For regression analyses, ESI is operationalized as a standardized score (mean 0, SD 1). Internal consistency is high in the analytical sample (Cronbach's $\alpha = 0.88$).
+
+Table~\ref{tab:esi_benchmark} compares the within-sample standardized ESI distribution to (i) an external Swedish reference sample using the same three-item instrument on a 5-point response scale \citep{eriksson2024integrating} and (ii) the green oversample (Section~S1). Z-scores are computed within each sample independently to maintain comparability across response scales. The analytical (random) sample has a slightly stronger right tail than the reference sample, consistent with mild positive selection on environmental orientation. Notably, the green oversample is \emph{not} more strongly self-identified as environmental than the random sample on this measure---if anything, it has marginally less mass at $z\geq 1$ (15.2\% vs 17.2\%). Voting Green is therefore not equivalent to scoring high on the ESI scale, and the green oversample is best treated as an independent verification sample rather than as a high-ESI subgroup (Section~S13).
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Standardized ESI distribution: analytical sample vs external reference.}
+\label{tab:esi_benchmark}
+\begin{tabular}{lcccc}
+\toprule
+ & \textbf{$z<-1$} & \textbf{$-1 \le z < 0$} & \textbf{$0 \le z < 1$} & \textbf{$z \ge 1$} \\
+\midrule
+Analytical sample & 15.7\% & 31.5\% & 35.7\% & 17.2\% \\
+Eriksson \& Linde reference sample & 23.1\% & 36.6\% & 32.4\% & 7.9\% \\
+Green sample (non-random) & 16.1\% & 34.2\% & 34.5\% & 15.2\% \\
+\bottomrule
+\end{tabular}
+\vspace{2mm}
+\begin{flushleft}
+\footnotesize
+\textit{Notes:} Z-scores are computed within each sample independently. The reference sample uses a 5-point response scale; the analytical and green-oversample samples use a 7-point response scale. Green-oversample shares are exported by the analysis script to \texttt{table5\_esi\_distribution\_with\_green.csv}.
+\end{flushleft}
+\end{table}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{../../results/esi_distribution.png}
+\caption{Distribution of environmental self-identity (ESI) in the analytical sample.}
+\label{fig:esi_dist}
+\end{figure}
+
+% =========================================================
+% S5
+% =========================================================
+\section*{S5. Variable construction}
+
+Outcomes are 12-month total, direct, and indirect emissions. Lifestyle indicators are:
+\begin{itemize}
+  \item \texttt{no\_car}: profile survey reports zero owned cars.
+  \item \texttt{no\_flying}: zero aviation spending in the observation window.
+  \item \texttt{no\_meat}: profile survey indicates vegetarian, pescetarian/vegfish, or vegan diet.
+\end{itemize}
+
+Control variables follow the main text: sex, age group, education, disposable income, children, housing type, major-city indicator, and log population density.
+
+% =========================================================
+% S6
+% =========================================================
+\section*{S6. Model specification and robustness checks}
+
+\subsection*{S6.1 Baseline specification}
+For each lifestyle indicator $B_i \in \{0,1\}$ (no-car, no-flying, non-meat) we estimate an ordinary least squares (OLS) regression of household $i$'s annualised emissions $E_i$:
+\[
+E_i = \beta_0 + \beta_1 B_i + \beta_2 \mathit{ESI}_i + \beta_3 (B_i \times \mathit{ESI}_i) + \mathbf{X}_i\boldsymbol{\gamma} + \varepsilon_i .
+\]
+$\beta_1$ is the lifestyle main effect at mean ESI; $\beta_2$ is the ESI main effect among non-adopters; $\beta_3$ tests whether the lifestyle effect varies with ESI. $\mathbf{X}_i$ collects the controls listed in Section~S5. All standard errors are heteroskedasticity-robust of the HC3 form.
+
+The lifestyle indicators retain adequate within-sample variation for estimating both main and interaction terms under the baseline specification.
+
+\subsection*{S6.2 Sensitivity to uncategorized-share threshold}
+
+The baseline analysis requires that uncategorized spending make up at most 10\% of total spending over the 12-month observation window. For each participant, we compute the rolling 12-month uncategorized share and select the \emph{most recent} 12-month window in which the share is at or below the 10\% threshold for the entire window. Each participant is therefore aligned to their latest high-quality 12-month period rather than to a fixed calendar window. Figure~\ref{fig:threshold_sensitivity} reports total and indirect lifestyle coefficients at thresholds of 5\%, 10\% (baseline), 15\%, and 20\%. Total effects are directionally stable across thresholds.
+
+The slight non-monotonicity in sample size (e.g., 15\% yielding a slightly lower $N$ than 10\%) reflects downstream merging with complete covariates after threshold-specific month selection; threshold changes can shift the selected 12-month window and therefore whether all regression inputs are simultaneously available.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{../../results/si_threshold_sensitivity.png}
+\caption{Lifestyle coefficients (kg CO$_2$e/year) by uncategorized-share threshold. Dots show point estimates; error bars show 95\% confidence intervals. Green = $p<0.05$; grey = not significant.}
+\label{fig:threshold_sensitivity}
+\end{figure}
+
+\subsection*{S6.3 Alternative diet-group definitions}
+
+The vegan-only subgroup shows particularly large and statistically significant differences in both direct and indirect emissions (Fig.~\ref{fig:diet_definitions}). Two factors should be kept in mind when interpreting this estimate. First, the subgroup is small ($n=21$), which inflates statistical uncertainty for any noisy outcome. Second, the diet survey records vegan status from a single question with no follow-up items on dairy or other animal products; consequently the within-group variation in food spending---and hence in the direct component---is mechanically narrow. The result is a small standard error on the direct effect that should not be over-interpreted as unusually precise identification. The indirect estimate is wider and should be read as a directional rather than precise quantity. The pattern is nonetheless consistent with prior targeted evidence on vegan households in Sweden \citep{andersson2020novel}.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{../../results/si_forest_diet.png}
+\caption{Diet-definition robustness: main lifestyle coefficients (kg CO$_2$e/year) across five diet-group definitions. Points show estimates; horizontal bars show 95\% confidence intervals. Green = $p<0.05$; grey = not significant.}
+\label{fig:diet_definitions}
+\end{figure}
+
+\subsection*{S6.4 Temporal-window robustness}
+
+A concern with cross-sectional designs is that low indirect emissions during the observation window may reflect deferred (rather than foregone) consumption. We address this with two complementary tests.
+
+\paragraph{Extended-window regression.}
+We re-estimate the main models using all available post-COVID months per participant (mean $= 21$, range 12--39) rather than the baseline 12-month window. Outcomes are annualised by dividing total emissions by the number of observed months and multiplying by 12. Lifestyle indicators are held at their baseline (12-month) definitions throughout. If savings are merely deferred, indirect effects should weaken toward zero under the longer window. Table~\ref{tab:temporal_extended} compares the baseline 12-month and extended-window indirect lifestyle coefficients.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Temporal robustness: indirect lifestyle coefficients (kg CO$_2$e/year) under baseline vs.\ extended observation windows.}
+\label{tab:temporal_extended}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Lifestyle} & \textbf{12-month baseline} & \textbf{Extended window} & \textbf{\% change} \\
+ & ($N=1{,}311$) & ($N=1{,}311$; mean 21\,m) & \\
+\midrule
+No car (indirect)     & $-$182 & $-$178 & $-$2 \\
+No flying (indirect)  & $-$292 & $-$339 & $+$16 \\
+Non-meat (indirect)   & $-$87  & $+$14  & sign flip \\
+\bottomrule
+\end{tabular}
+
+\vspace{1mm}
+\begin{flushleft}
+\footnotesize
+\textit{Notes:} Extended-window estimates use all available post-COVID months per person, annualised. Baseline values from Figure~\ref{fig:key_reg_co2e}. Percentage change is in absolute magnitude; positive = effect strengthens, negative = effect attenuates. None of the estimates are individually significant at $p < 0.05$ in either window.
+\end{flushleft}
+\end{table}
+
+For car-free households, the indirect coefficient is essentially unchanged ($-$2\%). The non-meat indirect estimate, which was not significant at baseline ($p = 0.74$), attenuates and changes sign in the extended window, suggesting that the 12-month point estimate was largely noise. Neither pattern is consistent with deferred consumption, which would predict systematic attenuation toward zero from a clearly negative baseline.
+
+For non-flying households, the indirect estimate strengthens ($+$16\%). Two observations help interpret this. First, the no-flying group itself becomes stricter under a longer window: in the 24-month subsample, 327 of 477 respondents qualify as non-flyers under the 12-month definition, but only 284 qualify under the 24-month definition (\texttt{robustness\_no\_flying\_definition\_summary.csv}). The 43 respondents who flew in the wider window were included as ``no-flyers'' in the baseline analysis but are arguably closer to occasional rather than committed non-flyers. Stricter non-flying status is associated with stronger indirect savings, which is consistent with our main interpretation rather than with deferred consumption. Second, the budget constraint still operates: although aviation emissions are excluded from the indirect outcome by construction, money spent on flights outside the 12-month window is necessarily redirected from other categories within it, mechanically lowering the indirect estimate. Both mechanisms act in the same direction, so the strengthening should not be read as evidence of new spillover. Car ownership and diet are unaffected by this concern because they are measured from time-invariant sources (vehicle registry and profile survey, respectively).
+
+% =========================================================
+% S7
+% =========================================================
+\section*{S7. Key regression coefficients}
+
+Figure~\ref{fig:key_reg_co2e} and Table~\ref{tab:key_reg_kr} summarize the core interaction-model coefficients that map directly to the main text narrative.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{../../results/si_forest_main.png}
+\caption{Key interaction-model coefficients for emissions (kg CO$_2$e/year). Points show estimates; horizontal bars show 95\% confidence intervals. Circles = lifestyle main effects; triangles = ESI$\times$lifestyle interactions. Green = $p<0.05$; grey = not significant.}
+\label{fig:key_reg_co2e}
+\end{figure}
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Key interaction-model coefficients for spending (SEK/year). $N=1{,}296$ reflects the regression sample retained after listwise deletion of 15 of 1{,}311 analytical-sample respondents with missing values on one or more control variables; the same regression sample is used for the corresponding emission models.}
+\label{tab:key_reg_kr}
+\begin{tabular}{llrrr}
+\toprule
+\textbf{Lifestyle} & \textbf{Outcome} & \textbf{Main effect} & \textbf{ESI$\times$lifestyle} & \textbf{N} \\
+\midrule
+No car & Total & $-$36{,}498 ($p=0.014$) & $-$11{,}402 ($p=0.249$) & 1296 \\
+No car & Direct & $-$18{,}114 ($p<0.001$) & $+$3{,}249 ($p=0.027$) & 1296 \\
+No car & Indirect & $-$18{,}384 ($p=0.202$) & $-$14{,}650 ($p=0.119$) & 1296 \\
+No flying & Total & $-$46{,}184 ($p<0.001$) & $-$6{,}277 ($p=0.575$) & 1296 \\
+No flying & Direct & $-$10{,}987 ($p<0.001$) & $-$24 ($p=0.986$) & 1296 \\
+No flying & Indirect & $-$35{,}197 ($p=0.010$) & $-$6{,}253 ($p=0.573$) & 1296 \\
+Non-meat & Total & $-$4{,}741 ($p=0.746$) & $-$928 ($p=0.955$) & 1296 \\
+Non-meat & Direct & $+$1{,}185 ($p=0.525$) & $-$1{,}641 ($p=0.372$) & 1296 \\
+Non-meat & Indirect & $-$5{,}926 ($p=0.672$) & $+$714 ($p=0.964$) & 1296 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Full model exports are provided in \texttt{Results/interaction regressions co2e.csv} and \texttt{Results/interaction regressions kr.csv}.
+
+Figure~\ref{fig:interaction_gradient} shows the same ESI moderation as continuous predicted emission levels across the full ESI range ($-2$ to $+2$~SD), decomposed into total, direct, and indirect components.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=\textwidth]{../../results/interaction_plot.png}
+\caption{\textbf{Predicted emissions across the environmental self-identity gradient.}
+Each panel shows predicted CO$_2$e emissions (tCO$_2$e/year) for lifestyle adopters (teal) and the comparison group (orange), with control variables held at sample means. Rows decompose into total, direct (focal-domain), and indirect (all other domains) emissions. Shaded bands show 95\% confidence intervals based on HC3 heteroskedasticity-robust standard errors. Parallel total-emission lines for car-free and non-flying households reflect near-zero direct emissions for adopters combined with a more favourable indirect gradient at high ESI.}
+\label{fig:interaction_gradient}
+\end{figure}
+
+% =========================================================
+% S8
+% =========================================================
+\section*{S8. Distributional analysis of indirect effects}
+
+To assess whether the mean indirect differences reported in the main text are driven by outliers or reflect a genuine distributional shift, we residualized indirect emissions on the full set of covariates and compared the distribution of residuals between adopters and non-adopters using Kolmogorov--Smirnov (KS) tests. A positive residual indicates that a household emits more in non-focal domains than predicted by its observable characteristics; for adopters, this would be consistent with a rebound pattern. Table~\ref{tab:ks} reports KS test statistics, and Table~\ref{tab:share_positive} reports the share of households with positive indirect residuals by group.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Kolmogorov--Smirnov tests and residual summaries for indirect emissions.}
+\label{tab:ks}
+\begin{tabular}{lrrrrrr}
+\toprule
+\textbf{Lifestyle} & \textbf{$D$} & \textbf{$p$} & \textbf{Mean A} & \textbf{Mean NA} & \textbf{Median A} & \textbf{Median NA} \\
+\midrule
+No car & 0.0791 & 0.037 & $-$71.1 & 91.6 & $-$540.2 & $-$362.2 \\
+No flying & 0.1110 & 0.003 & $-$93.4 & 240.4 & $-$473.0 & $-$40.2 \\
+No meat & 0.0914 & 0.156 & $-$253.2 & 40.0 & $-$745.0 & $-$581.4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Share of positive residualized indirect emissions.}
+\label{tab:share_positive}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Lifestyle} & \textbf{Adopters (\%)} & \textbf{Non-adopters (\%)} & \textbf{Difference (pp)} \\
+\midrule
+No car & 37.9 & 42.2 & $-$4.3 \\
+No flying & 42.3 & 47.9 & $-$5.6 \\
+No meat & 32.2 & 39.2 & $-$7.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Distributional diagnostics are reported for all three lifestyle contrasts to complement mean-based regression estimates. The corresponding violin plot is shown in the main text (Fig.~4 of the main manuscript) and is not duplicated here.
+
+% =========================================================
+% S9
+% =========================================================
+\section*{S9. Proportional re-spending benchmark}
+
+This benchmark compares observed indirect effects with a neutral proportional re-spending counterfactual based on non-adopter carbon intensity.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Proportional re-spending benchmark vs observed indirect effects.}
+\label{tab:benchmark_rebound}
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Lifestyle} & \textbf{Direct saving} & \textbf{CO$_2$e intensity} & \textbf{Predicted} & \textbf{Observed} & \textbf{Gap} \\
+ & (SEK) & (kg/SEK) & (kg) & (kg) & (Obs$-$Pred) \\
+\midrule
+No car & 18{,}114 & 0.0138 & 249 & $-$182 & $-$431 \\
+No flying & 10{,}987 & 0.0136 & 149 & $-$292 & $-$441 \\
+No meat & $-$1{,}185 & 0.0148 & $-$18 & $-$87 & $-$70 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =========================================================
+% S10
+% =========================================================
+\section*{S10. Inverse-probability weighting robustness check}
+
+We report two complementary inverse-probability weighting (IPW) checks. The first re-weights for selection on observables \emph{into} lifestyle groups (treatment IPW). The second re-weights for selection \emph{into the analytical sample} from the invited population frame (sampling IPW), addressing concerns that environmentally oriented or otherwise non-representative individuals may be over-represented among consenting participants.
+
+\paragraph{Treatment IPW.}
+Propensity scores are estimated via logistic regression of each lifestyle indicator on the full set of control variables. Figure~\ref{fig:robustness_comparison} compares IPW-weighted and green-sample (Section~S13) total-outcome coefficients alongside the unweighted baseline. The core findings are robust: large, significant lifestyle main effects for no-car and no-flying households, with magnitudes comparable to the unweighted estimates. The non-meat total effect is also significantly negative under both unweighted and IPW estimation. ESI~$\times$~lifestyle interactions on total emissions are non-significant in all cases, consistent with the baseline models.
+
+\paragraph{Sampling IPW.}
+To assess whether the lifestyle main effects are robust to differential participation across the invited frame, we construct cell-based sampling weights using the cross-classification of sex, age group (18--29, 30--44, 45--65), and major-city status. Cell-specific raw participation rates range from approximately 1\% to 3\% (Table~\ref{tab:ipw_cells}). Each respondent is assigned the inverse of their cell's participation probability and the weights are normalized to the analytical sample size. We then re-estimate the main interaction models with these weights.
+
+Across all three lifestyle main effects (total, direct, and indirect outcomes), no coefficient changes sign and none crosses the conventional significance threshold under sampling-weighted estimation (Table~\ref{tab:sampling_ipw}). Absolute changes in the lifestyle main effects are typically below 5\%; ESI main effects on indirect emissions remain negative and similarly significant under both weighting schemes. Sign reversals occur only for ESI~$\times$~lifestyle interaction terms that are far from significance in either model (e.g., $|p|\geq 0.6$ in both versions) and so do not change inference.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Sampling-IPW cell composition and participation rates. Frame totals correspond to the random-sample frame ($N=80{,}000$); the green oversample (Section~S1) is excluded from this construction.}
+\label{tab:ipw_cells}
+\begin{tabular}{llcrrr}
+\toprule
+\textbf{Age} & \textbf{Sex} & \textbf{Major city} & \textbf{$N$ frame} & \textbf{$N$ analyzed} & \textbf{Raw rate (\%)} \\
+\midrule
+18--29 & male   & no  & 10{,}026 & 154 & 1.54 \\
+18--29 & female & no  & 8{,}325 & 173 & 2.08 \\
+30--44 & male   & no  & 12{,}765 & 177 & 1.39 \\
+30--44 & female & no  & 10{,}122 & 206 & 2.04 \\
+45--65 & male   & no  & 13{,}158 & 134 & 1.02 \\
+45--65 & female & no  & 12{,}616 & 179 & 1.42 \\
+18--29 & male   & yes & 1{,}908 & 50 & 2.62 \\
+18--29 & female & yes & 1{,}933 & 44 & 2.28 \\
+30--44 & male   & yes & 2{,}503 & 38 & 1.52 \\
+30--44 & female & yes & 2{,}336 & 75 & 3.21 \\
+45--65 & male   & yes & 2{,}066 & 20 & 0.97 \\
+45--65 & female & yes & 2{,}242 & 47 & 2.10 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Lifestyle main-effect estimates: unweighted vs sampling-IPW (kg CO$_2$e/year).}
+\label{tab:sampling_ipw}
+\begin{tabular}{llrrrr}
+\toprule
+\textbf{Lifestyle} & \textbf{Outcome} & \textbf{Unweighted} & \textbf{$p$ (unw.)} & \textbf{IPW} & \textbf{$p$ (IPW)} \\
+\midrule
+No car      & Total    & $-$1{,}433 & $<$0.001 & $-$1{,}457 & $<$0.001 \\
+No car      & Direct   & $-$1{,}251 & $<$0.001 & $-$1{,}262 & $<$0.001 \\
+No car      & Indirect & $-$182    & 0.41    & $-$195    & 0.39 \\
+No flying   & Total    & $-$2{,}114 & $<$0.001 & $-$2{,}095 & $<$0.001 \\
+No flying   & Direct   & $-$1{,}822 & $<$0.001 & $-$1{,}770 & $<$0.001 \\
+No flying   & Indirect & $-$292    & 0.072   & $-$325    & 0.074 \\
+Non-meat    & Total    & $-$557    & 0.043   & $-$564    & 0.040 \\
+Non-meat    & Direct   & $-$469    & $<$0.001 & $-$484    & $<$0.001 \\
+Non-meat    & Indirect & $-$87     & 0.74    & $-$80     & 0.76 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.95\textwidth]{../../results/si_forest_robustness.png}
+\caption{Robustness comparison of total-outcome lifestyle coefficients (kg CO$_2$e/year) across estimation strategies: unweighted baseline ($N=1{,}311$), inverse-probability weighted (IPW), and green-sample replication ($N=1{,}909$). Points show estimates; horizontal bars show 95\% confidence intervals.}
+\label{fig:robustness_comparison}
+\end{figure}
+
+% =========================================================
+% S11
+% =========================================================
+\section*{S11. Income and urban/rural sensitivity}
+
+Three-way interactions test whether ESI moderation varies systematically across the income distribution or between urban and non-urban contexts.
+
+\subsection*{S11.1 Income quartiles}
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Three-way interaction terms: lifestyle $\times$ ESI $\times$ income quartile (total emissions model).}
+\label{tab:income_sensitivity}
+\begin{tabular}{llrr}
+\toprule
+\textbf{Lifestyle} & \textbf{Term} & \textbf{Estimate} & \textbf{$p$} \\
+\midrule
+No car & ESI $\times$ No car $\times$ Q2 & $+$250.17 & 0.463 \\
+No car & ESI $\times$ No car $\times$ Q3 & $+$360.68 & 0.385 \\
+No car & ESI $\times$ No car $\times$ Q4 & $+$121.22 & 0.848 \\
+No flying & ESI $\times$ No flying $\times$ Q2 & $+$81.08 & 0.842 \\
+No flying & ESI $\times$ No flying $\times$ Q3 & $-$468.53 & 0.469 \\
+No flying & ESI $\times$ No flying $\times$ Q4 & $+$559.88 & 0.480 \\
+Non-meat & ESI $\times$ No meat $\times$ Q2 & $-$117.47 & 0.793 \\
+Non-meat & ESI $\times$ No meat $\times$ Q3 & $+$35.07 & 0.935 \\
+Non-meat & ESI $\times$ No meat $\times$ Q4 & $-$193.63 & 0.846 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+None of the income-quartile three-way interaction terms are statistically significant, indicating that the ESI moderation of lifestyle effects does not vary systematically across the income distribution.
+
+\subsection*{S11.2 Urban/rural (major-city indicator)}
+
+Car-free living may reflect structural constraints (e.g., limited parking, good public transit) in major cities rather than a deliberate low-carbon choice. To test whether the ESI moderation of lifestyle effects differs between urban and non-urban contexts, we estimate three-way interactions with the major-city indicator. This is particularly relevant for the no-car contrast: 77\% of car-free adopters in the sample reside in major-city municipalities, compared with 17\% of car owners. Table~\ref{tab:urban_sensitivity} reports results.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Three-way interaction terms: lifestyle $\times$ ESI $\times$ major city (total emissions model).}
+\label{tab:urban_sensitivity}
+\begin{tabular}{llrr}
+\toprule
+\textbf{Lifestyle} & \textbf{Term} & \textbf{Estimate} & \textbf{$p$} \\
+\midrule
+No car & ESI $\times$ No car $\times$ Major city & $-$31.10 & 0.962 \\
+No flying & ESI $\times$ No flying $\times$ Major city & $+$267.34 & 0.683 \\
+Non-meat & ESI $\times$ No meat $\times$ Major city & $+$575.84 & 0.365 \\
+\bottomrule
+\end{tabular}
+
+\vspace{1mm}
+\begin{flushleft}
+\footnotesize
+\textit{Notes:} Major city = municipality of Stockholm, Gothenburg, or Malm\"{o}. The major-city indicator is included as a main effect and in all lower-order interactions; remaining control variables as in the baseline specification.
+\end{flushleft}
+\end{table}
+
+No three-way term is statistically significant, indicating that the ESI moderation of lifestyle effects operates similarly in urban and non-urban settings. The main lifestyle effects are also robust to this specification.
+
+% =========================================================
+% S12
+% =========================================================
+\section*{S12. Composition of indirect differences across broad consumption domains}
+
+The category-level decomposition shows where indirect emission differences come from across non-focal consumption domains, and how these patterns differ by environmental self-identity (ESI). For each lifestyle contrast, the focal domain is excluded (car \& public transport for car-free, aviation \& long-distance travel for non-flying, food for non-meat households), and category-level estimates are evaluated at $+1$~SD (high ESI) and $-1$~SD (low ESI).
+
+Two regularities stand out. First, at high ESI the indirect reductions are broadly distributed: many non-focal domains contribute small to moderate negative differences, with no single category accounting for the bulk of the effect. This pattern is consistent with general consumption restraint among environmentally identified adopters, and it is most pronounced in the categories that are themselves emission-intensive (food, vacation \& long-distance travel, other products). Second, at low ESI the residual differences concentrate in specific substitution channels that are intuitively linked to the foregone behaviour: car-free low-ESI households show a clear positive estimate in aviation \& long-distance travel ($+$0.23~tCO$_2$e), suggesting substitution toward flying; non-flying low-ESI households show a positive estimate in car \& public transport ($+$0.27); and non-meat low-ESI households show a positive estimate in other products ($+$0.37) and a smaller positive estimate in car \& public transport ($+$0.22).
+
+For car-free households at high ESI, reductions are spread across other products ($-$0.24), food ($-$0.23), and other/misc ($-$0.17), with smaller negative contributions from vacation \& LDT, other services, and housing. For non-flying households at high ESI, reductions span food ($-$0.17), vacation \& LDT ($-$0.14), other/misc ($-$0.13), and other products ($-$0.10). For non-meat households at high ESI, the directionally largest reductions are in aviation \& LDT ($-$0.18) and car \& public transport ($-$0.17), although the aggregate high-ESI indirect effect for this contrast is not statistically significant ($p=0.13$). Figure~\ref{fig:cat_decomp} presents these category-level results.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.90\textwidth]{../../results/infravis_fig3_category.png}
+\caption{Category-level decomposition of indirect emission differences by environmental self-identity (ESI). Reproduced from Fig.~3 of the main text. For each lifestyle contrast, horizontal bars show the regression-adjusted emission difference (tCO$_2$e per person-year) in each non-focal consumption domain, evaluated at $+1$~SD ESI (teal) and $-1$~SD ESI (orange), relative to the mean non-adopter at ESI~$= 0$. Own-domain categories are excluded from each panel.}
+\label{fig:cat_decomp}
+\end{figure}
+
+% =========================================================
+% S13
+% =========================================================
+\section*{S13. Green-sample replication robustness}
+
+The green oversample (Section~S1) is recruited from electoral districts with high Green Party vote shares but, as Table~\ref{tab:esi_benchmark} shows, it does \emph{not} score higher than the random sample on the ESI scale. Voting Green and self-identifying as environmental on the three-item instrument therefore measure different things, and the green oversample should not be interpreted as a high-ESI subgroup. We use it instead as an independent verification sample: a different recruitment frame and a different community context, but the same data pipeline.
+
+Figure~\ref{fig:robustness_comparison} compares the green-sample lifestyle main effects on total emissions with the random-sample baseline and the IPW estimates. All three contrasts replicate in direction and significance: no-car $-$1{,}715~kg, $p<0.001$; no-flying $-$1{,}769~kg, $p<0.001$; non-meat $-$547~kg, $p<0.001$. ESI~$\times$~lifestyle interactions on total emissions are non-significant in the green sample, consistent with the random-sample finding that interaction terms on total emissions are typically small. The replication of the lifestyle main effects in a separately recruited sample is a useful external check that the result is not an artefact of the random-sample frame or pipeline.
+
+% =========================================================
+% S14
+% =========================================================
+\section*{S14. Recategorized-transactions robustness}
+
+A full re-estimation of the main interaction models on a recategorized version of the transaction data (using the alternative \texttt{full\_data\_norecats\_filters\_260121.dta} input) is implemented in the analysis pipeline but has not been run on the current TRE export. The loading and robustness code supports both prerecategorized and norecategorized inputs; the next TRE run will produce the corresponding estimates and they will be inserted here.
+
+% =========================================================
+% S15
+% =========================================================
+\section*{S15. Data and code availability}
+
+All analysis code and SI-generation scripts are maintained in the project repository. Individual-level bank transaction and registry microdata cannot be publicly shared due legal and ethical restrictions. The exported disclosure-controlled result files in the \texttt{Results} folder provide the aggregated evidence used in this manuscript draft.
+
+% =========================================================
+% References
+% =========================================================
+\section*{References}
+\bibliographystyle{apalike}
+\bibliography{references}
+
+\end{document}
