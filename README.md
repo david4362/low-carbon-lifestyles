@@ -172,3 +172,53 @@ All outputs are written to the `output/` directory (or `output/mock/` in mock mo
 - **SI figures**: `S7 detailed {co2e,kr}.png`, `Residuals distribution*.png`, `si_forest_*.png`, `interaction_plot.png`, `category_decomposition_esi.png`
 - **Descriptive tables**: `table1_continuous.csv`, `table1_categorical.csv`, `sample_flow.csv`
 - **Robustness outputs**: `ipw_robustness.csv`, `robustness_sampling_ipw*.csv`, `rebound_benchmark.csv`, `sensitivity_*.csv`, `deferred_consumption_extended_window.csv`, `robustness_green_sample.csv`, `robustness_recategorized.csv`, `robustness_diet_definitions.csv`
+
+## Manuscript files
+
+This repository includes the complete LaTeX source files for the manuscript and supplementary information:
+
+| File | Location | Description |
+|---|---|---|
+| Main manuscript | `main/main.tex` | Full manuscript with abstract, main results, discussion, methods, and references |
+| Supplementary Information | `SI/SI.tex` | 15 supplementary sections (S1-S15) with extended methods, robustness checks, and sensitivity analyses |
+| Bibliography | `main/references.bib`, `SI/references.bib` | Bibliographies for main text and SI (identical copies) |
+| Figures | `results/` | 10 PNG figures embedded in the LaTeX files (see table below) |
+
+### Building the PDF
+
+To compile the manuscript locally, you need a LaTeX distribution (e.g., TeX Live) with `pdflatex` and `bibtex`:
+
+```bash
+cd main
+pdflatex main.tex
+bibtex main
+pdflatex main.tex
+pdflatex main.tex
+cd ../SI
+pdflatex SI.tex
+bibtex SI
+pdflatex SI.tex
+pdflatex SI.tex
+```
+
+Or use `latexmk` for automatic recompilation:
+
+```bash
+cd main && latexmk -pdf main.tex
+cd ../SI && latexmk -pdf SI.tex
+```
+
+### Included figures
+
+| Figure | File | Location | Description |
+|---|---|---|---|
+| Main Fig 1 | `infravis_fig1_benchmark.png` | main & SI | Direct and indirect emission differences with re-spending benchmark |
+| Main Fig 2 | `infravis_fig2_esi.png` | main & SI | ESI stratification of indirect emission pattern |
+| Main Fig 3 | `infravis_fig3_category.png` | main & SI | Category-level decomposition of indirect differences by ESI |
+| Violin plot | `Residuals distribution.png` | main | Distributional analysis of indirect residuals |
+| ESI distribution | `esi_distribution.png` | SI | Distribution of environmental self-identity in sample |
+| SI Threshold sensitivity | `si_threshold_sensitivity.png` | SI | Robustness to uncategorized spending threshold |
+| SI Forest (diet) | `si_forest_diet.png` | SI | Diet definition robustness |
+| SI Forest (main) | `si_forest_main.png` | SI | Main coefficients with 95% CIs |
+| SI Interaction plot | `interaction_plot.png` | SI | Predicted emissions across ESI gradient |
+| SI Forest (robustness) | `si_forest_robustness.png` | SI | Robustness comparison across estimation strategies |
