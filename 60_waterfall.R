@@ -233,9 +233,9 @@ write.csv(
 .linetypes_main <- c("Direct effect" = "solid",
                      "Indirect effect" = "dotted",
                      "Re-spending benchmark" = "solid")
-.colours_esi    <- c("High ESI" = "turquoise3",
-                     "Average"  = "black",
-                     "Low ESI"  = "orange2")
+.colours_esi    <- c("High ESI" = "#333333",
+                     "Average"  = "#808080",
+                     "Low ESI"  = "#cccccc")
 .theme_wf <- function(strip_size = 11, x_size = 11) theme_minimal() + theme(
   strip.background = element_rect(fill = "#f5f5f5", color = NA),
   panel.background = element_rect(fill = "#f5f5f5", color = NA),
@@ -388,7 +388,7 @@ p_pres_esi <- ggplot(pres_esi) +
                linewidth = 1.2,
                arrow = arrow(length = unit(0.22,"cm"), type = "closed")) +
   facet_grid(category ~ ., switch = "y") +
-  scale_color_manual(values = c("High ESI" = "turquoise3","Low ESI" = "orange2")) +
+  scale_color_manual(values = c("High ESI" = "#333333","Low ESI" = "#999999")) +
   scale_linetype_manual(values = c("Direct effect" = "solid","Indirect effect" = "dotted")) +
   scale_y_continuous(limits = c(0.7, 1.65), expand = c(0,0)) +
   scale_x_continuous(breaks = seq(-0.5, 2.5, 0.5),

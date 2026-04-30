@@ -352,16 +352,17 @@ for (lf in LIFESTYLES) {
   ipw_em <- selected_emissions |> group_by(aid) |>
     summarise(
       total_co2e    = sum(co2e),
+      direct_co2e   = sum(co2e[.data[[focal_field]] == focal_value]),
       indirect_co2e = sum(co2e[.data[[focal_field]] != focal_value]),
       .groups = "drop"
     ) |>
     inner_join(ps_data |> mutate(ipw = w), by = "aid")
 
-  for (dv in c("total_co2e", "indirect_co2e")) {
+  for (dv in c("total_co2e", "direct_co2e", "indirect_co2e")) {
     rb <- fit_robust(make_interaction_formula(dv, lf, ctrl_vars), ipw_em, weights = ipw_em$ipw)
     ipw_results <- bind_rows(ipw_results,
       tibble(lifestyle = lf,
-             model = if (dv == "total_co2e") "Total (IPW)" else "Indirect (IPW)",
+             model = if (dv == "total_co2e") "Total (IPW)" else if (dv == "direct_co2e") "Direct (IPW)" else "Indirect (IPW)",
              variable = rb$variable,
              estimate = rb$estimate, stderr = rb$stderr, t = rb$t, p = rb$p))
   }

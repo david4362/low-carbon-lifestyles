@@ -124,7 +124,7 @@ p <- ggplot(plot_data, aes(x = category_label, y = estimate_t, fill = esi_level)
   facet_wrap(~ lifestyle_label, ncol = 1, scales = "fixed") +
   coord_flip() +
   scale_fill_manual(
-    values = c("High ESI (+1 SD)" = "turquoise3", "Low ESI (\u22121 SD)" = "grey65"),
+    values = c("High ESI (+1 SD)" = "#333333", "Low ESI (\u22121 SD)" = "#999999"),
     name = NULL
   ) +
   labs(

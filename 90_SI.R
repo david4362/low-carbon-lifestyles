@@ -72,7 +72,7 @@ plot_data <- lm_cov_residuals |>
   geom_split_violin(alpha = 0.6) +
   geom_boxplot(outliers = FALSE, width = 0.2) +
   labs(x = "Lifestyle", y = "Residual", fill = NULL) +
-  scale_fill_manual(values = c(Adopter = "turquoise3", `Non-adopter` = "orange2"),
+  scale_fill_manual(values = c(Adopter = "#000000", `Non-adopter` = "#cccccc"),
                     breaks = c("Adopter", "Non-adopter")) +
   ylim(-6000, 8500) +
   coord_flip()
