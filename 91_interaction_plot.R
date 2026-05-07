@@ -145,8 +145,8 @@ p <- ggplot(pred_df, aes(x = esi, y = pred_t, colour = group, fill = group)) +
   geom_ribbon(aes(ymin = ci_lo_t, ymax = ci_hi_t), alpha = 0.15, colour = NA) +
   geom_line(linewidth = 0.8) +
   facet_grid(outcome ~ lifestyle, scales = "free_y") +
-  scale_colour_manual(values = c("Low-carbon lifestyle adopter" = "#000000", "Non-adopter" = "#cccccc"), name = NULL) +
-  scale_fill_manual(values = c("Low-carbon lifestyle adopter" = "#000000", "Non-adopter" = "#cccccc"), name = NULL) +
+  scale_colour_manual(values = c("Low-carbon lifestyle adopter" = "#E07B39", "Non-adopter" = "#4C72B0"), name = NULL) +
+  scale_fill_manual(values = c("Low-carbon lifestyle adopter" = "#E07B39", "Non-adopter" = "#4C72B0"), name = NULL) +
   labs(
     x = "Environmental self-identity (standardised)",
     y = expression("Predicted CO"[2]*"e emissions (tCO"[2]*"e/year)")
