@@ -1,4 +1,4 @@
-# Konsumptionskollen
+# Konsumtionskollen
 
 Analysis pipeline for the manuscript *"Low-carbon lifestyles deliver broad climate benefits strengthened by environmental self-identity"*.
 
@@ -186,22 +186,7 @@ This repository includes the complete LaTeX source files for the manuscript and 
 
 ### Building the PDF
 
-To compile the manuscript locally, you need a LaTeX distribution (e.g., TeX Live) with `pdflatex` and `bibtex`:
-
-```bash
-cd main
-pdflatex main.tex
-bibtex main
-pdflatex main.tex
-pdflatex main.tex
-cd ../SI
-pdflatex SI.tex
-bibtex SI
-pdflatex SI.tex
-pdflatex SI.tex
-```
-
-Or use `latexmk` for automatic recompilation:
+To compile the manuscript locally, use `latexmk`:
 
 ```bash
 cd main && latexmk -pdf main.tex
