@@ -42,13 +42,15 @@ S15. Data and code availability
 % =========================================================
 \section*{S1. Data, recruitment, and ethical approvals}
 
-Participants were recruited via Sweden’s national digital mailbox service (\emph{Mina meddelanden}), to which around 85\% of the adult population is connected \citep{digg_mina_meddelanden_2025w48,scb_befolk_manad_ckm_2025}. Invitations provided general information about a study on household consumption patterns and included a link to the baseline survey, followed by instructions for downloading the research app \emph{Konsumtionskollen}. Participants were not informed in advance that individual carbon footprints would be analysed, reducing the risk of priming or selection based on environmental concern. This procedure was covered by the approved consent and ethics protocol.
+Participants were recruited during Spring 2024 via Sweden's national digital mailbox service (\emph{Mina meddelanden}), to which around 85\% of the adult population is connected \citep{digg_mina_meddelanden_2025w48,scb_befolk_manad_ckm_2025}.
+Invitations provided general information about a study on household consumption patterns and included a link to the baseline survey, followed by instructions for downloading the research app (\emph{Konsumtionskollen}). Participants were not informed in advance that individual carbon footprints would be analysed, reducing the risk of priming or selection based on environmental concern. The recruitment, consent, and data-handling procedures were covered by an approved ethics protocol; ethical approval was granted by the Swedish Ethical Review Authority (Ref.\ 2024-01766-02).
 
-The sampling frame was drawn from Statistics Sweden population registers. Two parallel invitation streams were used. (i)~A \emph{random-sample frame} of approximately 80{,}000 individuals drawn to be broadly representative of the Swedish adult population. (ii)~A \emph{green oversample frame} of approximately 100{,}000 individuals drawn from electoral districts (\emph{valkretsar}) where the Green Party (Milj\"opartiet) received a substantially higher vote share than the national average. The two streams together comprise an invitation frame of approximately 180{,}000 individuals. Eligibility required a smartphone with eID (BankID), account linkage via a secure banking interface, and consent for survey participation and registry linkage.
+The sampling frame was drawn from Statistics Sweden population registers using two parallel invitation streams. (i)~A \emph{random-sample frame} of
+approximately 80{,}000 individuals, drawn to be broadly representative of the Swedish single-adult household population. (ii)~A \emph{green oversample frame} of approximately 100{,}000 individuals, drawn from electoral districts (\emph{valkretsar}) in which the Green Party (Milj\"opartiet) received a substantially higher vote share than the national average. Together the two streams comprise an invitation frame of approximately 180{,}000 individuals. Eligibility required a smartphone with eID (BankID), account linkage via a secure banking interface, and consent for survey participation and registry linkage.
 
-The green oversample was recruited using the same procedure and eligibility criteria as the random sample but is non-random by design. It is used exclusively as a secondary verification test for the main results (Section~S13) and is not included in the primary analytical sample. All demographic benchmarks reported below refer to the random-sample frame ($N\approx 80{,}000$).
+The green oversample was recruited using the same procedure and eligibility criteria as the random sample but is non-random by design. It is not part of the primary analytical sample; it serves only as an independent verification sample for the main results (Section~S13). All demographic benchmarks reported below therefore refer to the random-sample frame.
 
-The final analytical sample contains 1{,}311 single-adult households drawn from the random-sample frame (approximately 1.6\% of the 80{,}000 invitees in that stream). Ethical approval was granted by the Swedish Ethical Review Authority (Ref. 2024-01766-02).
+Of the approximately 80{,}000 individuals invited in the random-sample stream, 2{,}347 installed the app, linked at least one bank account, and consented to registry linkage. Table~\ref{tab:sample_flow} summarises the data-quality filters subsequently applied to this group, yielding a final analytical sample of 1{,}311 single-adult households---approximately 1.6\% of the random-sample invitations.
 
 % =========================================================
 % S2
@@ -56,50 +58,53 @@ The final analytical sample contains 1{,}311 single-adult households drawn from 
 \section*{S2. Sample construction, data quality, and descriptive characteristics}
 
 \subsection*{S2.1 Sample construction and data-quality filters}
-Table~\ref{tab:sample_flow} reports the exported sample-flow diagnostics from the current run.
+Table~\ref{tab:sample_flow} summarises the sample flow from invitation to the final analytical sample. 
 
-\begin{table}[!htbp]
+\begin{table}[ht]
 \centering
-\small
-\caption{Sample-flow diagnostics from exported results (current run).}
+\caption{Sample flow for the random-sample stream.}
 \label{tab:sample_flow}
-\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{0.30\textwidth}rrX@{}}
+\begin{tabular}{@{}lrr@{}}
 \toprule
-\textbf{Filter} & \textbf{Excluded at step} & \textbf{N} & \textbf{Description} \\
+Stage & Excluded & Remaining \\
 \midrule
-valid\_aids\_adults & 352 & -- & Household with $>$1 adult \\
-valid\_aids\_consecutivemonths & 682 & -- & $<$12 consecutive qualifying months \\
-random\_sample & 2008 & -- & Not in random sample \\
-not\_unknown\_edu & 2 & -- & Unknown education level \\
-all\_aids & 0 & 1311 & Final analytical sample after all active filters \\
+Invited (random-sample frame)               &      & $\approx$80{,}000 \\
+Installed app, linked bank, and consented   &      & 2{,}347 \\
+\midrule
+\quad Multi-adult households                & 352  & 1{,}995 \\
+\quad $<$12 consecutive qualifying months   & 682  & 1{,}313 \\
+\quad Unknown education level               & 2    & 1{,}311 \\
+\midrule
+\textbf{Final analytical sample}            &      & \textbf{1{,}311} \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 
-\vspace{2mm}
-\begin{flushleft}
-\footnotesize
-\textit{Notes:} Filters are applied to the random sample only. A separate non-random ``green sample'' recruited from Green Party stronghold electoral districts is excluded from this pipeline and analysed independently in Section~S13.
-\end{flushleft}
+\smallskip
+{\footnotesize\raggedright
+\textit{Notes:} The final analytical sample is $\approx$1.6\% of the
+$\approx$80{,}000 random-sample invitations (2{,}347/80{,}000 $\approx$ 2.9\% installed the app, linked a bank account, and consented). The green oversample frame ($\approx$100{,}000 invited) yielded 2{,}008 valid app linkages and, after the identical filtering, the $N=1{,}909$ replication sample analysed in Section~S13.\par}
 \end{table}
 
 \subsection*{S2.2 Descriptive characteristics of the analytical sample}
 
 \begin{table}[!htbp]
-\centering
-\small
-\caption{Continuous descriptive statistics from exported Table 1.}
+\centering \small
+\caption{Continuous descriptive statistics for the analytical sample ($N=1{,}311$).}
 \label{tab:desc_cont}
 \begin{tabular}{lrrr}
 \toprule
 \textbf{Variable} & \textbf{Mean} & \textbf{SD} & \textbf{Median} \\
 \midrule
-Monthly CO$_2$e (kg) & 447.66 & 342.86 & 387.00 \\
-Monthly spending (SEK) & 29{,}045.71 & 17{,}810.06 & 26{,}634.58 \\
-Monthly income (SEK, SCB selected months) & 34{,}795.98 & 19{,}800.65 & 33{,}515.13 \\
-ESI score (z-standardized) & 0.00 & 1.00 & 0.03 \\
-N months & 12.00 & 0.00 & 12.00 \\
+Monthly CO$_2$e (kg)            & 448     & 343     & 387 \\
+Monthly spending (SEK)          & 29{,}046 & 17{,}810 & 26{,}635 \\
+Monthly disposable income (SEK) & 34{,}796 & 19{,}801 & 33{,}515 \\
+ESI score ($z$)                 & 0.00    & 1.00    & 0.03 \\
 \bottomrule
 \end{tabular}
+\smallskip
+
+{\footnotesize\raggedright
+\textit{Notes:} Households are observed for exactly 12 consecutive months by construction. ESI is $z$-standardised within the sample, so its mean and SD are 0 and 1 by construction.\par}
 \end{table}
 
 \begin{table}[!htbp]
@@ -125,32 +130,35 @@ No meat & 177 & 13.6 \\
 \end{table}
 
 \subsection*{S2.3 Benchmarking and external validity}
-
-Table~\ref{tab:benchmarking} compares the analytical sample with the random-sample frame ($N\approx 80{,}000$) for the demographics available in the registry extract, and reports a small set of interpretive external indicators for context. The comparisons are descriptive only and not used for identification.
+Table~\ref{tab:benchmarking} compares the analytical sample with the
+random-sample frame ($N\approx 80{,}000$) on the demographics available in the registry extract. Because the random-sample frame is itself drawn to be broadly representative of the Swedish adult population aged 18--65 (Section~S1), the deviations in Table~\ref{tab:benchmarking} approximate deviations of the analytical sample from the national adult population on these dimensions. The comparisons are descriptive only and are not used for identification.
 
 \begin{table}[!htbp]
 \centering
 \footnotesize
-\renewcommand{\arraystretch}{1.10}
-\caption{Analytical sample vs random-sample frame ($N\approx 80{,}000$). The green oversample frame ($\approx$100{,}000) is excluded from frame benchmarks (see Section~S1).}
+\caption{Analytical sample vs.\ random-sample frame ($N\approx 80{,}000$). The
+green oversample frame ($\approx$100{,}000) is excluded from frame benchmarks
+(see Section~S1).}
 \label{tab:benchmarking}
-\resizebox{\textwidth}{!}{%
-\begin{tabular}{@{}lrrrrrrrr@{}}
+\begin{tabular}{lcccccccc}
 \toprule
- & \textbf{Female} & \textbf{Age 18--29} & \textbf{Age 30--44} & \textbf{Age 45--65} & \textbf{Major city} & \textbf{No car} & \textbf{Post-sec.\ $\geq$2y} & \textbf{Income} \\
- & (\%) & (\%) & (\%) & (\%) & (\%) & (\%) & (\%) & (SEK/mo) \\
+ & Female & \multicolumn{3}{c}{Age (\%)} & Major city & No car & Post-sec.\ $\geq$2y & Income \\
+\cmidrule(lr){3-5}
+ & (\%) & 18--29 & 30--44 & 45--65 & (\%) & (\%) & (\%) & (SEK/mo) \\
 \midrule
-Analytical sample & 55.8 & 27.9 & 40.8 & 29.6 & 21.1 & 56.3 & 54.6 & 34{,}796 \\
-Random-sample frame & 47.0 & 27.7 & 34.7 & 37.6 & 16.2 & 53.7 & n/a & n/a \\
+Analytical sample   & 55.8 & 27.9 & 40.8 & 29.6 & 21.1 & 56.3 & 54.6 & 34{,}796 \\
+Random-sample frame & 47.0 & 27.7 & 34.7 & 37.6 & 16.2 & 53.7 & n/a  & n/a \\
 \bottomrule
-\end{tabular}%
-}
+\end{tabular}
 
-\vspace{2mm}
-\begin{flushleft}
-\footnotesize
-\textit{Notes:} Frame benchmarks are computed from the random-sample frame cross-classification reported in Table~\ref{tab:ipw_cells}. The frame is restricted to ages 18--65 by design; analytical-sample respondents aged 65+ (1.7\%) are not benchmarked. The no-car frame value is reported as the complement of the registry $\geq$1-car ownership rate (46.3\%). Education and income are not in the frame extract. Single-adult household share is 100\% by construction.
-\end{flushleft}
+\smallskip
+{\footnotesize\raggedright
+\textit{Notes:} Frame benchmarks are computed from the random-sample frame
+cross-classification reported in Table~\ref{tab:ipw_cells}. The frame is
+restricted to ages 18--65 by design; analytical-sample respondents aged 65+
+(1.7\%) are not benchmarked. The no-car frame value is the complement of the
+registry $\geq$1-car ownership rate (46.3\%). Education and income are not in
+the frame extract. Single-adult household share is 100\% by construction.\par}
 \end{table}
 
 % =========================================================
@@ -253,7 +261,7 @@ The lifestyle indicators retain adequate within-sample variation for estimating 
 
 The baseline analysis requires that uncategorized spending make up at most 10\% of total spending over the 12-month observation window. For each participant, we compute the rolling 12-month uncategorized share and select the \emph{most recent} 12-month window in which the share is at or below the 10\% threshold for the entire window. Each participant is therefore aligned to their latest high-quality 12-month period rather than to a fixed calendar window. Figure~\ref{fig:threshold_sensitivity} reports total and indirect lifestyle coefficients at thresholds of 5\%, 10\% (baseline), 15\%, and 20\%. Total effects are directionally stable across thresholds.
 
-The slight non-monotonicity in sample size (e.g., 15\% yielding a slightly lower $N$ than 10\%) reflects downstream merging with complete covariates after threshold-specific month selection; threshold changes can shift the selected 12-month window and therefore whether all regression inputs are simultaneously available.
+Sample size does not increase strictly as the threshold is loosened (e.g. the 15\% sample is marginally smaller than the 10\% sample). Changing the threshold can change which 12-month window is selected for a given participant, which in turn affects whether that participant has complete data on every control variable; participants missing any control are dropped, so a looser threshold does not always yield more usable observations.
 
 \begin{figure}[!htbp]
 \centering
@@ -263,8 +271,7 @@ The slight non-monotonicity in sample size (e.g., 15\% yielding a slightly lower
 \end{figure}
 
 \subsection*{S6.3 Alternative diet-group definitions}
-
-The vegan-only subgroup of the larger non-meat group shows particularly large and statistically significant differences in both direct and indirect emissions (Fig.~\ref{fig:diet_definitions}). Two factors should be kept in mind when interpreting this estimate. First, the subgroup is small ($n=21$), which inflates statistical uncertainty for any noisy outcome. Second, the diet survey records vegan status from a single question with no follow-up items on dairy or other animal products; consequently the within-group variation in food spending---and hence in the direct component---is mechanically narrow. The result is a small standard error on the direct effect that should not be over-interpreted as unusually precise identification. The indirect estimate is wider and should be read as a directional rather than precise quantity. The pattern is nonetheless consistent with prior targeted evidence on a larger sample of vegan households in Sweden \citep{AnderssonNassen2023}.
+Because "non-meat" pools several distinct diets, we test the sensitivity of the main result to how the group is defined, including a vegan-only subgroup (Fig. 3). The vegan-only subgroup of the larger non-meat group shows particularly large and statistically significant differences in both direct and indirect emissions (Fig.~\ref{fig:diet_definitions}). Two factors should be kept in mind when interpreting this estimate. First, the subgroup is small ($n=21$), which inflates statistical uncertainty for any noisy outcome. Second, the diet survey records vegan status from a single question with no follow-up items on dairy or other animal products; consequently the within-group variation in food emissions---and hence in the direct component---is mechanically narrow. The result is a small standard error on the direct effect that should not be over-interpreted as unusually precise identification. The indirect estimate is wider and should be read as a directional rather than precise quantity. The pattern is nonetheless consistent with prior targeted evidence on a larger sample of vegan households in Sweden \citep{AnderssonNassen2023}.
 
 \begin{figure}[!htbp]
 \centering
@@ -421,7 +428,7 @@ No meat & $-$1{,}185 & 0.0148 & $-$18 & $-$87 & $-$70 \\
 % =========================================================
 \section*{S10. Inverse-probability weighting robustness check}
 
-We report two complementary inverse-probability weighting (IPW) checks. The first re-weights for selection on observables \emph{into} lifestyle groups (treatment IPW). The second re-weights for selection \emph{into the analytical sample} from the invited population frame (sampling IPW), addressing concerns that environmentally oriented or otherwise non-representative individuals may be over-represented among consenting participants.
+We report two complementary inverse-probability weighting (IPW) checks. IPW reweights the sample so that under-represented groups count for more and over-represented groups for less, approximating the estimate that would be obtained from a more balanced or representative sample. The first re-weights for selection on observed characteristics (observables) \emph{into} lifestyle groups (treatment IPW). The second re-weights for selection \emph{into the analytical sample} from the invited population frame (sampling IPW), addressing concerns that environmentally oriented or otherwise non-representative individuals may be over-represented among consenting participants.
 
 \paragraph{Treatment IPW.}
 Propensity scores are estimated via logistic regression of each lifestyle indicator on the full set of control variables. Figure~\ref{fig:robustness_comparison} compares IPW-weighted and green-sample (Section~S13) total-outcome coefficients alongside the unweighted baseline. The core findings are robust: large, significant lifestyle main effects for no-car and no-flying households, with magnitudes comparable to the unweighted estimates. The non-meat total effect is also significantly negative under both unweighted and IPW estimation. ESI~$\times$~lifestyle interactions on total emissions are non-significant in all cases, consistent with the baseline models.
@@ -497,11 +504,11 @@ Three-way interactions test whether ESI moderation varies systematically across 
 \begin{table}[!htbp]
 \centering
 \small
-\caption{Three-way interaction terms: lifestyle $\times$ ESI $\times$ income quartile (total emissions model).}
+\caption{Three-way interaction terms: lifestyle $\times$ ESI $\times$ income quartile (total emissions model). \textit{Estimate} is the coefficient on the three-way interaction term, in kg CO$_2$e per person-year; $p$ from HC3-robust standard errors.}
 \label{tab:income_sensitivity}
 \begin{tabular}{llrr}
 \toprule
-\textbf{Lifestyle} & \textbf{Term} & \textbf{Estimate} & \textbf{$p$} \\
+\textbf{Lifestyle} & \textbf{Term} & \textbf{Estimate (kg CO$_2$e/year)} & \textbf{$p$} \\
 \midrule
 No car & ESI $\times$ No car $\times$ Q2 & $+$250.17 & 0.463 \\
 No car & ESI $\times$ No car $\times$ Q3 & $+$360.68 & 0.385 \\
@@ -525,7 +532,7 @@ Car-free living may reflect structural constraints (e.g., limited parking, good 
 \begin{table}[!htbp]
 \centering
 \small
-\caption{Three-way interaction terms: lifestyle $\times$ ESI $\times$ major city (total emissions model).}
+\caption{Three-way interaction terms: lifestyle $\times$ ESI $\times$ major city (total emissions model). \textit{Estimate} is the coefficient on the three-way interaction term, in kg CO$_2$e per person-year; $p$ from HC3-robust standard errors.}
 \label{tab:urban_sensitivity}
 \begin{tabular}{llrr}
 \toprule
@@ -551,7 +558,7 @@ No three-way term is statistically significant, indicating that the ESI moderati
 % =========================================================
 \section*{S12. Composition of indirect differences across broad consumption domains}
 
-The category-level decomposition (Figure~\ref{fig:cat_decomp}) shows where indirect emission differences come from across non-focal consumption domains, and how these patterns differ by environmental self-identity (ESI). For each lifestyle contrast, the focal domain is excluded (car \& public transport for car-free, aviation \& long-distance travel for non-flying, food for non-meat households), and category-level estimates are evaluated at $+1$~SD (high ESI) and $-1$~SD (low ESI).
+The category-level decomposition (Figure~\ref{fig:cat_decomp}) shows where indirect emission differences come from across non-focal consumption domains, and how these patterns differ by environmental self-identity (ESI). For each lifestyle contrast, the focal domain is excluded (car \& public transport for car-free, aviation for non-flying, food for non-meat households), and category-level estimates are evaluated at $+1$~SD (high ESI) and $-1$~SD (low ESI).
 
 Two regularities stand out. First, at high ESI the indirect reductions are broadly distributed: many non-focal domains contribute small to moderate negative differences, with no single category accounting for the bulk of the effect. This pattern is consistent with general consumption restraint among environmentally identified adopters, and it is most pronounced in the categories that are themselves emission-intensive (food, vacation \& long-distance travel, other products). Second, at low ESI the residual differences concentrate in specific substitution channels that are intuitively linked to the foregone behaviour: car-free low-ESI households show a clear positive estimate in aviation \& long-distance travel ($+$0.23~tCO$_2$e), suggesting substitution toward flying; non-flying low-ESI households show a positive estimate in car \& public transport ($+$0.27); and non-meat low-ESI households show a positive estimate in other products ($+$0.37) and a smaller positive estimate in car \& public transport ($+$0.22).
 
