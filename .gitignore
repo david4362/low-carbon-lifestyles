@@ -45,3 +45,6 @@ default_filter.RData
 output/
 output_test/
 results/
+
+# Temporary analysis scripts
+scratch/

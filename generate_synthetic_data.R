@@ -388,29 +388,26 @@ cat("  Creating transactions (with all categories)...\n")
 # Lifestyle indicators
 no_car <- n_cars == 0
 no_flying <- runif(N_USERS) < 0.15
+if (all(no_flying)) no_flying[1] <- FALSE  # guarantee >=1 flyer => aviation always present
 no_meat <- diets != "mixed"
 
 # Get category parameters
 cat_params <- get_category_params()
 emission_intensities <- get_emission_intensities()
 
-# Flatten all categories into a single list with their base weights
-all_cats <- character(0)
-
-for (broad in names(cat_params)) {
-  all_cats <- c(all_cats, names(cat_params[[broad]]))
-}
-
-# Build user-specific weight matrices with lifestyle adjustments
-# Start with base weights - extract properly
+# Flatten the nested params into one named base-weight vector. unlist() prefixes
+# names with the broad category ("Car_Public.fuel"), so strip that to recover the
+# transaction-level category name. ("sports" is listed under two broad
+# categories; keep the first definition so the names stay unique.)
 base_weights_vec <- unlist(cat_params, recursive = TRUE)
-user_weights <- matrix(0, nrow = N_USERS, ncol = length(all_cats))
-colnames(user_weights) <- all_cats
+names(base_weights_vec) <- sub(".*\\.", "", names(base_weights_vec))
+base_weights_vec <- base_weights_vec[!duplicated(names(base_weights_vec))]
+all_cats <- names(base_weights_vec)
 
-# Fill in base weights
-for (j in seq_along(all_cats)) {
-  user_weights[, j] <- base_weights_vec[all_cats[j]]
-}
+# Build user-specific weight matrix (one column per category), then apply the
+# lifestyle adjustments below.
+user_weights <- matrix(rep(base_weights_vec, each = N_USERS),
+                       nrow = N_USERS, dimnames = list(NULL, all_cats))
 
 # Apply lifestyle adjustments
 # no_car: reduce car-related spending, increase public transport
@@ -421,8 +418,9 @@ user_weights[, "vehicles"] <- ifelse(no_car, 0.002, user_weights[, "vehicles"])
 user_weights[, "public_trans"] <- ifelse(no_car, 0.020, user_weights[, "public_trans"])
 user_weights[, "taxi"] <- ifelse(no_car, 0.008, user_weights[, "taxi"])
 
-# no_flying: reduce aviation to near zero
-user_weights[, "aviation"] <- ifelse(no_flying, 0.001, user_weights[, "aviation"])
+# no_flying: zero aviation (the analysis flags no_flying as *exactly* zero
+# aviation emissions); the kr override below also enforces this on the output.
+user_weights[, "aviation"] <- ifelse(no_flying, 0, user_weights[, "aviation"])
 user_weights[, "ferry"] <- ifelse(no_flying, 0.006, user_weights[, "ferry"])
 user_weights[, "travel"] <- ifelse(no_flying, 0.010, user_weights[, "travel"])
 
@@ -461,10 +459,14 @@ for (cat_name in all_cats) {
   # Calculate spending with variation
   kr_vals <- monthly_total * user_wts * runif(n_rows, 0.7, 1.3)
   
-  # Special handling: non-flyers should have minimal aviation spending
+  # Aviation defines the no_flying lifestyle, which the analysis treats as
+  # *exactly zero* aviation emissions. Force designated non-flyers to zero, and
+  # guarantee flyers a positive amount, so the synthetic data always contains
+  # some aviation transactions and no_flying stays a meaningful (~15%) group.
   if (cat_name == "aviation") {
-    no_flying_expanded <- rep(no_flying, each = N_MONTHS)
-    kr_vals[no_flying_expanded] <- kr_vals[no_flying_expanded] * 0.1  # Keep 10% as error/misc
+    flyer <- rep(!no_flying, each = N_MONTHS)
+    kr_vals[!flyer] <- 0
+    kr_vals[flyer]  <- pmax(kr_vals[flyer], monthly_total[flyer] * 0.005)
   }
   
   # Non-car owners: minimal fuel/car spending
@@ -526,12 +528,13 @@ sampling_frame <- tibble(
 
 # --- Save -------------------------------------------------------------------
 
-cat("\nSaving to default_filter.RData...\n")
+OUTPUT_FILE <- if (exists("OUTPUT_FILE")) OUTPUT_FILE else "default_filter.RData"
+cat(sprintf("\nSaving to %s...\n", OUTPUT_FILE))
 
 save(transactions, survey, users, monthly_incomes, sampling_frame,
-     file = "default_filter.RData")
+     file = OUTPUT_FILE)
 
-cat(sprintf("Done! File size: %.1f MB\n", file.info("default_filter.RData")$size / 1024^2))
+cat(sprintf("Done! File size: %.1f MB\n", file.info(OUTPUT_FILE)$size / 1024^2))
 cat("\nObjects created:\n")
 cat(sprintf("  transactions: %d x %d\n", nrow(transactions), ncol(transactions)))
 cat(sprintf("  users: %d x %d\n", nrow(users), ncol(users)))

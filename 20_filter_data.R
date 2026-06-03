@@ -84,6 +84,10 @@ if (skip_filter_recompute) {
     filter(category != "da_credit_.kr") |>
     fgroup_by(aid, date, category) |>
     fsummarise(kr = fsum(kr, na.rm = TRUE)) |>
+    # collapse >= 2 returns NA (not 0) for an all-missing group; an absent
+    # category in a month means zero spend, so coalesce back to 0 to match the
+    # historical behaviour relied on by the month-selection sums below.
+    mutate(kr = coalesce(kr, 0)) |>
     left_join(broad_cat_kr, by = "category")
 
   monthly_emissions <- selected_transactions |>
@@ -96,6 +100,7 @@ if (skip_filter_recompute) {
     ) |>
     fgroup_by(aid, date, category) |>
     fsummarise(co2e = fsum(co2e, na.rm = TRUE)) |>
+    mutate(co2e = coalesce(co2e, 0)) |>   # all-missing group -> 0 (see monthly_spending)
     left_join(broad_cat, by = "category")
 
   # --- Selected months: rolling 12-month uncat-share window ---------------
@@ -103,8 +108,8 @@ if (skip_filter_recompute) {
     arrange(aid, date) |>
     group_by(aid, date) |>
     summarise(
-      uncat_kr = sum(kr[category == "uncategorized.kr"]),
-      total_kr = sum(kr[!(category %in% non_cost_categories)]),
+      uncat_kr = sum(kr[category == "uncategorized.kr"], na.rm = TRUE),
+      total_kr = sum(kr[!(category %in% non_cost_categories)], na.rm = TRUE),
       .groups  = "drop"
     ) |>
     group_by(aid,
