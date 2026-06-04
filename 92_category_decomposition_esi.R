@@ -117,32 +117,13 @@ plot_data$category_label <- factor(plot_data$category_label, levels = cat_order)
 plot_data$lifestyle_label <- factor(plot_data$lifestyle_label,
                                      levels = c("Car-free", "Flight-free", "Meat-free"))
 
-plot_data <- plot_data |>
-  mutate(esi_label = factor(
-    ifelse(esi_level == "High ESI (+1 SD)", "High ESI (+1 SD)", "Low ESI (\u22121 SD)"),
-    levels = c("High ESI (+1 SD)", "Low ESI (\u22121 SD)")
-  ))
-
-# Per-lifestyle × ESI fill colors (dark = High, light = Low)
-.colours_cat <- c(
-  "Car-free"    = c("High ESI (+1 SD)" = "#2255AA", "Low ESI (\u22121 SD)" = "#99BBDD"),
-  "Flight-free" = c("High ESI (+1 SD)" = "#CC3344", "Low ESI (\u22121 SD)" = "#F7AABB"),
-  "Meat-free"   = c("High ESI (+1 SD)" = "#115522", "Low ESI (\u22121 SD)" = "#88BB99")
-)
-# Flatten to named vector keyed by "Lifestyle High/Low ESI (±1 SD)"
-fill_values <- c(
-  "Car-free High ESI (+1 SD)"       = "#2255AA",
-  "Car-free Low ESI (\u22121 SD)"    = "#99BBDD",
-  "Flight-free High ESI (+1 SD)"    = "#CC3344",
-  "Flight-free Low ESI (\u22121 SD)" = "#F7AABB",
-  "Meat-free High ESI (+1 SD)"      = "#115522",
-  "Meat-free Low ESI (\u22121 SD)"   = "#88BB99"
-)
-plot_data <- plot_data |>
-  mutate(fill_key = paste(as.character(lifestyle_label), as.character(esi_level)))
+# Lifestyle colors (full saturation; alpha encodes ESI level)
+.colours_lifestyle_cat <- c("Car-free" = "#4477AA", "Flight-free" = "#EE6677", "Meat-free" = "#228833")
 
 # --- Plot ---
-p <- ggplot(plot_data, aes(x = category_label, y = estimate_t, fill = fill_key)) +
+# fill = lifestyle color, alpha = ESI level → simple 5-entry legend (3 colors + 2 alphas)
+p <- ggplot(plot_data, aes(x = category_label, y = estimate_t,
+                            fill = lifestyle_label, alpha = esi_level)) +
   geom_col(position = position_dodge(width = 0.7), width = 0.6) +
   geom_hline(yintercept = 0, linewidth = 0.4, colour = "grey20") +
   facet_wrap(~ lifestyle_label, nrow = 1, scales = "fixed") +
@@ -151,21 +132,13 @@ p <- ggplot(plot_data, aes(x = category_label, y = estimate_t, fill = fill_key))
     breaks = seq(-0.4, 0.4, 0.2),
     labels = function(x) sprintf("%.1f", x)
   ) +
-  scale_fill_manual(
-    values = fill_values,
-    # Show all 6 entries in 3 columns (one per lifestyle) so legend is self-explaining
-    breaks = c(
-      "Car-free High ESI (+1 SD)",    "Car-free Low ESI (\u22121 SD)",
-      "Flight-free High ESI (+1 SD)", "Flight-free Low ESI (\u22121 SD)",
-      "Meat-free High ESI (+1 SD)",   "Meat-free Low ESI (\u22121 SD)"
-    ),
-    labels = c(
-      "Car-free \u2022 High ESI",    "Car-free \u2022 Low ESI",
-      "Flight-free \u2022 High ESI", "Flight-free \u2022 Low ESI",
-      "Meat-free \u2022 High ESI",   "Meat-free \u2022 Low ESI"
-    ),
+  scale_fill_manual(values = .colours_lifestyle_cat, name = NULL,
+                    guide = guide_legend(order = 1)) +
+  scale_alpha_manual(
+    values = c("High ESI (+1 SD)" = 1.0, "Low ESI (\u22121 SD)" = 0.45),
     name = NULL,
-    guide = guide_legend(ncol = 3)
+    guide = guide_legend(order = 2,
+                         override.aes = list(fill = "grey30"))
   ) +
   labs(
     title = "High-ESI spillovers are broad-based across the household budget",
