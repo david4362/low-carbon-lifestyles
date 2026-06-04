@@ -147,23 +147,31 @@ p <- ggplot(plot_data, aes(x = category_label, y = estimate_t, fill = fill_key))
   geom_hline(yintercept = 0, linewidth = 0.4, colour = "grey20") +
   facet_wrap(~ lifestyle_label, nrow = 1, scales = "fixed") +
   coord_flip() +
-  scale_y_reverse(
+  scale_y_continuous(
     breaks = seq(-0.4, 0.4, 0.2),
     labels = function(x) sprintf("%.1f", x)
   ) +
   scale_fill_manual(
     values = fill_values,
-    # Show only 2 legend entries (High / Low) using Car-free colors as reference
-    breaks = c("Car-free High ESI (+1 SD)", "Car-free Low ESI (\u22121 SD)"),
-    labels = c("High ESI (+1 SD)", "Low ESI (\u22121 SD)"),
+    # Show all 6 entries in 3 columns (one per lifestyle) so legend is self-explaining
+    breaks = c(
+      "Car-free High ESI (+1 SD)",    "Car-free Low ESI (\u22121 SD)",
+      "Flight-free High ESI (+1 SD)", "Flight-free Low ESI (\u22121 SD)",
+      "Meat-free High ESI (+1 SD)",   "Meat-free Low ESI (\u22121 SD)"
+    ),
+    labels = c(
+      "Car-free \u2022 High ESI",    "Car-free \u2022 Low ESI",
+      "Flight-free \u2022 High ESI", "Flight-free \u2022 Low ESI",
+      "Meat-free \u2022 High ESI",   "Meat-free \u2022 Low ESI"
+    ),
     name = NULL,
-    guide = guide_legend(ncol = 2)
+    guide = guide_legend(ncol = 3)
   ) +
   labs(
-    title = "High-ESI spillovers are broad-based\nacross the household budget",
-    subtitle = "Own-domain reductions are omitted so the scale reflects how\nre-spending spreads across the rest of the budget.",
+    title = "High-ESI spillovers are broad-based across the household budget",
+    subtitle = "Own-domain reductions are omitted; bars show how re-spending shifts emissions elsewhere.",
     x = NULL,
-    y = expression("Reduction in emissions (tCO"[2]*"e per person-year)   \u2192")
+    y = expression("Difference in emissions (tCO"[2]*"e per person-year)")
   ) +
   theme_minimal(base_size = 11) +
   theme(
