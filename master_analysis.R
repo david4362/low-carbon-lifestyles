@@ -134,6 +134,8 @@ cat("--- [5/7] Running category regressions ---\n")
 source_R("50_regressions.R")         # writes category regression co2e/kr.csv
 cat("--- [6/7] Creating waterfall plot ---\n")
 output <- output_dir; source_R("60_waterfall.R")
+cat("--- [6b/7] Creating vertical waterfall plots ---\n")
+output <- output_dir; source_R("61_waterfall_vertical.R")
 cat("--- [7/7] Creating S7 plots ---\n")
 output <- output_dir; source_R("70_S7.R")
 output <- output_dir
