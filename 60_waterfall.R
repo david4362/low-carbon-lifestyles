@@ -211,7 +211,8 @@ plot_data <- plot_data |> mutate(
                                        "average"  ~ 1.5,
                                        "high_esi" ~ 1.0,
                                        "low_esi"  ~ 0.65)
-)
+) |>
+  mutate(color_group = paste(as.character(category), label))
 
 # ---- CSV exports -------------------------------------------------------
 write.csv(stage_components, file.path(output, "waterfall_stage_components.csv"), row.names = FALSE)
@@ -233,9 +234,12 @@ write.csv(
 .linetypes_main <- c("Direct effect" = "solid",
                      "Indirect effect" = "dotted",
                      "Re-spending benchmark" = "solid")
-.colours_esi    <- c("High ESI" = "#333333",
-                     "Average"  = "#808080",
-                     "Low ESI"  = "#cccccc")
+.colours_lifestyle <- c("Car-free" = "#4477AA", "Flight-free" = "#EE6677", "Meat-free" = "#228833")
+.colours_esi_combined <- c(
+  "Car-free High ESI"     = "#2255AA", "Car-free Average"     = "#4477AA", "Car-free Low ESI"     = "#99BBDD",
+  "Flight-free High ESI"  = "#CC3344", "Flight-free Average"  = "#EE6677", "Flight-free Low ESI"  = "#F7AABB",
+  "Meat-free High ESI"    = "#115522", "Meat-free Average"    = "#228833", "Meat-free Low ESI"    = "#88BB99"
+)
 .theme_wf <- function(strip_size = 11, x_size = 11) theme_minimal() + theme(
   strip.background = element_rect(fill = "#f5f5f5", color = NA),
   panel.background = element_rect(fill = "#f5f5f5", color = NA),
@@ -275,20 +279,20 @@ p <- ggplot(plot_data) +
                color = "grey45", linewidth = 0.5, alpha = 0.8, na.rm = TRUE) +
   geom_segment(aes(x = baseline, xend = x_mid,
                    y = y_solid_adjusted, yend = y_solid_adjusted,
-                   color = label, linetype = "Direct effect"),
+                   color = color_group, linetype = "Direct effect"),
                linewidth = 1.1, alpha = 0.9) +
   geom_segment(aes(x = x_mid, xend = x_mid,
-                   y = y_solid_adjusted, yend = y_solid_adjusted + 0.13, color = label),
+                   y = y_solid_adjusted, yend = y_solid_adjusted + 0.13, color = color_group),
                linetype = "dotted", linewidth = 0.9, alpha = 0.7) +
   geom_segment(aes(x = x_mid, xend = arrow_start,
                    y = y_solid_adjusted + 0.13, yend = y_solid_adjusted + 0.13,
-                   color = label, linetype = "Indirect effect"),
+                   color = color_group, linetype = "Indirect effect"),
                linewidth = 0.85, alpha = 0.85) +
   geom_segment(aes(x = total_ci_low, xend = total_ci_high,
                    y = y_solid_adjusted + 0.13, yend = y_solid_adjusted + 0.13),
                color = "grey45", linewidth = 0.5, alpha = 0.8, na.rm = TRUE) +
   geom_segment(aes(x = arrow_start, xend = x_end,
-                   y = y_solid_adjusted + 0.13, yend = y_solid_adjusted + 0.13, color = label),
+                   y = y_solid_adjusted + 0.13, yend = y_solid_adjusted + 0.13, color = color_group),
                linetype = "solid", linewidth = 1,
                arrow = arrow(length = unit(0.2,"cm"), type = "closed"), alpha = 0.9) +
   geom_segment(aes(x = rebound_plot_x, xend = rebound_plot_x,
@@ -296,12 +300,11 @@ p <- ggplot(plot_data) +
                    linetype = "Re-spending benchmark"),
                color = "#CC79A7", linewidth = 1.4, na.rm = TRUE) +
   facet_grid(category ~ ., switch = "y") +
-  scale_color_manual(values = .colours_esi) +
+  scale_color_manual(values = .colours_esi_combined, guide = guide_legend(ncol = 3, title = NULL)) +
   scale_linetype_manual(values = .linetypes_main) +
   scale_y_continuous(limits = c(0.5, 1.85), expand = c(0,0)) +
-  scale_x_continuous(breaks = seq(0, 2.5, 0.5),
-                     labels = function(x) ifelse(x == 0, "0.0",
-                       paste0("\u2212", sprintf("%.1f", x)))) +
+  scale_x_reverse(breaks = seq(0, 2.5, 0.5),
+                  labels = function(x) ifelse(x == 0, "0.0", paste0("\u2212", sprintf("%.1f", x)))) +
   labs(x = expression("Emission differences (OLS model-estimated), CO"[2]*"e"),
        y = NULL, color = NULL, linetype = NULL,
        caption = paste("Thin gray whiskers: 95% confidence intervals.",
@@ -340,23 +343,24 @@ p_pres_main <- ggplot(pres_main) +
       geom_text(data = bl_labels, aes(x = 0, y = 1.5, label = label),
                 size = 3.2, color = "grey45", fontface = "italic", hjust = 0.5) } +
   geom_segment(aes(x = baseline, xend = x_mid, y = 1.2, yend = 1.2,
-                   linetype = "Direct effect"), color = "black", linewidth = 1.3) +
-  geom_segment(aes(x = x_mid, xend = x_mid, y = 1.2, yend = 1.35),
-               linetype = "dotted", linewidth = 0.9, color = "black") +
+                   color = category, linetype = "Direct effect"), linewidth = 1.3) +
+  geom_segment(aes(x = x_mid, xend = x_mid, y = 1.2, yend = 1.35, color = category),
+               linetype = "dotted", linewidth = 0.9) +
   geom_segment(aes(x = x_mid, xend = x_end, y = 1.35, yend = 1.35,
-                   linetype = "Indirect effect"), color = "black", linewidth = 1.1) +
-  geom_segment(aes(x = x_end, xend = x_end, y = 1.35 - 0.07, yend = 1.35 + 0.07),
-               color = "black", linewidth = 1.3) +
+                   color = category, linetype = "Indirect effect"), linewidth = 1.1) +
+  geom_segment(aes(x = x_end, xend = x_end, y = 1.35 - 0.07, yend = 1.35 + 0.07,
+                   color = category),
+               linewidth = 1.3) +
   geom_segment(aes(x = rebound_plot_x, xend = rebound_plot_x,
                    y = 1.2 - 0.07, yend = 1.2 + 0.07,
                    linetype = "Re-spending benchmark"),
                color = "#CC79A7", linewidth = 1.6, na.rm = TRUE) +
   facet_grid(category ~ ., switch = "y") +
+  scale_color_manual(values = .colours_lifestyle, guide = "none") +
   scale_linetype_manual(values = .linetypes_main) +
   scale_y_continuous(limits = c(1.0, 1.55), expand = c(0,0)) +
-  scale_x_continuous(breaks = seq(0, 2.5, 0.5),
-                     labels = function(x) ifelse(x == 0, "0.0",
-                       paste0("\u2212", sprintf("%.1f", x)))) +
+  scale_x_reverse(breaks = seq(0, 2.5, 0.5),
+                  labels = function(x) ifelse(x == 0, "0.0", paste0("\u2212", sprintf("%.1f", x)))) +
   labs(x = expression("Emission differences (tCO"[2]*"e/year)"),
        y = NULL, linetype = NULL) +
   guides(linetype = guide_legend(override.aes = list(
@@ -370,34 +374,41 @@ ggsave(file.path(output, "Waterfall_pres_main.png"), p_pres_main,
 pres_esi <- plot_data |>
   filter(scenario %in% c("high_esi","low_esi")) |>
   mutate(y_solid_p  = if_else(scenario == "high_esi", 1.3, 0.9),
-         y_dotted_p = if_else(scenario == "high_esi", 1.45, 1.05))
+         y_dotted_p = if_else(scenario == "high_esi", 1.45, 1.05)) |>
+  mutate(color_group = paste(as.character(category), label))
 
 p_pres_esi <- ggplot(pres_esi) +
   geom_vline(xintercept = 0, color = "#2c3e50", linewidth = 0.8) +
   geom_segment(aes(x = baseline, xend = x_mid,
-                   y = y_solid_p, yend = y_solid_p, color = label,
+                   y = y_solid_p, yend = y_solid_p, color = color_group,
                    linetype = "Direct effect"), linewidth = 1.3) +
   geom_segment(aes(x = x_mid, xend = x_mid,
-                   y = y_solid_p, yend = y_dotted_p, color = label),
+                   y = y_solid_p, yend = y_dotted_p, color = color_group),
                linetype = "dotted", linewidth = 0.9) +
   geom_segment(aes(x = x_mid, xend = arrow_start,
                    y = y_dotted_p, yend = y_dotted_p,
-                   color = label, linetype = "Indirect effect"), linewidth = 1.0) +
+                   color = color_group, linetype = "Indirect effect"), linewidth = 1.0) +
   geom_segment(aes(x = arrow_start, xend = x_end,
-                   y = y_dotted_p, yend = y_dotted_p, color = label),
+                   y = y_dotted_p, yend = y_dotted_p, color = color_group),
                linewidth = 1.2,
                arrow = arrow(length = unit(0.22,"cm"), type = "closed")) +
   facet_grid(category ~ ., switch = "y") +
-  scale_color_manual(values = c("High ESI" = "#333333","Low ESI" = "#999999")) +
+  scale_color_manual(
+    values = .colours_esi_combined[grep("High|Low", names(.colours_esi_combined))],
+    labels = c("Car-free High ESI", "Car-free Low ESI",
+               "Flight-free High ESI", "Flight-free Low ESI",
+               "Meat-free High ESI", "Meat-free Low ESI"),
+    guide = guide_legend(ncol = 2, title = NULL)
+  ) +
   scale_linetype_manual(values = c("Direct effect" = "solid","Indirect effect" = "dotted")) +
   scale_y_continuous(limits = c(0.7, 1.65), expand = c(0,0)) +
-  scale_x_continuous(breaks = seq(-0.5, 2.5, 0.5),
-                     labels = function(x) ifelse(x == 0, "0.0",
-                       ifelse(x > 0, paste0("\u2212", sprintf("%.1f", x)),
-                              paste0("+", sprintf("%.1f", abs(x)))))) +
+  scale_x_reverse(breaks = seq(-0.5, 2.5, 0.5),
+                  labels = function(x) ifelse(x == 0, "0.0",
+                    ifelse(x > 0, paste0("\u2212", sprintf("%.1f", x)),
+                           paste0("+", sprintf("%.1f", abs(x)))))) +
   labs(x = expression("Emission differences (tCO"[2]*"e/year)"),
        y = NULL, color = NULL, linetype = NULL) +
-  guides(color    = guide_legend(order = 1, override.aes = list(linewidth = 1.5, linetype = 1)),
+  guides(color    = guide_legend(order = 1, ncol = 2, override.aes = list(linewidth = 1.5, linetype = 1)),
          linetype = guide_legend(order = 2, override.aes = list(color = "gray30", linewidth = 1.2))) +
   .theme_wf(strip_size = 13)
 

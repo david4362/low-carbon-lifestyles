@@ -55,15 +55,15 @@ if (has_microdata) {
 
   # --- Fit 9 models and extract predictions with proper HC3 CIs ---
   model_specs <- list(
-    list(dv = "total",             lifestyle = "no_car",    label_ls = "Car",    label_out = "Total"),
-    list(dv = "direct_no_car",     lifestyle = "no_car",    label_ls = "Car",    label_out = "Direct"),
-    list(dv = "indirect_no_car",   lifestyle = "no_car",    label_ls = "Car",    label_out = "Indirect"),
-    list(dv = "total",             lifestyle = "no_flying", label_ls = "Flying", label_out = "Total"),
-    list(dv = "direct_no_flying",  lifestyle = "no_flying", label_ls = "Flying", label_out = "Direct"),
-    list(dv = "indirect_no_flying",lifestyle = "no_flying", label_ls = "Flying", label_out = "Indirect"),
-    list(dv = "total",             lifestyle = "no_meat",   label_ls = "Meat",   label_out = "Total"),
-    list(dv = "direct_no_meat",    lifestyle = "no_meat",   label_ls = "Meat",   label_out = "Direct"),
-    list(dv = "indirect_no_meat",  lifestyle = "no_meat",   label_ls = "Meat",   label_out = "Indirect")
+    list(dv = "total",             lifestyle = "no_car",    label_ls = "Car-free",    label_out = "Total"),
+    list(dv = "direct_no_car",     lifestyle = "no_car",    label_ls = "Car-free",    label_out = "Direct"),
+    list(dv = "indirect_no_car",   lifestyle = "no_car",    label_ls = "Car-free",    label_out = "Indirect"),
+    list(dv = "total",             lifestyle = "no_flying", label_ls = "Flight-free", label_out = "Total"),
+    list(dv = "direct_no_flying",  lifestyle = "no_flying", label_ls = "Flight-free", label_out = "Direct"),
+    list(dv = "indirect_no_flying",lifestyle = "no_flying", label_ls = "Flight-free", label_out = "Indirect"),
+    list(dv = "total",             lifestyle = "no_meat",   label_ls = "Meat-free",   label_out = "Total"),
+    list(dv = "direct_no_meat",    lifestyle = "no_meat",   label_ls = "Meat-free",   label_out = "Direct"),
+    list(dv = "indirect_no_meat",  lifestyle = "no_meat",   label_ls = "Meat-free",   label_out = "Indirect")
   )
 
   esi_range <- seq(-2, 2, length.out = 100)
@@ -136,7 +136,7 @@ if (has_microdata) {
 }
 
 # Factor ordering
-pred_df$lifestyle <- factor(pred_df$lifestyle, levels = c("Car", "Flying", "Meat"))
+pred_df$lifestyle <- factor(pred_df$lifestyle, levels = c("Car-free", "Flight-free", "Meat-free"))
 pred_df$outcome   <- factor(pred_df$outcome,   levels = c("Total", "Direct", "Indirect"))
 pred_df$group     <- factor(pred_df$group,     levels = c("Low-carbon lifestyle adopter", "Non-adopter"))
 
@@ -145,8 +145,8 @@ p <- ggplot(pred_df, aes(x = esi, y = pred_t, colour = group, fill = group)) +
   geom_ribbon(aes(ymin = ci_lo_t, ymax = ci_hi_t), alpha = 0.15, colour = NA) +
   geom_line(linewidth = 0.8) +
   facet_grid(outcome ~ lifestyle, scales = "free_y") +
-  scale_colour_manual(values = c("Low-carbon lifestyle adopter" = "#E07B39", "Non-adopter" = "#4C72B0"), name = NULL) +
-  scale_fill_manual(values = c("Low-carbon lifestyle adopter" = "#E07B39", "Non-adopter" = "#4C72B0"), name = NULL) +
+  scale_colour_manual(values = c("Low-carbon lifestyle adopter" = "#4477AA", "Non-adopter" = "#888888"), name = NULL) +
+  scale_fill_manual(values = c("Low-carbon lifestyle adopter" = "#4477AA", "Non-adopter" = "#888888"), name = NULL) +
   labs(
     x = "Environmental self-identity (standardised)",
     y = expression("Predicted CO"[2]*"e emissions (tCO"[2]*"e/year)")

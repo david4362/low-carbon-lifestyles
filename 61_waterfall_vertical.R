@@ -12,6 +12,8 @@ suppressPackageStartupMessages({
   library(ggplot2); library(dplyr); library(tidyr); library(stringr)
 })
 
+if (!exists(".colours_lifestyle")) .colours_lifestyle <- c("Car-free" = "#4477AA", "Flight-free" = "#EE6677", "Meat-free" = "#228833")
+
 # ---- Read waterfall stage components ----------------------------------------
 stage_data <- read.csv(file.path(output, "waterfall_stage_components.csv"))
 
@@ -59,8 +61,9 @@ plot_data <- stage_data |>
 # ---- Vertical main effects plot (Average only) -----------------------------------
 p_vert_main <- plot_data |>
   filter(scenario == "average") |>
-  ggplot(aes(x = category, y = total)) +
-  geom_col(fill = "#2c3e50", width = 0.6, alpha = 0.8) +
+  ggplot(aes(x = category, y = total, fill = category)) +
+  geom_col(width = 0.6, alpha = 0.8) +
+  scale_fill_manual(values = .colours_lifestyle, guide = "none") +
   geom_hline(yintercept = 0, color = "#2c3e50", linewidth = 0.8) +
   scale_y_continuous(
     limits = c(-2.5, 0),
@@ -86,14 +89,23 @@ plot_esi_comp <- plot_data |>
   pivot_wider(names_from = scenario_label, values_from = total) |>
   pivot_longer(c("High ESI", "Low ESI"),
                names_to = "esi_level", values_to = "value") |>
-  mutate(esi_level = factor(esi_level, levels = c("High ESI", "Low ESI")))
+  mutate(
+    esi_level = factor(esi_level, levels = c("High ESI", "Low ESI")),
+    color_group = paste(as.character(category), esi_level)
+  )
 
-p_vert_esi <- ggplot(plot_esi_comp, aes(x = category, y = value, fill = esi_level)) +
+.colours_vert_esi <- c(
+  "Car-free High ESI"     = "#2255AA", "Car-free Low ESI"     = "#99BBDD",
+  "Flight-free High ESI"  = "#CC3344", "Flight-free Low ESI"  = "#F7AABB",
+  "Meat-free High ESI"    = "#115522", "Meat-free Low ESI"    = "#88BB99"
+)
+
+p_vert_esi <- ggplot(plot_esi_comp, aes(x = category, y = value, fill = color_group)) +
   geom_col(position = position_dodge(width = 0.7), width = 0.6, alpha = 0.8) +
   geom_hline(yintercept = 0, color = "#2c3e50", linewidth = 0.8) +
   scale_fill_manual(
-    values = c("High ESI" = "#333333", "Low ESI" = "#999999"),
-    name = NULL
+    values = .colours_vert_esi,
+    guide = guide_legend(ncol = 2, title = NULL)
   ) +
   scale_y_continuous(
     limits = c(-1.5, 0.5),
@@ -103,7 +115,7 @@ p_vert_esi <- ggplot(plot_esi_comp, aes(x = category, y = value, fill = esi_leve
   labs(
     x = "Lifestyle",
     y = expression("Emission differences (tCO"[2]*"e/year)"),
-    subtitle = "Reductions point downward; darker bars = higher environmental identity"
+    subtitle = "Reductions point downward; per-lifestyle colors, dark = High ESI, light = Low ESI"
   ) +
   .theme_vertical() +
   theme(legend.position = "top")

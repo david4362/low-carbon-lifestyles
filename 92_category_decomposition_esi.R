@@ -117,15 +117,26 @@ plot_data$category_label <- factor(plot_data$category_label, levels = cat_order)
 plot_data$lifestyle_label <- factor(plot_data$lifestyle_label,
                                      levels = c("Car-free", "Flight-free", "Meat-free"))
 
+plot_data <- plot_data |>
+  mutate(fill_key = paste(as.character(lifestyle_label), as.character(esi_level)))
+
 # --- Plot ---
-p <- ggplot(plot_data, aes(x = category_label, y = estimate_t, fill = esi_level)) +
+p <- ggplot(plot_data, aes(x = category_label, y = estimate_t, fill = fill_key)) +
   geom_col(position = position_dodge(width = 0.7), width = 0.6) +
   geom_hline(yintercept = 0, linewidth = 0.3, colour = "grey30") +
   facet_wrap(~ lifestyle_label, ncol = 1, scales = "fixed") +
   coord_flip() +
   scale_fill_manual(
-    values = c("High ESI (+1 SD)" = "#333333", "Low ESI (\u22121 SD)" = "#999999"),
-    name = NULL
+    values = c(
+      "Car-free High ESI (+1 SD)"       = "#2255AA",
+      "Car-free Low ESI (\u22121 SD)"    = "#99BBDD",
+      "Flight-free High ESI (+1 SD)"    = "#CC3344",
+      "Flight-free Low ESI (\u22121 SD)" = "#F7AABB",
+      "Meat-free High ESI (+1 SD)"      = "#115522",
+      "Meat-free Low ESI (\u22121 SD)"   = "#88BB99"
+    ),
+    name = NULL,
+    guide = guide_legend(ncol = 2)
   ) +
   labs(
     x = NULL,
