@@ -118,42 +118,67 @@ plot_data$lifestyle_label <- factor(plot_data$lifestyle_label,
                                      levels = c("Car-free", "Flight-free", "Meat-free"))
 
 plot_data <- plot_data |>
+  mutate(esi_label = factor(
+    ifelse(esi_level == "High ESI (+1 SD)", "High ESI (+1 SD)", "Low ESI (\u22121 SD)"),
+    levels = c("High ESI (+1 SD)", "Low ESI (\u22121 SD)")
+  ))
+
+# Per-lifestyle × ESI fill colors (dark = High, light = Low)
+.colours_cat <- c(
+  "Car-free"    = c("High ESI (+1 SD)" = "#2255AA", "Low ESI (\u22121 SD)" = "#99BBDD"),
+  "Flight-free" = c("High ESI (+1 SD)" = "#CC3344", "Low ESI (\u22121 SD)" = "#F7AABB"),
+  "Meat-free"   = c("High ESI (+1 SD)" = "#115522", "Low ESI (\u22121 SD)" = "#88BB99")
+)
+# Flatten to named vector keyed by "Lifestyle High/Low ESI (±1 SD)"
+fill_values <- c(
+  "Car-free High ESI (+1 SD)"       = "#2255AA",
+  "Car-free Low ESI (\u22121 SD)"    = "#99BBDD",
+  "Flight-free High ESI (+1 SD)"    = "#CC3344",
+  "Flight-free Low ESI (\u22121 SD)" = "#F7AABB",
+  "Meat-free High ESI (+1 SD)"      = "#115522",
+  "Meat-free Low ESI (\u22121 SD)"   = "#88BB99"
+)
+plot_data <- plot_data |>
   mutate(fill_key = paste(as.character(lifestyle_label), as.character(esi_level)))
 
 # --- Plot ---
 p <- ggplot(plot_data, aes(x = category_label, y = estimate_t, fill = fill_key)) +
   geom_col(position = position_dodge(width = 0.7), width = 0.6) +
-  geom_hline(yintercept = 0, linewidth = 0.3, colour = "grey30") +
-  facet_wrap(~ lifestyle_label, ncol = 1, scales = "fixed") +
+  geom_hline(yintercept = 0, linewidth = 0.4, colour = "grey20") +
+  facet_wrap(~ lifestyle_label, nrow = 1, scales = "fixed") +
   coord_flip() +
+  scale_y_reverse(
+    breaks = seq(-0.4, 0.4, 0.2),
+    labels = function(x) sprintf("%.1f", x)
+  ) +
   scale_fill_manual(
-    values = c(
-      "Car-free High ESI (+1 SD)"       = "#2255AA",
-      "Car-free Low ESI (\u22121 SD)"    = "#99BBDD",
-      "Flight-free High ESI (+1 SD)"    = "#CC3344",
-      "Flight-free Low ESI (\u22121 SD)" = "#F7AABB",
-      "Meat-free High ESI (+1 SD)"      = "#115522",
-      "Meat-free Low ESI (\u22121 SD)"   = "#88BB99"
-    ),
+    values = fill_values,
+    # Show only 2 legend entries (High / Low) using Car-free colors as reference
+    breaks = c("Car-free High ESI (+1 SD)", "Car-free Low ESI (\u22121 SD)"),
+    labels = c("High ESI (+1 SD)", "Low ESI (\u22121 SD)"),
     name = NULL,
     guide = guide_legend(ncol = 2)
   ) +
   labs(
+    title = "High-ESI spillovers are broad-based\nacross the household budget",
+    subtitle = "Own-domain reductions are omitted so the scale reflects how\nre-spending spreads across the rest of the budget.",
     x = NULL,
-    y = expression("Emission difference (tCO"[2]*"e per person-year)")
+    y = expression("Reduction in emissions (tCO"[2]*"e per person-year)   \u2192")
   ) +
   theme_minimal(base_size = 11) +
   theme(
     legend.position = "top",
     panel.grid.major.y = element_blank(),
     panel.grid.minor = element_blank(),
-    strip.text = element_text(face = "bold", size = 12, hjust = 0),
+    strip.text = element_text(face = "bold", size = 12),
+    plot.title = element_text(face = "bold", size = 13),
+    plot.subtitle = element_text(size = 10, colour = "grey40", margin = margin(b = 12)),
     plot.margin = margin(10, 15, 10, 10)
   )
 
 ggsave(
   file.path("results", "category_decomposition_esi.png"),
-  plot = p, width = 8, height = 9, dpi = 300, bg = "white"
+  plot = p, width = 14, height = 6.5, dpi = 300, bg = "white"
 )
 
 cat("Saved: results/category_decomposition_esi.png\n")
