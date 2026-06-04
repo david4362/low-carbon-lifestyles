@@ -73,9 +73,9 @@ rebound <- selected_emissions |>
     rebound_mean      = if_else(is.nan(rebound_mean), NA_real_, rebound_mean),
     scenario          = "average",
     term = dplyr::case_match(term,
-                             "no_carTRUE"    ~ "No car",
-                             "no_flyingTRUE" ~ "No flying",
-                             "no_meatTRUE"   ~ "No meat",
+                             "no_carTRUE"    ~ "Car-free",
+                             "no_flyingTRUE" ~ "Flight-free",
+                             "no_meatTRUE"   ~ "Meat-free",
                              .default = term)
   ) |>
   rename(category = term) |>
@@ -88,9 +88,9 @@ stage_components <- lm_models_df |>
          grepl("no_car|no_flying|no_meat", term)) |>
   mutate(
     category = case_when(
-      str_detect(term, "car")    ~ "No car",
-      str_detect(term, "flying") ~ "No flying",
-      str_detect(term, "meat")   ~ "No meat"
+      str_detect(term, "car")    ~ "Car-free",
+      str_detect(term, "flying") ~ "Flight-free",
+      str_detect(term, "meat")   ~ "Meat-free"
     ),
     stage          = if_else(str_detect(model_name, "Indirect"), "indirect", "direct"),
     is_interaction = str_detect(term, "esi:"),
@@ -112,9 +112,9 @@ esi_main_effects <- lm_models_df |>
   filter(grepl("Direct|Indirect", model_name), term == "esi") |>
   mutate(
     category = case_when(
-      str_detect(model_name, regex("car",       ignore_case = TRUE)) ~ "No car",
-      str_detect(model_name, regex("air|fly",   ignore_case = TRUE)) ~ "No flying",
-      str_detect(model_name, regex("meat|diet", ignore_case = TRUE)) ~ "No meat"
+      str_detect(model_name, regex("car",       ignore_case = TRUE)) ~ "Car-free",
+      str_detect(model_name, regex("air|fly",   ignore_case = TRUE)) ~ "Flight-free",
+      str_detect(model_name, regex("meat|diet", ignore_case = TRUE)) ~ "Meat-free"
     ),
     stage  = if_else(str_detect(model_name, "Indirect"), "indirect", "direct"),
     esi_se = if ("std.error" %in% names(lm_models_df)) std.error else NA_real_
@@ -126,13 +126,13 @@ esi_main_effects <- lm_models_df |>
   model_label <- paste(if (stage == "direct") "Direct" else "Indirect",
                        "emissions",
                        switch(category,
-                              "No car" = "Car ownership",
-                              "No flying" = "Air travel",
-                              "No meat" = "Diet"))
+                              "Car-free" = "Car ownership",
+                              "Flight-free" = "Air travel",
+                              "Meat-free" = "Diet"))
   ls_term <- switch(category,
-                    "No car" = "no_carTRUE",
-                    "No flying" = "no_flyingTRUE",
-                    "No meat" = "no_meatTRUE")
+                    "Car-free" = "no_carTRUE",
+                    "Flight-free" = "no_flyingTRUE",
+                    "Meat-free" = "no_meatTRUE")
   m  <- lm_models[[model_label]]
   V  <- vcovHC(m, type = "HC3")
   ix <- paste0("esi:", ls_term)
@@ -176,7 +176,7 @@ plot_data <- stage_components |>
   ) |>
   mutate(
     baseline = 0, x_mid = baseline + direct, x_end = x_mid + indirect,
-    category = factor(category, levels = c("No car","No flying","No meat")),
+    category = factor(category, levels = c("Car-free","Flight-free","Meat-free")),
     label = dplyr::case_match(scenario,
                               "average"  ~ "Average",
                               "high_esi" ~ "High ESI",
@@ -324,9 +324,9 @@ ggsave(file.path(output, "Waterfall.png"), p,
 baseline_file <- file.path(output, "non_adopter_baselines.csv")
 bl_labels <- if (file.exists(baseline_file)) {
   na_b <- read.csv(baseline_file)
-  m    <- c("No car" = "no_car","No flying" = "no_flying","No meat" = "no_meat")
+  m    <- c("Car-free" = "no_car","Flight-free" = "no_flying","Meat-free" = "no_meat")
   data.frame(
-    category = factor(names(m), levels = c("No car","No flying","No meat")),
+    category = factor(names(m), levels = c("Car-free","Flight-free","Meat-free")),
     label    = sapply(names(m), function(c)
       sprintf("(%.1f t)", na_b$predicted_co2e_t[na_b$lifestyle == m[c]]))
   )

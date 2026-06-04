@@ -29,8 +29,8 @@ make_waterfall <- function(values, labels, title = "") {
 
 # Local label additions (S7-specific terms not in plot_labels).
 s7_labels <- c(plot_labels,
-               list("no_carTRUE:esi" = "No car",
-                    "no_flyingTRUE:esi" = "No flying"))
+               list("no_carTRUE:esi" = "Car-free",
+                    "no_flyingTRUE:esi" = "Flight-free"))
 
 # Stack the regression CSV into long form ready for plotting.
 prep_decomposition <- function(reg_df, broad_cats) {

@@ -227,7 +227,7 @@ table1_categorical <- data.frame(
   Variable = c(paste0("Sex: ",  names(table(desc_data$sex))),
                paste0("Age: ",  names(table(desc_data$age_group))),
                paste0("Edu: ",  names(table(desc_data$education))),
-               "No car","No flying","No meat"),
+               "Car-free","Flight-free","Meat-free"),
   N = c(as.numeric(table(desc_data$sex)),
         as.numeric(table(desc_data$age_group)),
         as.numeric(table(desc_data$education)),
@@ -388,8 +388,9 @@ cat("  Saved: ipw_robustness.csv\n\n")
 # `sampling_frame`, with columns (postort, age, gender, randomsample, aid).
 cat("--- Step 6b: Sampling IPW (representativeness) ---\n")
 
-if (!exists("sampling_frame") || !is.data.frame(sampling_frame))
-  stop("10_load_data.R must create a data.frame `sampling_frame` for Step 6b.")
+if (!exists("sampling_frame") || !is.data.frame(sampling_frame)) {
+  cat("  Skipping: sampling_frame not available (mock mode).\n\n")
+} else {
 
 sframe_raw <- as_tibble(sampling_frame)
 if ("efid" %in% names(sframe_raw) && !"aid" %in% names(sframe_raw))
@@ -547,6 +548,8 @@ rm(sframe_raw, sframe, ps_fit, sw_tbl, sipw_person_co2e, sipw_results,
    unw, sipw_compare, cell_balance)
 gc()
 cat("\n")
+
+} # end sampling_frame check
 
 # ===========================================================================
 # STEP 7 — Proportional re-spending benchmark
@@ -992,7 +995,7 @@ if (length(green_aids_all) > 0) {
     green_person <- aggregate_person_co2e(green_em) |> inner_join(green_target, by = "aid")
     green_ctrl_vars <- ctrl_var_names(green_ctrl)
     cat(sprintf("  Running regressions on green sample (N = %d)...\n", nrow(green_person)))
-    cat(sprintf("    No car: %d, No flying: %d, No meat: %d\n",
+    cat(sprintf("    Car-free: %d, Flight-free: %d, Meat-free: %d\n",
                 sum(green_person$no_car, na.rm = TRUE),
                 sum(green_person$no_flying, na.rm = TRUE),
                 sum(green_person$no_meat, na.rm = TRUE)))

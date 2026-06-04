@@ -17,7 +17,7 @@ library(tidyr)
 if (!exists("output") || !nzchar(output)) output <- "results"
 
 # ---------- Shared helpers ----------
-lifestyle_labels <- c("no_car" = "No car", "no_flying" = "No flying", "no_meat" = "Non-meat")
+lifestyle_labels <- c("no_car" = "Car-free", "no_flying" = "Flight-free", "no_meat" = "Meat-free")
 outcome_labels <- c("total" = "Total", "direct" = "Direct", "indirect" = "Indirect")
 
 # Common theme for forest plots
@@ -72,7 +72,7 @@ key_terms <- reg_co2e |>
   filter(!is.na(lifestyle)) |>
   mutate(
     lifestyle_label = lifestyle_labels[lifestyle],
-    lifestyle_label = factor(lifestyle_label, levels = c("Non-meat", "No flying", "No car")),
+    lifestyle_label = factor(lifestyle_label, levels = c("Meat-free", "Flight-free", "Car-free")),
     outcome = factor(outcome, levels = c("Total", "Direct", "Indirect")),
     coef_type = factor(coef_type, levels = c("Lifestyle main effect", "ESI \u00d7 Lifestyle"))
   )
@@ -134,9 +134,9 @@ sens_plot <- sens_all |>
   filter(grepl("TRUE$", variable), !grepl("esi", variable)) |>
   mutate(
     lifestyle = case_when(
-      grepl("no_car", variable) ~ "No car",
-      grepl("no_flying", variable) ~ "No flying",
-      grepl("no_meat", variable) ~ "Non-meat"
+      grepl("no_car", variable) ~ "Car-free",
+      grepl("no_flying", variable) ~ "Flight-free",
+      grepl("no_meat", variable) ~ "Meat-free"
     ),
     outcome_label = case_when(
       outcome == "total" ~ "Total",
@@ -150,7 +150,7 @@ sens_plot <- sens_all |>
   ) |>
   filter(!is.na(outcome_label)) |>
   mutate(
-    lifestyle = factor(lifestyle, levels = c("No car", "No flying", "Non-meat")),
+    lifestyle = factor(lifestyle, levels = c("Car-free", "Flight-free", "Meat-free")),
     outcome_label = factor(outcome_label, levels = c("Total", "Indirect"))
   )
 
@@ -194,7 +194,7 @@ diet_plot <- diet |>
     ci_high = estimate + 1.96 * stderr,
     sig = ifelse(p < 0.05, "p < 0.05", "n.s."),
     def_label = case_when(
-      definition == "baseline_non_meat" ~ paste0("Non-meat (n=", n_group, ")"),
+      definition == "baseline_non_meat" ~ paste0("Meat-free (n=", n_group, ")"),
       definition == "non_meat_excl_vegan" ~ paste0("Excl. vegan (n=", n_group, ")"),
       definition == "vegan_only" ~ paste0("Vegan only (n=", n_group, ")"),
       definition == "vegetarian_only" ~ paste0("Vegetarian only (n=", n_group, ")"),
@@ -322,7 +322,7 @@ robust_df <- bind_rows(baseline, ipw_main, green_main) |>
     ci_high = estimate + 1.96 * std.error,
     sig = ifelse(p.value < 0.05, "p < 0.05", "n.s."),
     lifestyle_label = lifestyle_labels[lifestyle],
-    lifestyle_label = factor(lifestyle_label, levels = c("Non-meat", "No flying", "No car")),
+    lifestyle_label = factor(lifestyle_label, levels = c("Meat-free", "Flight-free", "Car-free")),
     outcome = factor(outcome, levels = c("Total", "Direct", "Indirect")),
     source = factor(source, levels = c("Baseline", "IPW", "Green sample"))
   )

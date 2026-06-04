@@ -27,8 +27,9 @@ plot_data <- stage_data |>
     scenario_label = factor(scenario_label,
                             levels = c("Average", "High ESI", "Low ESI")),
     category = factor(as.character(category),
-                      levels = c("No car", "No flying", "No meat"))
+                      levels = c("Car-free", "Flight-free", "Meat-free"))
   ) |>
+  select(category, stage, scenario, scenario_label, value) |>
   # Stack direct and indirect for each scenario
   pivot_wider(names_from = stage, values_from = value) |>
   mutate(

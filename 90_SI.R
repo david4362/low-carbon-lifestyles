@@ -136,7 +136,7 @@ user_table <- bind_rows(per_tetrile, all_users) |>
              pop_density = "Centered log population density",
              city = "In major city", edu = "Education level",
              house = "Apartment/House",
-             no_car = "No car", no_meat = "No meat", no_flying = "No flying") |>
+             no_car = "Car-free", no_meat = "Meat-free", no_flying = "Flight-free") |>
   tab_footnote("18-29, 30-44, 45-65, 65+",
                locations = cells_column_labels(columns = age)) |>
   tab_footnote("Grundskola, Gymnasium, Eftergymnasial <2 år, Eftergymnasial >=2 år, Forskare",

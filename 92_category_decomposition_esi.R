@@ -31,7 +31,7 @@ cat_labels <- c(
 
 # Lifestyle contrasts
 lifestyles <- c("no_car", "no_flying", "no_meat")
-lifestyle_labels <- c("no_car" = "No car", "no_flying" = "No flying", "no_meat" = "No meat")
+lifestyle_labels <- c("no_car" = "Car-free", "no_flying" = "Flight-free", "no_meat" = "Meat-free")
 
 # For each lifestyle, the focal domain to EXCLUDE from indirect
 focal_domain <- c(
@@ -115,7 +115,7 @@ cat_order <- plot_data |>
 
 plot_data$category_label <- factor(plot_data$category_label, levels = cat_order)
 plot_data$lifestyle_label <- factor(plot_data$lifestyle_label,
-                                     levels = c("No car", "No flying", "No meat"))
+                                     levels = c("Car-free", "Flight-free", "Meat-free"))
 
 # --- Plot ---
 p <- ggplot(plot_data, aes(x = category_label, y = estimate_t, fill = esi_level)) +
