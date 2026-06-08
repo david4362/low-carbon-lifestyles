@@ -10,7 +10,7 @@
 
 suppressPackageStartupMessages({
   library(dplyr); library(tidyr); library(ggplot2); library(purrr)
-  library(tidysdm); library(gt); library(boot); library(patchwork)
+  library(tidysdm); library(gt); library(boot)
 })
 
 ctrl_vars <- ctrl_var_names(control_data)
@@ -68,72 +68,29 @@ plot_data <- lm_cov_residuals |>
   )
 
 # --- Plots ---------------------------------------------------------------
-# Per-lifestyle colors: adopter = lifestyle hue, non-adopter = grey
-.ls_colors  <- c("Car-free" = "#4477AA", "Flight-free" = "#EE6677", "Meat-free" = "#228833")
-.strip_bg   <- c("Car-free" = "#4477AA", "Flight-free" = "#EE6677", "Meat-free" = "#228833")
-
-.make_violin <- function(ls, show_legend = FALSE, show_xlab = FALSE) {
-  df <- plot_data |> filter(mname == ls) |> mutate(panel = ls)
-  ggplot(df, aes(x = lifestyle, y = res, fill = lifestyle)) +
-    geom_violin(alpha = 0.7, trim = TRUE) +
-    geom_boxplot(outliers = FALSE, width = 0.15, fill = "white", colour = "grey30") +
-    facet_wrap(~panel) +
-    coord_flip() +
-    ylim(-6, 8.5) +
-    scale_fill_manual(
-      values = c("Adopter" = unname(.ls_colors[ls]), "Non-adopter" = "#AAAAAA"),
-      breaks = c("Adopter", "Non-adopter"),
-      name   = NULL,
-      guide  = if (show_legend) guide_legend(direction = "horizontal") else "none"
-    ) +
-    labs(
-      x = NULL,
-      y = if (show_xlab)
-            expression("Deviation from predicted indirect emissions (tCO"[2]*"e per person-year)")
-          else NULL
-    ) +
-    theme_minimal(base_size = 11) +
-    theme(
-      panel.background   = element_blank(),
-      panel.border       = element_rect(colour = "grey80", fill = NA, linewidth = 0.3),
-      panel.grid.major.y = element_blank(),
-      panel.grid.minor   = element_blank(),
-      strip.background   = element_rect(fill = .strip_bg[ls], colour = NA),
-      strip.text         = element_text(face = "bold", size = 12, colour = "white"),
-      axis.text.y        = element_text(size = 9),
-      legend.position    = if (show_legend) "top" else "none",
-      plot.margin        = margin(2, 6, 2, 4)
-    )
-}
-
-.p_violin_combined <- (
-  .make_violin("Car-free",    show_legend = TRUE,  show_xlab = FALSE) /
-  .make_violin("Flight-free", show_legend = FALSE, show_xlab = TRUE)  /
-  .make_violin("Meat-free",   show_legend = FALSE, show_xlab = FALSE)
-) +
-  plot_annotation(
-    title    = "Car-free and flight-free adopters show a left-shift in indirect emissions",
-    subtitle = "Distributions adjusted for income, sex, age group, education, children, housing type, city indicator, and population density.",
-    theme    = theme(
-      plot.title    = element_text(face = "bold", size = 13),
-      plot.subtitle = element_text(size = 10, colour = "grey40", margin = margin(b = 8))
-    )
-  )
-
-.p_violin_esi_combined <- (
-  .make_violin("Car-free",    show_legend = TRUE,  show_xlab = FALSE) /
-  .make_violin("Flight-free", show_legend = FALSE, show_xlab = TRUE)  /
-  .make_violin("Meat-free",   show_legend = FALSE, show_xlab = FALSE)
-)
+# Paul Tol Bright: adopter = lifestyle hue, non-adopter = light grey
+.violin_base <- function(data) ggplot(data, aes(x = mname, y = res, fill = lifestyle)) +
+  geom_split_violin(alpha = 0.7) +
+  geom_boxplot(outliers = FALSE, width = 0.2, fill = "white", colour = "grey30") +
+  labs(x = NULL,
+       y = expression("Deviation from predicted indirect emissions (tCO"[2]*"e per person-year)"),
+       fill = NULL) +
+  scale_fill_manual(values = c(Adopter = "#4477AA", `Non-adopter` = "#cccccc"),
+                    breaks = c("Adopter", "Non-adopter")) +
+  ylim(-6, 8.5) +
+  coord_flip() +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "top",
+        panel.grid.major.y = element_blank())
 
 ggsave(file.path(output, "Residuals distribution ESI.png"),
-       .p_violin_esi_combined + facet_grid(. ~ esi_tetrile),
-       units = "cm", width = 24, height = 18, bg = "white")
+       .violin_base(plot_data) + facet_grid(. ~ esi_tetrile),
+       units = "cm", width = 24, height = 14, bg = "white")
 ggsave(file.path(output, "Residuals distribution.png"),
-       .p_violin_combined,
-       units = "cm", width = 15, height = 18, bg = "white")
+       .violin_base(plot_data),
+       units = "cm", width = 15, height = 12, bg = "white")
 
-# --- Residual summary table ----------------------------------------------
+
 .residual_table <- plot_data |>
   group_by(mname, lifestyle, esi_tetrile) |>
   summarise(
