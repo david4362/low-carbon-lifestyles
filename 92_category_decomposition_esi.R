@@ -5,6 +5,7 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 library(stringr)
+library(patchwork)
 
 # --- Read data ---
 cat_df <- read.csv(file.path("results", "category regression co2e.csv")) |>
@@ -117,44 +118,54 @@ plot_data$category_label <- factor(plot_data$category_label, levels = cat_order)
 plot_data$lifestyle_label <- factor(plot_data$lifestyle_label,
                                      levels = c("Car-free", "Flight-free", "Meat-free"))
 
-# Lifestyle colors (full saturation; alpha encodes ESI level)
-.colours_lifestyle_cat <- c("Car-free" = "#4477AA", "Flight-free" = "#EE6677", "Meat-free" = "#228833")
+# Very light panel background tints; colored strip headers
+bg_fill  <- c("Car-free" = "#EEF3FA", "Flight-free" = "#FEF0F2", "Meat-free" = "#EEF7EF")
+strip_bg <- c("Car-free" = "#4477AA", "Flight-free" = "#EE6677", "Meat-free" = "#228833")
+bar_cols <- c("High ESI (+1 SD)" = "#444444", "Low ESI (\u22121 SD)" = "#AAAAAA")
 
-# --- Plot ---
-# fill = lifestyle color, alpha = ESI level → simple 5-entry legend (3 colors + 2 alphas)
-p <- ggplot(plot_data, aes(x = category_label, y = estimate_t,
-                            fill = lifestyle_label, alpha = esi_level)) +
-  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
-  geom_hline(yintercept = 0, linewidth = 0.4, colour = "grey20") +
-  facet_wrap(~ lifestyle_label, nrow = 1, scales = "fixed") +
-  coord_flip() +
-  scale_y_continuous(
-    breaks = seq(-0.4, 0.4, 0.2),
-    labels = function(x) sprintf("%.1f", x)
-  ) +
-  scale_fill_manual(values = .colours_lifestyle_cat, name = NULL,
-                    guide = guide_legend(order = 1)) +
-  scale_alpha_manual(
-    values = c("High ESI (+1 SD)" = 1.0, "Low ESI (\u22121 SD)" = 0.45),
-    name = NULL,
-    guide = guide_legend(order = 2,
-                         override.aes = list(fill = "grey30"))
-  ) +
-  labs(
-    title = "High-ESI spillovers are broad-based across the household budget",
-    subtitle = "Own-domain reductions are omitted; bars show how re-spending shifts emissions elsewhere.",
-    x = NULL,
-    y = expression("Difference in emissions (tCO"[2]*"e per person-year)")
-  ) +
-  theme_minimal(base_size = 11) +
-  theme(
-    legend.position = "top",
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor = element_blank(),
-    strip.text = element_text(face = "bold", size = 12),
-    plot.title = element_text(face = "bold", size = 13),
-    plot.subtitle = element_text(size = 10, colour = "grey40", margin = margin(b = 12)),
-    plot.margin = margin(10, 15, 10, 10)
+make_panel <- function(ls, show_y = TRUE) {
+  df <- plot_data |> filter(lifestyle_label == ls) |> mutate(facet_label = ls)
+  ggplot(df, aes(x = category_label, y = estimate_t, fill = esi_level)) +
+    geom_rect(xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = Inf,
+              fill = bg_fill[ls], colour = NA, inherit.aes = FALSE) +
+    geom_col(position = position_dodge(width = 0.7), width = 0.6) +
+    geom_hline(yintercept = 0, linewidth = 0.4, colour = "grey20") +
+    facet_wrap(~facet_label) +
+    coord_flip() +
+    scale_y_continuous(breaks = seq(-0.4, 0.4, 0.2),
+                       labels = function(x) sprintf("%.1f", x)) +
+    scale_fill_manual(values = bar_cols, name = NULL,
+      guide = if (ls == "Car-free") guide_legend(direction = "horizontal") else "none") +
+    labs(x = NULL,
+         y = if (ls == "Flight-free")
+               expression("Difference in emissions (tCO"[2]*"e per person-year)")
+             else NULL) +
+    theme_minimal(base_size = 11) +
+    theme(
+      panel.background   = element_blank(),
+      panel.border       = element_rect(colour = "grey80", fill = NA, linewidth = 0.3),
+      panel.grid.major.y = element_blank(),
+      panel.grid.minor   = element_blank(),
+      strip.background   = element_rect(fill = strip_bg[ls], colour = NA),
+      strip.text         = element_text(face = "bold", size = 12, colour = "white"),
+      axis.text.y  = if (show_y) element_text(size = 9) else element_blank(),
+      axis.ticks.y = if (show_y) element_line() else element_blank(),
+      legend.position = if (ls == "Car-free") "top" else "none",
+      plot.margin = margin(4, 6, 4, if (show_y) 4 else 2)
+    )
+}
+
+p <- make_panel("Car-free", TRUE) +
+     make_panel("Flight-free", FALSE) +
+     make_panel("Meat-free", FALSE) +
+  plot_layout(ncol = 3) +
+  plot_annotation(
+    title    = "High-ESI spillovers are broad-based across the household budget",
+    subtitle = "Own-domain reductions omitted; bars show how re-spending shifts emissions elsewhere.",
+    theme = theme(
+      plot.title    = element_text(face = "bold", size = 13),
+      plot.subtitle = element_text(size = 10, colour = "grey40", margin = margin(b = 8))
+    )
   )
 
 ggsave(
