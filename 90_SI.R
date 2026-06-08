@@ -62,7 +62,7 @@ plot_data <- lm_cov_residuals |>
                                   "indirect_no_car"    ~ "Car-free",
                                   "indirect_no_flying" ~ "Flight-free",
                                   "indirect_no_meat"   ~ "Meat-free"),
-    mname     = factor(mname, levels = c("Car-free", "Flight-free", "Meat-free")),
+    mname     = factor(mname, levels = c("Meat-free", "Flight-free", "Car-free")),
     lifestyle = relevel(factor(if_else(lifestyle, "Adopter", "Non-adopter")),
                         ref = "Non-adopter")
   )
