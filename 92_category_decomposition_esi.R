@@ -123,6 +123,10 @@ bg_fill  <- c("Car-free" = "#EEF3FA", "Flight-free" = "#FEF0F2", "Meat-free" = "
 strip_bg <- c("Car-free" = "#4477AA", "Flight-free" = "#EE6677", "Meat-free" = "#228833")
 bar_cols <- c("High ESI (+1 SD)" = "#444444", "Low ESI (\u22121 SD)" = "#AAAAAA")
 
+# Shared x-axis limits across all panels (find global max absolute value)
+x_lim <- max(abs(plot_data$estimate_t), na.rm = TRUE) * 1.05
+x_breaks <- pretty(c(-x_lim, x_lim), n = 4)
+
 make_panel <- function(ls, show_y = TRUE) {
   df <- plot_data |> filter(lifestyle_label == ls) |> mutate(facet_label = ls)
   ggplot(df, aes(x = category_label, y = estimate_t, fill = esi_level)) +
@@ -132,8 +136,9 @@ make_panel <- function(ls, show_y = TRUE) {
     geom_hline(yintercept = 0, linewidth = 0.4, colour = "grey20") +
     facet_wrap(~facet_label) +
     coord_flip() +
-    scale_y_continuous(breaks = seq(-0.4, 0.4, 0.2),
-                       labels = function(x) sprintf("%.1f", x)) +
+    scale_y_continuous(breaks = x_breaks,
+                       labels = function(x) sprintf("%.1f", x),
+                       limits = c(-x_lim, x_lim)) +
     scale_fill_manual(values = bar_cols, name = NULL,
       guide = if (ls == "Car-free") guide_legend(direction = "horizontal") else "none") +
     labs(x = NULL,
@@ -158,15 +163,7 @@ make_panel <- function(ls, show_y = TRUE) {
 p <- make_panel("Car-free", TRUE) +
      make_panel("Flight-free", FALSE) +
      make_panel("Meat-free", FALSE) +
-  plot_layout(ncol = 3) +
-  plot_annotation(
-    title    = "High-ESI spillovers are broad-based across the household budget",
-    subtitle = "Own-domain reductions omitted; bars show how re-spending shifts emissions elsewhere.",
-    theme = theme(
-      plot.title    = element_text(face = "bold", size = 13),
-      plot.subtitle = element_text(size = 10, colour = "grey40", margin = margin(b = 8))
-    )
-  )
+  plot_layout(ncol = 3)
 
 ggsave(
   file.path("results", "category_decomposition_esi.png"),
