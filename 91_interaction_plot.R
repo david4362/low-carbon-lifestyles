@@ -10,6 +10,7 @@ library(ggplot2)
 library(dplyr, warn.conflicts = FALSE)
 library(tidyr)
 library(stringr)
+library(patchwork)
 
 pred_csv_path <- file.path("results", "interaction_plot_predictions.csv")
 has_microdata <- exists("selected_emissions") && exists("target_data")
@@ -141,26 +142,50 @@ pred_df$outcome   <- factor(pred_df$outcome,   levels = c("Total", "Direct", "In
 pred_df$group     <- factor(pred_df$group,     levels = c("Low-carbon lifestyle adopter", "Non-adopter"))
 
 # --- Plot ---
-p <- ggplot(pred_df, aes(x = esi, y = pred_t, colour = group, fill = group)) +
+# Shared design language: adopter line in the lifestyle colour, non-adopter grey.
+.life_col <- c("Car-free" = "#4477AA", "Flight-free" = "#EE6677", "Meat-free" = "#228833")
+pred_df$fk <- factor(paste(pred_df$lifestyle, pred_df$group))
+.fk_levels <- levels(pred_df$fk)
+.fk_cols <- setNames(
+  ifelse(grepl("Non-adopter", .fk_levels), "#888888",
+         .life_col[sub(" Low-carbon lifestyle adopter", "", .fk_levels)]),
+  .fk_levels)
+
+p <- ggplot(pred_df, aes(x = esi, y = pred_t, colour = fk, fill = fk)) +
   geom_ribbon(aes(ymin = ci_lo_t, ymax = ci_hi_t), alpha = 0.15, colour = NA) +
   geom_line(linewidth = 0.8) +
   facet_grid(outcome ~ lifestyle, scales = "free_y") +
-  scale_colour_manual(values = c("Low-carbon lifestyle adopter" = "#4477AA", "Non-adopter" = "#888888"), name = NULL) +
-  scale_fill_manual(values = c("Low-carbon lifestyle adopter" = "#4477AA", "Non-adopter" = "#888888"), name = NULL) +
+  scale_colour_manual(values = .fk_cols, guide = "none") +
+  scale_fill_manual(values = .fk_cols, guide = "none") +
   labs(
     x = "Environmental self-identity (standardised)",
     y = expression("Predicted CO"[2]*"e emissions (tCO"[2]*"e/year)")
   ) +
   theme_minimal(base_size = 11) +
   theme(
-    legend.position = "top",
     panel.grid.minor = element_blank(),
     strip.text = element_text(face = "bold", size = 11),
     panel.border = element_rect(colour = "grey70", fill = NA, linewidth = 0.5),
     panel.spacing = unit(0.8, "lines")
   )
 
+# Custom legend (matches Figure 2): grey = Non-adopter, lifestyle colour = Adopter
+legend_int <- ggplot() + xlim(0, 12) + ylim(0, 1) +
+  annotate("segment", x = 2.0, xend = 2.6, y = 0.5, yend = 0.5,
+           colour = "#888888", linewidth = 1.2) +
+  annotate("text", x = 2.75, y = 0.5, label = "Non-adopter", hjust = 0,
+           fontface = "italic", size = 3.8) +
+  annotate("segment", x = 5.6, xend = 5.73, y = 0.5, yend = 0.5, colour = "#4477AA", linewidth = 1.2) +
+  annotate("segment", x = 5.73, xend = 5.86, y = 0.5, yend = 0.5, colour = "#EE6677", linewidth = 1.2) +
+  annotate("segment", x = 5.86, xend = 5.99, y = 0.5, yend = 0.5, colour = "#228833", linewidth = 1.2) +
+  annotate("text", x = 6.14, y = 0.5, label = "Adopter (lifestyle colour)", hjust = 0,
+           fontface = "italic", size = 3.8) +
+  theme_void() +
+  theme(plot.margin = margin(2, 6, 0, 6),
+        panel.border = element_rect(colour = "grey75", fill = NA, linewidth = 0.4))
+
 ggsave("results/interaction_plot.png",
-       plot = p, width = 10, height = 8, dpi = 300, bg = "white")
+       plot = legend_int / p + plot_layout(heights = c(1, 18)),
+       width = 10, height = 8.4, dpi = 300, bg = "white")
 
 cat("Saved: results/interaction_plot.png\n")

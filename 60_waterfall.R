@@ -14,7 +14,7 @@
 
 suppressPackageStartupMessages({
   library(ggplot2); library(dplyr); library(tidyr); library(stringr)
-  library(sandwich)
+  library(sandwich); library(patchwork)
 })
 
 if (!exists("export_waterfall_variants")) export_waterfall_variants <- FALSE
@@ -323,97 +323,238 @@ p <- ggplot(plot_data) +
 ggsave(file.path(output, "Waterfall.png"), p,
        units = "cm", width = 24, height = 14)
 
-# ---- Presentation main-effects plot -----------------------------------
+# ---- Presentation main-effects plot (FIGURE 1 design) -----------------
+# Single-panel layout: coloured lifestyle block (left), direct effect (solid)
+# + indirect effect (dashed line ending in a filled circle) joined by a step,
+# the re-spending benchmark (dotted line + diamond), and a grey "emission
+# difference" box (gap between indirect endpoint and benchmark) annotated with
+# a square bracket. Non-adopter baseline footprint shown in parentheses (right).
 baseline_file <- file.path(output, "non_adopter_baselines.csv")
-bl_labels <- if (file.exists(baseline_file)) {
+baseline_t <- if (file.exists(baseline_file)) {
   na_b <- read.csv(baseline_file)
   m    <- c("Car-free" = "no_car","Flight-free" = "no_flying","Meat-free" = "no_meat")
-  data.frame(
-    category = factor(names(m), levels = c("Car-free","Flight-free","Meat-free")),
-    label    = sapply(names(m), function(c)
-      sprintf("(%.1f t)", na_b$predicted_co2e_t[na_b$lifestyle == m[c]]))
-  )
-} else NULL
+  setNames(sapply(names(m),
+                  function(c) na_b$predicted_co2e_t[na_b$lifestyle == m[c]]),
+           names(m))
+} else setNames(rep(NA_real_, 3), c("Car-free","Flight-free","Meat-free"))
 
-pres_main <- plot_data |> filter(scenario == "average")
+.lvl_main <- c("Car-free","Flight-free","Meat-free")   # top -> bottom
+.yc_main  <- setNames(c(3, 2, 1), .lvl_main)
+.grey_box <- "#ECECEC"
+
+pres_main <- plot_data |>
+  filter(scenario == "average") |>
+  mutate(category = factor(as.character(category), levels = .lvl_main)) |>
+  arrange(category) |>
+  mutate(
+    yc       = .yc_main[as.character(category)],
+    base_lab = ifelse(is.na(baseline_t[as.character(category)]), "",
+                      sprintf("(%.1f)", baseline_t[as.character(category)])),
+    box_lo   = pmin(x_end, rebound_plot_x),
+    box_hi   = pmax(x_end, rebound_plot_x),
+    diff_lab = ifelse(is.na(rebound_mean), "", sprintf("%.1f", abs(rebound_mean)))
+  )
+
+# Axis + layout geometry (data units = emission reductions, plotted reversed)
+x_top   <- ceiling(max(c(pres_main$x_mid, pres_main$x_end, pres_main$rebound_plot_x,
+                         pres_main$box_hi), na.rm = TRUE) / 0.5) * 0.5
+blk_in  <- x_top * 1.07
+blk_out <- x_top * 1.36
+base_x  <- -x_top * 0.04
+
+# Vertical offsets within each lifestyle row (relative to row centre yc)
+yo_dir <-  0.00     # direct effect (solid)
+yo_ind <- -0.12     # indirect effect (dashed + circle)
+yo_ben <-  0.13     # re-spending benchmark (dotted + diamond)
+yo_blo <- -0.23; yo_bhi <- 0.23          # grey box extent
+yo_brk <-  0.31; yo_num <- 0.41          # bracket + number
+
+brk <- pres_main |> filter(diff_lab != "")
 
 p_pres_main <- ggplot(pres_main) +
-  geom_vline(xintercept = 0, color = "#2c3e50", linewidth = 0.8) +
-  { if (!is.null(bl_labels))
-      geom_text(data = bl_labels, aes(x = 0, y = 1.5, label = label),
-                size = 3.2, color = "grey45", fontface = "italic", hjust = 0.5) } +
-  geom_segment(aes(x = baseline, xend = x_mid, y = 1.2, yend = 1.2,
-                   color = category, linetype = "Direct effect"), linewidth = 1.3) +
-  geom_segment(aes(x = x_mid, xend = x_mid, y = 1.2, yend = 1.35, color = category),
-               linetype = "dotted", linewidth = 0.9) +
-  geom_segment(aes(x = x_mid, xend = x_end, y = 1.35, yend = 1.35,
-                   color = category, linetype = "Indirect effect"), linewidth = 1.1) +
-  geom_segment(aes(x = x_end, xend = x_end, y = 1.35 - 0.07, yend = 1.35 + 0.07,
-                   color = category),
-               linewidth = 1.3) +
-  geom_segment(aes(x = rebound_plot_x, xend = rebound_plot_x,
-                   y = 1.2 - 0.07, yend = 1.2 + 0.07,
-                   linetype = "Re-spending benchmark"),
-               color = "#CC79A7", linewidth = 1.6, na.rm = TRUE) +
-  facet_grid(category ~ ., switch = "y") +
+  # grey "emission difference" box (drawn first, behind everything)
+  geom_rect(aes(xmin = box_lo, xmax = box_hi,
+                ymin = yc + yo_blo, ymax = yc + yo_bhi),
+            fill = .grey_box, color = NA, na.rm = TRUE) +
+  # coloured lifestyle block (left) with label
+  geom_rect(aes(xmin = blk_in, xmax = blk_out, ymin = yc - 0.4, ymax = yc + 0.4,
+                fill = category), color = NA) +
+  geom_text(aes(x = (blk_in + blk_out) / 2, y = yc, label = category),
+            color = "white", fontface = "bold", size = 4.4) +
+  geom_vline(xintercept = 0, color = "#2c3e50", linewidth = 0.7) +
+  # direct effect (solid)
+  geom_segment(aes(x = 0, xend = x_mid, y = yc + yo_dir, yend = yc + yo_dir,
+                   color = category), linewidth = 1.5) +
+  # step connector between direct and indirect
+  geom_segment(aes(x = x_mid, xend = x_mid, y = yc + yo_dir, yend = yc + yo_ind,
+                   color = category), linewidth = 1.0) +
+  # indirect effect (dashed) ending in a filled circle
+  geom_segment(aes(x = x_mid, xend = x_end, y = yc + yo_ind, yend = yc + yo_ind,
+                   color = category), linewidth = 1.2, linetype = "22") +
+  geom_point(aes(x = x_end, y = yc + yo_ind, fill = category),
+             shape = 21, size = 4.2, stroke = 0) +
+  # re-spending benchmark (dotted) + diamond
+  geom_segment(aes(x = x_mid, xend = x_mid, y = yc + yo_dir, yend = yc + yo_ben),
+               linetype = "12", color = "#333333", linewidth = 0.7, na.rm = TRUE) +
+  geom_segment(aes(x = x_mid, xend = rebound_plot_x, y = yc + yo_ben, yend = yc + yo_ben),
+               linetype = "12", color = "#333333", linewidth = 0.7, na.rm = TRUE) +
+  geom_point(aes(x = rebound_plot_x, y = yc + yo_ben), shape = 18, size = 4,
+             color = "#111111", na.rm = TRUE) +
+  # square bracket above the grey box + difference number
+  geom_segment(data = brk, aes(x = box_lo, xend = box_hi,
+                               y = yc + yo_brk, yend = yc + yo_brk),
+               color = "#555555", linewidth = 0.5) +
+  geom_segment(data = brk, aes(x = box_lo, xend = box_lo,
+                               y = yc + yo_brk, yend = yc + yo_brk - 0.05),
+               color = "#555555", linewidth = 0.5) +
+  geom_segment(data = brk, aes(x = box_hi, xend = box_hi,
+                               y = yc + yo_brk, yend = yc + yo_brk - 0.05),
+               color = "#555555", linewidth = 0.5) +
+  geom_text(data = brk, aes(x = (box_lo + box_hi) / 2, y = yc + yo_num, label = diff_lab),
+            fontface = "italic", size = 3.8, color = "#333333") +
+  # non-adopter baseline footprint (right)
+  geom_text(aes(x = base_x, y = yc, label = base_lab),
+            hjust = 0, size = 3.7, color = "grey25") +
+  scale_fill_manual(values = .colours_lifestyle, guide = "none") +
   scale_color_manual(values = .colours_lifestyle, guide = "none") +
-  scale_linetype_manual(values = .linetypes_main) +
-  scale_y_continuous(limits = c(1.0, 1.55), expand = c(0,0)) +
-  scale_x_reverse(breaks = seq(0, 2.5, 0.5),
-                  labels = function(x) ifelse(x == 0, "0.0", paste0("\u2212", sprintf("%.1f", x)))) +
-  labs(x = expression("Emission differences (tCO"[2]*"e/year)"),
-       y = NULL, linetype = NULL) +
-  guides(linetype = guide_legend(override.aes = list(
-    color = c("gray20","gray20","#CC79A7"), linewidth = c(1.2,1.2,1.6)))) +
-  .theme_wf(strip_size = 13)
+  scale_x_reverse(breaks = seq(0, x_top, 0.5),
+                  labels = function(x) ifelse(x == 0, "0.0", paste0("\u2212", sprintf("%.1f", x))),
+                  limits = c(blk_out * 1.02, base_x * 1.8)) +
+  scale_y_continuous(limits = c(0.45, 3.65), expand = c(0, 0)) +
+  coord_cartesian(clip = "off") +
+  labs(x = expression(italic("Difference in emission (tCO"[2]*"e per person/year)")),
+       y = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor    = element_blank(),
+        panel.grid.major.x  = element_line(color = "#EEEEEE", linewidth = 0.5),
+        axis.text.y  = element_blank(), axis.ticks.y = element_blank(),
+        axis.title.x = element_text(size = 11),
+        plot.margin  = margin(4, 16, 6, 6))
 
-ggsave(file.path(output, "Waterfall_pres_main.png"), p_pres_main,
-       units = "cm", width = 22, height = 12, dpi = 200)
+# Custom shared legend (effect glyphs are grey/black; colour encodes lifestyle)
+legend_plot <- ggplot() + xlim(0, 14.6) + ylim(0, 1) +
+  annotate("rect", xmin = 0.2, xmax = 0.9, ymin = 0.34, ymax = 0.66, fill = .grey_box) +
+  annotate("text", x = 1.05, y = 0.5, label = "Emission difference",
+           hjust = 0, fontface = "italic", size = 3.8) +
+  annotate("segment", x = 4.3, xend = 5.2, y = 0.5, yend = 0.5,
+           linetype = "22", color = "#333333", linewidth = 1) +
+  annotate("point", x = 4.3, y = 0.5, shape = 16, size = 3, color = "#333333") +
+  annotate("text", x = 5.35, y = 0.5, label = "Indirect effect",
+           hjust = 0, fontface = "italic", size = 3.8) +
+  annotate("segment", x = 7.6, xend = 8.5, y = 0.5, yend = 0.5,
+           color = "#333333", linewidth = 1.3) +
+  annotate("text", x = 8.65, y = 0.5, label = "Direct effect",
+           hjust = 0, fontface = "italic", size = 3.8) +
+  annotate("segment", x = 10.7, xend = 11.6, y = 0.5, yend = 0.5,
+           linetype = "12", color = "#333333", linewidth = 1) +
+  annotate("point", x = 11.15, y = 0.5, shape = 18, size = 3.6, color = "#111111") +
+  annotate("text", x = 11.75, y = 0.5, label = "Re-spending benchmark",
+           hjust = 0, fontface = "italic", size = 3.8) +
+  theme_void() +
+  theme(plot.margin = margin(2, 10, 0, 6),
+        panel.border = element_rect(color = "grey75", fill = NA, linewidth = 0.4))
 
-# ---- Presentation ESI plot --------------------------------------------
+p_pres_main_full <- legend_plot / p_pres_main + plot_layout(heights = c(1, 13))
+
+ggsave(file.path(output, "Waterfall_pres_main.png"), p_pres_main_full,
+       units = "cm", width = 24, height = 13, dpi = 200, bg = "white")
+
+# ---- Presentation ESI plot (FIGURE 3 design) --------------------------
+# Per lifestyle: two sub-rows (High ESI = dark shade on a grey band, Low ESI =
+# light shade). Each sub-row shows direct (solid) + indirect (dashed + circle)
+# joined by a step. Axis allows positive results (emission increases, shown +).
+.lvl_esi <- c("Car-free","Flight-free","Meat-free")
+.ctr_esi <- setNames(c(5, 3, 1), .lvl_esi)
+
 pres_esi <- plot_data |>
   filter(scenario %in% c("high_esi","low_esi")) |>
-  mutate(y_solid_p  = if_else(scenario == "high_esi", 1.3, 0.9),
-         y_dotted_p = if_else(scenario == "high_esi", 1.45, 1.05)) |>
-  mutate(color_group = paste(as.character(category), label))
+  mutate(category    = factor(as.character(category), levels = .lvl_esi),
+         color_group = paste(as.character(category), label),
+         ctr = .ctr_esi[as.character(category)],
+         yc  = ctr + if_else(scenario == "high_esi", 0.45, -0.45))
+
+xr_hi   <- max(c(pres_esi$x_mid, pres_esi$x_end), na.rm = TRUE)
+xr_lo   <- min(c(pres_esi$x_mid, pres_esi$x_end, 0), na.rm = TRUE)
+x_top_e <- ceiling(xr_hi / 0.5) * 0.5
+x_bot_e <- floor(min(xr_lo, 0) / 0.5) * 0.5
+blk_in_e  <- x_top_e * 1.07
+blk_out_e <- x_top_e * 1.36
+lab_x_e   <- x_top_e * 1.04
+right_lim <- min(x_bot_e, 0) - x_top_e * 0.04
+
+yo_dir_e <-  0.00
+yo_ind_e <- -0.16
+
+blocks_e <- data.frame(category = factor(.lvl_esi, levels = .lvl_esi),
+                       ctr = .ctr_esi[.lvl_esi])
+bands_e  <- pres_esi |> filter(scenario == "high_esi") |> distinct(category, yc)
 
 p_pres_esi <- ggplot(pres_esi) +
-  geom_vline(xintercept = 0, color = "#2c3e50", linewidth = 0.8) +
-  geom_segment(aes(x = baseline, xend = x_mid,
-                   y = y_solid_p, yend = y_solid_p, color = color_group,
-                   linetype = "Direct effect"), linewidth = 1.3) +
-  geom_segment(aes(x = x_mid, xend = x_mid,
-                   y = y_solid_p, yend = y_dotted_p, color = color_group),
-               linetype = "dotted", linewidth = 0.9) +
-  geom_segment(aes(x = x_mid, xend = arrow_start,
-                   y = y_dotted_p, yend = y_dotted_p,
-                   color = color_group, linetype = "Indirect effect"), linewidth = 1.0) +
-  geom_segment(aes(x = arrow_start, xend = x_end,
-                   y = y_dotted_p, yend = y_dotted_p, color = color_group),
-               linewidth = 1.2,
-               arrow = arrow(length = unit(0.22,"cm"), type = "closed")) +
-  facet_grid(category ~ ., switch = "y") +
-  scale_color_manual(
-    values = .colours_esi_combined[grep("High|Low", names(.colours_esi_combined))],
-    labels = c("Car-free High ESI", "Car-free Low ESI",
-               "Flight-free High ESI", "Flight-free Low ESI",
-               "Meat-free High ESI", "Meat-free Low ESI"),
-    guide = guide_legend(ncol = 2, title = NULL)
-  ) +
-  scale_linetype_manual(values = c("Direct effect" = "solid","Indirect effect" = "dotted")) +
-  scale_y_continuous(limits = c(0.7, 1.65), expand = c(0,0)) +
-  scale_x_reverse(breaks = seq(-0.5, 2.5, 0.5),
+  # grey band behind High ESI sub-rows
+  geom_rect(data = bands_e, aes(ymin = yc - 0.45, ymax = yc + 0.45),
+            xmin = -Inf, xmax = Inf,
+            fill = "#ECECEC", color = NA, inherit.aes = FALSE) +
+  # coloured lifestyle blocks
+  geom_rect(data = blocks_e,
+            aes(xmin = blk_in_e, xmax = blk_out_e,
+                ymin = ctr - 0.85, ymax = ctr + 0.85, fill = category),
+            color = NA, inherit.aes = FALSE) +
+  geom_text(data = blocks_e,
+            aes(x = (blk_in_e + blk_out_e) / 2, y = ctr, label = category),
+            color = "white", fontface = "bold", size = 4.4, inherit.aes = FALSE) +
+  # ESI sub-row labels
+  geom_text(aes(x = lab_x_e, y = yc, label = label),
+            hjust = 1, fontface = "italic", size = 3.3, color = "grey35") +
+  geom_vline(xintercept = 0, color = "#2c3e50", linewidth = 0.7) +
+  # direct effect (solid)
+  geom_segment(aes(x = 0, xend = x_mid, y = yc + yo_dir_e, yend = yc + yo_dir_e,
+                   color = color_group), linewidth = 1.4) +
+  # step connector
+  geom_segment(aes(x = x_mid, xend = x_mid, y = yc + yo_dir_e, yend = yc + yo_ind_e,
+                   color = color_group), linewidth = 0.9) +
+  # indirect effect (dashed) + filled circle
+  geom_segment(aes(x = x_mid, xend = x_end, y = yc + yo_ind_e, yend = yc + yo_ind_e,
+                   color = color_group), linewidth = 1.1, linetype = "22") +
+  geom_point(aes(x = x_end, y = yc + yo_ind_e, fill = color_group),
+             shape = 21, size = 4, stroke = 0) +
+  scale_color_manual(values = .colours_esi_combined, guide = "none") +
+  scale_fill_manual(values = c(.colours_lifestyle, .colours_esi_combined), guide = "none") +
+  scale_x_reverse(breaks = seq(x_bot_e, x_top_e, 0.5),
                   labels = function(x) ifelse(x == 0, "0.0",
                     ifelse(x > 0, paste0("\u2212", sprintf("%.1f", x)),
-                           paste0("+", sprintf("%.1f", abs(x)))))) +
-  labs(x = expression("Emission differences (tCO"[2]*"e/year)"),
-       y = NULL, color = NULL, linetype = NULL) +
-  guides(color    = guide_legend(order = 1, ncol = 2, override.aes = list(linewidth = 1.5, linetype = 1)),
-         linetype = guide_legend(order = 2, override.aes = list(color = "gray30", linewidth = 1.2))) +
-  .theme_wf(strip_size = 13)
+                           paste0("+", sprintf("%.1f", abs(x))))),
+                  limits = c(blk_out_e * 1.02, right_lim)) +
+  scale_y_continuous(limits = c(0.0, 6.0), expand = c(0, 0)) +
+  coord_cartesian(clip = "off") +
+  labs(x = expression(italic("Difference in emission (tCO"[2]*"e per person/year)")),
+       y = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.y = element_blank(),
+        panel.grid.minor    = element_blank(),
+        panel.grid.major.x  = element_line(color = "#EEEEEE", linewidth = 0.5),
+        axis.text.y  = element_blank(), axis.ticks.y = element_blank(),
+        axis.title.x = element_text(size = 11),
+        plot.margin  = margin(4, 16, 6, 6))
 
-ggsave(file.path(output, "Waterfall_pres_esi.png"), p_pres_esi,
-       units = "cm", width = 22, height = 12, dpi = 200)
+legend_esi <- ggplot() + xlim(0, 14.6) + ylim(0, 1) +
+  annotate("segment", x = 9.0, xend = 9.9, y = 0.5, yend = 0.5,
+           linetype = "22", color = "#333333", linewidth = 1) +
+  annotate("point", x = 9.0, y = 0.5, shape = 16, size = 3, color = "#333333") +
+  annotate("text", x = 10.05, y = 0.5, label = "Indirect effect",
+           hjust = 0, fontface = "italic", size = 3.8) +
+  annotate("segment", x = 12.2, xend = 13.1, y = 0.5, yend = 0.5,
+           color = "#333333", linewidth = 1.3) +
+  annotate("text", x = 13.25, y = 0.5, label = "Direct effect",
+           hjust = 0, fontface = "italic", size = 3.8) +
+  theme_void() +
+  theme(plot.margin = margin(2, 10, 0, 6),
+        panel.border = element_rect(color = "grey75", fill = NA, linewidth = 0.4))
+
+p_pres_esi_full <- legend_esi / p_pres_esi + plot_layout(heights = c(1, 13))
+
+ggsave(file.path(output, "Waterfall_pres_esi.png"), p_pres_esi_full,
+       units = "cm", width = 22, height = 13, dpi = 200, bg = "white")
 
 # ---- Optional variants -------------------------------------------------
 if (isTRUE(export_waterfall_variants)) {
