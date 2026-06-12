@@ -68,19 +68,30 @@ plot_data <- lm_cov_residuals |>
   )
 
 # --- Plots ---------------------------------------------------------------
-.violin_base <- function(data) ggplot(data, aes(x = mname, y = res, fill = lifestyle)) +
-  geom_split_violin(alpha = 0.7) +
-  geom_boxplot(outliers = FALSE, width = 0.2, fill = "white", colour = "grey30") +
-  labs(x = NULL,
-       y = expression("Deviation from predicted indirect emissions (tCO"[2]*"e per person/year)"),
-       fill = NULL) +
-  scale_fill_manual(values = c(Adopter = "#4477AA", `Non-adopter` = "#cccccc"),
-                    breaks = c("Adopter", "Non-adopter")) +
-  ylim(-6, 8.5) +
-  coord_flip() +
-  theme_minimal(base_size = 11) +
-  theme(legend.position = "top",
-        panel.grid.major.y = element_blank())
+.violin_base <- function(data) {
+  ggplot(data, aes(x = mname, y = res, fill = lifestyle)) +
+    geom_split_violin(alpha = 0.7) +
+    geom_boxplot(data = filter(data, lifestyle == "Adopter"),
+                 aes(x = mname, y = res), inherit.aes = FALSE,
+                 width = 0.15, position = position_nudge(x = 0.13),
+                 outliers = FALSE, fill = "#4477AA", colour = "grey20", linewidth = 0.4) +
+    geom_boxplot(data = filter(data, lifestyle == "Non-adopter"),
+                 aes(x = mname, y = res), inherit.aes = FALSE,
+                 width = 0.15, position = position_nudge(x = -0.13),
+                 outliers = FALSE, fill = "#cccccc", colour = "grey20", linewidth = 0.4) +
+    labs(x = "Lifestyle",
+         y = expression("Deviation from predicted indirect emissions (tCO"[2]*"e per person/year)"),
+         fill = NULL,
+         caption = "Boxes show median and interquartile range for adopters and non-adopters separately.") +
+    scale_fill_manual(values = c(Adopter = "#4477AA", `Non-adopter` = "#cccccc"),
+                      breaks = c("Adopter", "Non-adopter")) +
+    ylim(-6, 8.5) +
+    coord_flip() +
+    theme_minimal(base_size = 11) +
+    theme(legend.position = "top",
+          panel.grid.major.y = element_blank(),
+          plot.caption = element_text(size = 8, colour = "grey40", hjust = 0))
+}
 
 ggsave(file.path(output, "Residuals distribution ESI.png"),
        .violin_base(plot_data) + facet_grid(. ~ esi_tetrile),
