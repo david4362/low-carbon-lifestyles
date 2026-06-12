@@ -154,9 +154,9 @@ make_panel <- function(ls, show_y = TRUE, show_bracket = FALSE) {
     # dotted divider between focal domains and remaining categories
     geom_vline(xintercept = sep_y, linetype = "dotted",
                linewidth = 0.4, colour = "grey45") +
-    # N/A slash for this lifestyle's own focal domain
-    annotate("segment", x = yfocal - 0.28, xend = yfocal + 0.28,
-             y = -slash_w, yend = slash_w, colour = "grey55", linewidth = 0.6) +
+    # N/A horizontal dash for this lifestyle's own focal domain
+    annotate("segment", x = yfocal, xend = yfocal,
+             y = -slash_w, yend = slash_w, colour = "grey55", linewidth = 0.9) +
     scale_x_discrete(limits = cat_levels, drop = FALSE) +
     facet_wrap(~facet_label) +
     coord_flip(ylim = c(-x_lim, x_lim), clip = "off") +
@@ -167,24 +167,26 @@ make_panel <- function(ls, show_y = TRUE, show_bracket = FALSE) {
          y = if (ls == "Flight-free")
                expression("Difference in emission (tCO"[2]*"e per person/year)")
              else NULL) +
-    theme_minimal(base_size = 11) +
+    theme_minimal(base_size = 12.5) +
     theme(
       panel.background   = element_blank(),
       panel.border       = element_rect(colour = "grey80", fill = NA, linewidth = 0.3),
       panel.grid.major.y = element_blank(),
       panel.grid.minor   = element_blank(),
       strip.background   = element_rect(fill = strip_bg[ls], colour = NA),
-      strip.text         = element_text(face = "bold", size = 12, colour = "white"),
-      axis.text.y  = if (show_y) element_text(size = 9) else element_blank(),
+      strip.text         = element_text(face = "bold", size = 13.5, colour = "white"),
+      axis.text.x  = element_text(size = 10.5),
+      axis.title.x = element_text(size = 12),
+      axis.text.y  = if (show_y) element_text(size = 11) else element_blank(),
       axis.ticks.y = if (show_y) element_line() else element_blank(),
       legend.position = "none",
-      plot.margin = margin(4, if (show_bracket) 96 else 6, 4, if (show_y) 4 else 2)
+      plot.margin = margin(4, if (show_bracket) 118 else 6, 4, if (show_y) 4 else 2)
     )
 
   # Right-hand group brackets (only on the rightmost panel)
   if (show_bracket) {
-    bx  <- x_lim * 1.06          # bracket spine position (estimate units)
-    tick <- x_lim * 0.04
+    bx  <- x_lim * 1.12          # bracket spine position (estimate units)
+    tick <- x_lim * 0.045
     p <- p +
       annotate("segment", x = sep_y + 0.1, xend = n_cat + 0.45,
                y = bx, yend = bx, colour = "grey45", linewidth = 0.4) +
@@ -193,7 +195,7 @@ make_panel <- function(ls, show_y = TRUE, show_bracket = FALSE) {
       annotate("segment", x = n_cat + 0.45, xend = n_cat + 0.45,
                y = bx, yend = bx - tick, colour = "grey45", linewidth = 0.4) +
       annotate("text", x = (sep_y + 0.1 + n_cat + 0.45) / 2, y = bx + tick * 1.5,
-               label = "Focal\ndomains", angle = -90, size = 3.2,
+               label = "Focal\ndomains", angle = -90, size = 3.8,
                colour = "grey35", lineheight = 0.9) +
       annotate("segment", x = 0.55, xend = sep_y - 0.1,
                y = bx, yend = bx, colour = "grey45", linewidth = 0.4) +
@@ -202,24 +204,24 @@ make_panel <- function(ls, show_y = TRUE, show_bracket = FALSE) {
       annotate("segment", x = sep_y - 0.1, xend = sep_y - 0.1,
                y = bx, yend = bx - tick, colour = "grey45", linewidth = 0.4) +
       annotate("text", x = (0.55 + sep_y - 0.1) / 2, y = bx + tick * 1.5,
-               label = "Remaining\ncategories", angle = -90, size = 3.2,
+               label = "Remaining\ncategories", angle = -90, size = 3.8,
                colour = "grey35", lineheight = 0.9)
   }
   p
 }
 
-# Custom legend: N/A slash, High ESI (dark), Low ESI (light)
+# Custom legend: N/A dash, High ESI (dark), Low ESI (light)
 legend_plot <- ggplot() + xlim(0, 12) + ylim(0, 1) +
-  annotate("segment", x = 3.0, xend = 3.6, y = 0.35, yend = 0.65,
-           colour = "grey55", linewidth = 0.7) +
+  annotate("segment", x = 3.0, xend = 3.6, y = 0.5, yend = 0.5,
+           colour = "grey55", linewidth = 0.9) +
   annotate("text", x = 3.8, y = 0.5, label = "N/A", hjust = 0,
-           fontface = "italic", size = 3.8) +
+           fontface = "italic", size = 4.2) +
   annotate("rect", xmin = 5.2, xmax = 5.8, ymin = 0.34, ymax = 0.66, fill = "#555555") +
   annotate("text", x = 5.95, y = 0.5, label = "High ESI", hjust = 0,
-           fontface = "italic", size = 3.8) +
+           fontface = "italic", size = 4.2) +
   annotate("rect", xmin = 7.8, xmax = 8.4, ymin = 0.34, ymax = 0.66, fill = "#BBBBBB") +
   annotate("text", x = 8.55, y = 0.5, label = "Low ESI", hjust = 0,
-           fontface = "italic", size = 3.8) +
+           fontface = "italic", size = 4.2) +
   theme_void() +
   theme(plot.margin = margin(2, 6, 0, 6),
         panel.border = element_rect(colour = "grey75", fill = NA, linewidth = 0.4))
@@ -233,7 +235,7 @@ p <- legend_plot / p_panels + plot_layout(heights = c(1, 14))
 
 ggsave(
   file.path("results", "category_decomposition_esi.png"),
-  plot = p, width = 14.8, height = 6.8, dpi = 300, bg = "white"
+  plot = p, width = 15.4, height = 7.6, dpi = 300, bg = "white"
 )
 
 cat("Saved: results/category_decomposition_esi.png\n")

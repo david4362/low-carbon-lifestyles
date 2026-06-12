@@ -372,6 +372,8 @@ yo_brk <-  0.31; yo_num <- 0.41          # bracket + number
 brk <- pres_main |> filter(diff_lab != "")
 
 p_pres_main <- ggplot(pres_main) +
+  # thin separators between lifestyle rows
+  geom_hline(yintercept = c(1.5, 2.5), color = "grey85", linewidth = 0.4) +
   # grey "emission difference" box (drawn first, behind everything)
   geom_rect(aes(xmin = box_lo, xmax = box_hi,
                 ymin = yc + yo_blo, ymax = yc + yo_bhi),
@@ -432,24 +434,25 @@ p_pres_main <- ggplot(pres_main) +
         axis.title.x = element_text(size = 11),
         plot.margin  = margin(4, 16, 6, 6))
 
-# Custom shared legend (effect glyphs are grey/black; colour encodes lifestyle)
+# Custom shared legend, ordered to follow the figure's narrative:
+# direct effect -> indirect effect -> re-spending benchmark -> emission difference
 legend_plot <- ggplot() + xlim(0, 14.6) + ylim(0, 1) +
-  annotate("rect", xmin = 0.2, xmax = 0.9, ymin = 0.34, ymax = 0.66, fill = .grey_box) +
-  annotate("text", x = 1.05, y = 0.5, label = "Emission difference",
-           hjust = 0, fontface = "italic", size = 3.8) +
-  annotate("segment", x = 4.3, xend = 5.2, y = 0.5, yend = 0.5,
-           linetype = "22", color = "#333333", linewidth = 1) +
-  annotate("point", x = 4.3, y = 0.5, shape = 16, size = 3, color = "#333333") +
-  annotate("text", x = 5.35, y = 0.5, label = "Indirect effect",
-           hjust = 0, fontface = "italic", size = 3.8) +
-  annotate("segment", x = 7.6, xend = 8.5, y = 0.5, yend = 0.5,
+  annotate("segment", x = 0.4, xend = 1.3, y = 0.5, yend = 0.5,
            color = "#333333", linewidth = 1.3) +
-  annotate("text", x = 8.65, y = 0.5, label = "Direct effect",
+  annotate("text", x = 1.45, y = 0.5, label = "Direct effect",
            hjust = 0, fontface = "italic", size = 3.8) +
-  annotate("segment", x = 10.7, xend = 11.6, y = 0.5, yend = 0.5,
+  annotate("segment", x = 3.7, xend = 4.6, y = 0.5, yend = 0.5,
+           linetype = "22", color = "#333333", linewidth = 1) +
+  annotate("point", x = 3.7, y = 0.5, shape = 16, size = 3, color = "#333333") +
+  annotate("text", x = 4.75, y = 0.5, label = "Indirect effect",
+           hjust = 0, fontface = "italic", size = 3.8) +
+  annotate("segment", x = 7.0, xend = 7.9, y = 0.5, yend = 0.5,
            linetype = "12", color = "#333333", linewidth = 1) +
-  annotate("point", x = 11.15, y = 0.5, shape = 18, size = 3.6, color = "#111111") +
-  annotate("text", x = 11.75, y = 0.5, label = "Re-spending benchmark",
+  annotate("point", x = 7.45, y = 0.5, shape = 18, size = 3.6, color = "#111111") +
+  annotate("text", x = 8.05, y = 0.5, label = "Re-spending benchmark",
+           hjust = 0, fontface = "italic", size = 3.8) +
+  annotate("rect", xmin = 11.7, xmax = 12.4, ymin = 0.34, ymax = 0.66, fill = .grey_box) +
+  annotate("text", x = 12.55, y = 0.5, label = "Emission difference",
            hjust = 0, fontface = "italic", size = 3.8) +
   theme_void() +
   theme(plot.margin = margin(2, 10, 0, 6),
@@ -466,25 +469,26 @@ ggsave(file.path(output, "Waterfall_pres_main.png"), p_pres_main_full,
 # joined by a step. Axis allows positive results (emission increases, shown +).
 .lvl_esi <- c("Car-free","Flight-free","Meat-free")
 .ctr_esi <- setNames(c(5, 3, 1), .lvl_esi)
+.off_esi <- 0.32     # vertical offset of each ESI sub-row from its row centre
 
 pres_esi <- plot_data |>
   filter(scenario %in% c("high_esi","low_esi")) |>
   mutate(category    = factor(as.character(category), levels = .lvl_esi),
          color_group = paste(as.character(category), label),
          ctr = .ctr_esi[as.character(category)],
-         yc  = ctr + if_else(scenario == "high_esi", 0.45, -0.45))
+         yc  = ctr + if_else(scenario == "high_esi", .off_esi, -.off_esi))
 
 xr_hi   <- max(c(pres_esi$x_mid, pres_esi$x_end), na.rm = TRUE)
 xr_lo   <- min(c(pres_esi$x_mid, pres_esi$x_end, 0), na.rm = TRUE)
 x_top_e <- ceiling(xr_hi / 0.5) * 0.5
 x_bot_e <- floor(min(xr_lo, 0) / 0.5) * 0.5
-blk_in_e  <- x_top_e * 1.07
-blk_out_e <- x_top_e * 1.36
-lab_x_e   <- x_top_e * 1.04
+blk_in_e  <- x_top_e * 1.16
+blk_out_e <- x_top_e * 1.46
+lab_x_e   <- x_top_e * 1.03
 right_lim <- min(x_bot_e, 0) - x_top_e * 0.04
 
 yo_dir_e <-  0.00
-yo_ind_e <- -0.16
+yo_ind_e <- -0.13
 
 blocks_e <- data.frame(category = factor(.lvl_esi, levels = .lvl_esi),
                        ctr = .ctr_esi[.lvl_esi])
@@ -492,13 +496,13 @@ bands_e  <- pres_esi |> filter(scenario == "high_esi") |> distinct(category, yc)
 
 p_pres_esi <- ggplot(pres_esi) +
   # grey band behind High ESI sub-rows
-  geom_rect(data = bands_e, aes(ymin = yc - 0.45, ymax = yc + 0.45),
+  geom_rect(data = bands_e, aes(ymin = yc - .off_esi, ymax = yc + .off_esi),
             xmin = -Inf, xmax = Inf,
             fill = "#ECECEC", color = NA, inherit.aes = FALSE) +
   # coloured lifestyle blocks
   geom_rect(data = blocks_e,
             aes(xmin = blk_in_e, xmax = blk_out_e,
-                ymin = ctr - 0.85, ymax = ctr + 0.85, fill = category),
+                ymin = ctr - 0.6, ymax = ctr + 0.6, fill = category),
             color = NA, inherit.aes = FALSE) +
   geom_text(data = blocks_e,
             aes(x = (blk_in_e + blk_out_e) / 2, y = ctr, label = category),

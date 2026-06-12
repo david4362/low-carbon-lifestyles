@@ -82,9 +82,25 @@ plot_data <- plot_data |>
 
 .violin_base <- function(data, blocks = TRUE) {
   blk <- data.frame(mname = factor(.lvls_v, levels = .lvls_v), pos = seq_along(.lvls_v))
+  nad <- dplyr::filter(data, lifestyle == "Non-adopter")
+  ado <- dplyr::filter(data, lifestyle == "Adopter")
+  nudge <- 0.17
   p <- ggplot(data, aes(x = mname, y = res, fill = fk)) +
     geom_split_violin(alpha = 0.85, colour = "grey40", linewidth = 0.3) +
-    geom_boxplot(outliers = FALSE, width = 0.2, fill = "white", colour = "grey30") +
+    # median + IQR boxplots placed inside each violin half
+    geom_boxplot(data = nad, aes(x = mname, y = res), inherit.aes = FALSE,
+                 width = 0.12, position = position_nudge(x = -nudge),
+                 outliers = FALSE, fill = "white", colour = "grey25", linewidth = 0.35) +
+    geom_boxplot(data = ado, aes(x = mname, y = res), inherit.aes = FALSE,
+                 width = 0.12, position = position_nudge(x =  nudge),
+                 outliers = FALSE, fill = "white", colour = "grey25", linewidth = 0.35) +
+    # mean markers inside each half
+    stat_summary(data = nad, aes(x = mname, y = res), inherit.aes = FALSE,
+                 fun = mean, geom = "point", position = position_nudge(x = -nudge),
+                 shape = 23, size = 1.7, fill = "black", colour = "white", stroke = 0.3) +
+    stat_summary(data = ado, aes(x = mname, y = res), inherit.aes = FALSE,
+                 fun = mean, geom = "point", position = position_nudge(x =  nudge),
+                 shape = 23, size = 1.7, fill = "black", colour = "white", stroke = 0.3) +
     geom_hline(yintercept = 0, linetype = "dotted", colour = "grey45", linewidth = 0.4)
   if (blocks) {
     p <- p +
@@ -96,12 +112,14 @@ plot_data <- plot_data |>
   p +
     scale_fill_manual(values = .fk_cols, guide = "none") +
     labs(x = NULL,
-         y = expression(italic("Deviation from predicted indirect emissions (tCO"[2]*"e per person/year)"))) +
+         y = expression(italic("Deviation from predicted indirect emissions (tCO"[2]*"e per person/year)")),
+         caption = "Boxes: median & IQR  \u00b7  diamonds: means") +
     coord_flip(ylim = c(-6, 8.5), clip = "off") +
     theme_minimal(base_size = 11) +
     theme(panel.grid.major.y = element_blank(),
           panel.grid.minor    = element_blank(),
           axis.title.x = element_text(size = 10),
+          plot.caption = element_text(size = 8, colour = "grey40", hjust = 1),
           axis.text.y  = if (blocks) element_blank() else element_text(size = 10),
           axis.ticks.y = element_blank(),
           plot.margin  = margin(6, 14, 6, if (blocks) 70 else 6))
