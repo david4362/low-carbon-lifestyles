@@ -62,50 +62,32 @@ plot_data <- lm_cov_residuals |>
                                   "indirect_no_car"    ~ "Car-free",
                                   "indirect_no_flying" ~ "Flight-free",
                                   "indirect_no_meat"   ~ "Meat-free"),
-    mname     = factor(mname, levels = c("Meat-free", "Flight-free", "Car-free")),
+    mname     = factor(mname, levels = c("Car-free", "Flight-free", "Meat-free")),
     lifestyle = relevel(factor(if_else(lifestyle, "Adopter", "Non-adopter")),
                         ref = "Non-adopter")
   )
 
 # --- Plots ---------------------------------------------------------------
-# Shared design language: coloured lifestyle blocks, adopter half in the
-# lifestyle colour, non-adopter half in grey.
-.lvls_v   <- c("Meat-free", "Flight-free", "Car-free")          # bottom -> top
-.life_col <- c("Car-free" = "#4477AA", "Flight-free" = "#EE6677", "Meat-free" = "#228833")
-.fk_levels <- as.vector(rbind(paste(.lvls_v, "Non-adopter"), paste(.lvls_v, "Adopter")))
-.fk_cols   <- setNames(ifelse(grepl("Non-adopter", .fk_levels), "#cccccc",
-                              .life_col[sub(" Adopter", "", .fk_levels)]), .fk_levels)
-.grey_v <- "#ECECEC"
-
-plot_data <- plot_data |>
-  mutate(fk = factor(paste(mname, lifestyle), levels = .fk_levels))
-
-.violin_base <- function(data, show_y = TRUE) {
-  p <- ggplot(data, aes(x = mname, y = res, fill = fk)) +
-    geom_split_violin(alpha = 0.85, colour = "grey40", linewidth = 0.3) +
-    geom_boxplot(outliers = FALSE, width = 0.2, fill = "white", colour = "grey30", linewidth = 0.35) +
-    geom_hline(yintercept = 0, linetype = "dotted", colour = "grey45", linewidth = 0.4) +
-    scale_fill_manual(values = .fk_cols, guide = "none") +
-    labs(x = NULL,
-         y = expression(italic("Deviation from predicted indirect emissions (tCO"[2]*"e per person/year)")),
-         caption = "Box: median & IQR. Left half: Non-adopter (grey). Right half: Adopter (lifestyle colour).") +
-    coord_flip(ylim = c(-6, 8.5), clip = "off") +
-    theme_minimal(base_size = 11) +
-    theme(panel.grid.major.y = element_blank(),
-          panel.grid.minor    = element_blank(),
-          axis.title.x = element_text(size = 10),
-          plot.caption = element_text(size = 8, colour = "grey40", hjust = 0),
-          axis.text.y  = if (show_y) element_text(size = 10) else element_blank(),
-          axis.ticks.y = element_blank(),
-          plot.margin  = margin(6, 14, 6, 6))
-}
+.violin_base <- function(data) ggplot(data, aes(x = mname, y = res, fill = lifestyle)) +
+  geom_split_violin(alpha = 0.7) +
+  geom_boxplot(outliers = FALSE, width = 0.2, fill = "white", colour = "grey30") +
+  labs(x = NULL,
+       y = expression("Deviation from predicted indirect emissions (tCO"[2]*"e per person/year)"),
+       fill = NULL) +
+  scale_fill_manual(values = c(Adopter = "#4477AA", `Non-adopter` = "#cccccc"),
+                    breaks = c("Adopter", "Non-adopter")) +
+  ylim(-6, 8.5) +
+  coord_flip() +
+  theme_minimal(base_size = 11) +
+  theme(legend.position = "top",
+        panel.grid.major.y = element_blank())
 
 ggsave(file.path(output, "Residuals distribution ESI.png"),
-       .violin_base(plot_data, show_y = FALSE) + facet_grid(. ~ esi_tetrile),
+       .violin_base(plot_data) + facet_grid(. ~ esi_tetrile),
        units = "cm", width = 24, height = 14, bg = "white")
 ggsave(file.path(output, "Residuals distribution.png"),
        .violin_base(plot_data),
-       units = "cm", width = 16, height = 10, bg = "white")
+       units = "cm", width = 15, height = 12, bg = "white")
 
 
 .residual_table <- plot_data |>
