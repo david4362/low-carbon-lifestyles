@@ -68,29 +68,48 @@ plot_data <- lm_cov_residuals |>
   )
 
 # --- Plots ---------------------------------------------------------------
+.life_col <- c("Car-free" = "#4477AA", "Flight-free" = "#EE6677", "Meat-free" = "#228833")
+
+# fk gives each adopter half its lifestyle colour; non-adopter halves all grey
+.fk_levels <- c("Car-free Non-adopter", "Car-free Adopter",
+                 "Flight-free Non-adopter", "Flight-free Adopter",
+                 "Meat-free Non-adopter", "Meat-free Adopter")
+.fk_cols   <- c("Car-free Non-adopter" = "#cccccc", "Car-free Adopter" = "#4477AA",
+                 "Flight-free Non-adopter" = "#cccccc", "Flight-free Adopter" = "#EE6677",
+                 "Meat-free Non-adopter" = "#cccccc", "Meat-free Adopter" = "#228833")
+
+plot_data <- plot_data |>
+  mutate(fk = factor(paste(mname, lifestyle), levels = .fk_levels))
+
 .violin_base <- function(data) {
-  ggplot(data, aes(x = mname, y = res, fill = lifestyle)) +
+  ado <- filter(data, lifestyle == "Adopter")
+  nad <- filter(data, lifestyle == "Non-adopter")
+  # per-lifestyle adopter box colours
+  ado_cols <- .life_col[as.character(unique(ado$mname))]
+  ggplot(data, aes(x = mname, y = res, fill = fk)) +
     geom_split_violin(alpha = 0.7) +
-    geom_boxplot(data = filter(data, lifestyle == "Adopter"),
-                 aes(x = mname, y = res), inherit.aes = FALSE,
+    geom_boxplot(data = ado, aes(x = mname, y = res, fill = mname), inherit.aes = FALSE,
                  width = 0.15, position = position_nudge(x = 0.13),
-                 outliers = FALSE, fill = "#4477AA", colour = "grey20", linewidth = 0.4) +
-    geom_boxplot(data = filter(data, lifestyle == "Non-adopter"),
-                 aes(x = mname, y = res), inherit.aes = FALSE,
+                 outliers = FALSE, colour = "grey20", linewidth = 0.4) +
+    geom_boxplot(data = nad, aes(x = mname, y = res), inherit.aes = FALSE,
                  width = 0.15, position = position_nudge(x = -0.13),
                  outliers = FALSE, fill = "#cccccc", colour = "grey20", linewidth = 0.4) +
-    labs(x = "Lifestyle",
+    labs(x = NULL,
          y = expression("Deviation from predicted indirect emissions (tCO"[2]*"e per person/year)"),
-         fill = NULL,
-         caption = "Boxes show median and interquartile range for adopters and non-adopters separately.") +
-    scale_fill_manual(values = c(Adopter = "#4477AA", `Non-adopter` = "#cccccc"),
-                      breaks = c("Adopter", "Non-adopter")) +
+         fill = NULL) +
+    scale_fill_manual(
+      values = c(.fk_cols, .life_col),
+      breaks = c("Car-free Adopter", "Car-free Non-adopter"),
+      labels = c("Adopter", "Non-adopter"),
+      guide = guide_legend(override.aes = list(
+        fill = c("#4477AA", "#cccccc"), colour = "grey20"
+      ))
+    ) +
     ylim(-6, 8.5) +
     coord_flip() +
     theme_minimal(base_size = 11) +
     theme(legend.position = "top",
-          panel.grid.major.y = element_blank(),
-          plot.caption = element_text(size = 8, colour = "grey40", hjust = 0))
+          panel.grid.major.y = element_blank())
 }
 
 ggsave(file.path(output, "Residuals distribution ESI.png"),
