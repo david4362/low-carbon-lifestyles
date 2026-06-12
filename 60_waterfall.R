@@ -499,10 +499,10 @@ p_pres_esi <- ggplot(pres_esi) +
   geom_rect(data = bands_e, aes(ymin = yc - .off_esi, ymax = yc + .off_esi),
             xmin = -Inf, xmax = Inf,
             fill = "#ECECEC", color = NA, inherit.aes = FALSE) +
-  # coloured lifestyle blocks
+  # coloured lifestyle blocks — span full row height (both sub-rows)
   geom_rect(data = blocks_e,
             aes(xmin = blk_in_e, xmax = blk_out_e,
-                ymin = ctr - 0.6, ymax = ctr + 0.6, fill = category),
+                ymin = ctr - 2 * .off_esi, ymax = ctr + 2 * .off_esi, fill = category),
             color = NA, inherit.aes = FALSE) +
   geom_text(data = blocks_e,
             aes(x = (blk_in_e + blk_out_e) / 2, y = ctr, label = category),
