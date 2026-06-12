@@ -80,72 +80,32 @@ plot_data <- lm_cov_residuals |>
 plot_data <- plot_data |>
   mutate(fk = factor(paste(mname, lifestyle), levels = .fk_levels))
 
-.violin_base <- function(data, blocks = TRUE) {
-  blk <- data.frame(mname = factor(.lvls_v, levels = .lvls_v), pos = seq_along(.lvls_v))
-  nad <- dplyr::filter(data, lifestyle == "Non-adopter")
-  ado <- dplyr::filter(data, lifestyle == "Adopter")
-  nudge <- 0.17
+.violin_base <- function(data, show_y = TRUE) {
   p <- ggplot(data, aes(x = mname, y = res, fill = fk)) +
     geom_split_violin(alpha = 0.85, colour = "grey40", linewidth = 0.3) +
-    # median + IQR boxplots placed inside each violin half
-    geom_boxplot(data = nad, aes(x = mname, y = res), inherit.aes = FALSE,
-                 width = 0.12, position = position_nudge(x = -nudge),
-                 outliers = FALSE, fill = "white", colour = "grey25", linewidth = 0.35) +
-    geom_boxplot(data = ado, aes(x = mname, y = res), inherit.aes = FALSE,
-                 width = 0.12, position = position_nudge(x =  nudge),
-                 outliers = FALSE, fill = "white", colour = "grey25", linewidth = 0.35) +
-    # mean markers inside each half
-    stat_summary(data = nad, aes(x = mname, y = res), inherit.aes = FALSE,
-                 fun = mean, geom = "point", position = position_nudge(x = -nudge),
-                 shape = 23, size = 1.7, fill = "black", colour = "white", stroke = 0.3) +
-    stat_summary(data = ado, aes(x = mname, y = res), inherit.aes = FALSE,
-                 fun = mean, geom = "point", position = position_nudge(x =  nudge),
-                 shape = 23, size = 1.7, fill = "black", colour = "white", stroke = 0.3) +
-    geom_hline(yintercept = 0, linetype = "dotted", colour = "grey45", linewidth = 0.4)
-  if (blocks) {
-    p <- p +
-      geom_rect(data = blk, aes(xmin = pos - 0.46, xmax = pos + 0.46),
-                ymin = -9.4, ymax = -6.7, fill = .life_col[.lvls_v], inherit.aes = FALSE) +
-      geom_text(data = blk, aes(x = pos, y = -8.05, label = mname),
-                colour = "white", fontface = "bold", size = 4.0, inherit.aes = FALSE)
-  }
-  p +
+    geom_boxplot(outliers = FALSE, width = 0.2, fill = "white", colour = "grey30", linewidth = 0.35) +
+    geom_hline(yintercept = 0, linetype = "dotted", colour = "grey45", linewidth = 0.4) +
     scale_fill_manual(values = .fk_cols, guide = "none") +
     labs(x = NULL,
          y = expression(italic("Deviation from predicted indirect emissions (tCO"[2]*"e per person/year)")),
-         caption = "Boxes: median & IQR  \u00b7  diamonds: means") +
+         caption = "Box: median & IQR. Left half: Non-adopter (grey). Right half: Adopter (lifestyle colour).") +
     coord_flip(ylim = c(-6, 8.5), clip = "off") +
     theme_minimal(base_size = 11) +
     theme(panel.grid.major.y = element_blank(),
           panel.grid.minor    = element_blank(),
           axis.title.x = element_text(size = 10),
-          plot.caption = element_text(size = 8, colour = "grey40", hjust = 1),
-          axis.text.y  = if (blocks) element_blank() else element_text(size = 10),
+          plot.caption = element_text(size = 8, colour = "grey40", hjust = 0),
+          axis.text.y  = if (show_y) element_text(size = 10) else element_blank(),
           axis.ticks.y = element_blank(),
-          plot.margin  = margin(6, 14, 6, if (blocks) 70 else 6))
+          plot.margin  = margin(6, 14, 6, 6))
 }
 
-# Custom legend: split glyph (grey = Non-adopter, lifestyle colour = Adopter)
-legend_v <- ggplot() + xlim(0, 12) + ylim(0, 1) +
-  annotate("rect", xmin = 2.0, xmax = 2.6, ymin = 0.34, ymax = 0.66, fill = "#cccccc") +
-  annotate("text", x = 2.75, y = 0.5, label = "Non-adopter", hjust = 0,
-           fontface = "italic", size = 3.8) +
-  annotate("rect", xmin = 5.6, xmax = 5.73, ymin = 0.34, ymax = 0.66, fill = "#4477AA") +
-  annotate("rect", xmin = 5.73, xmax = 5.86, ymin = 0.34, ymax = 0.66, fill = "#EE6677") +
-  annotate("rect", xmin = 5.86, xmax = 5.99, ymin = 0.34, ymax = 0.66, fill = "#228833") +
-  annotate("text", x = 6.14, y = 0.5, label = "Adopter (lifestyle colour)", hjust = 0,
-           fontface = "italic", size = 3.8) +
-  theme_void() +
-  theme(plot.margin = margin(2, 6, 0, 6),
-        panel.border = element_rect(colour = "grey75", fill = NA, linewidth = 0.4))
-
 ggsave(file.path(output, "Residuals distribution ESI.png"),
-       legend_v / (.violin_base(plot_data, blocks = FALSE) + facet_grid(. ~ esi_tetrile)) +
-         plot_layout(heights = c(1, 13)),
+       .violin_base(plot_data, show_y = FALSE) + facet_grid(. ~ esi_tetrile),
        units = "cm", width = 24, height = 14, bg = "white")
 ggsave(file.path(output, "Residuals distribution.png"),
-       legend_v / .violin_base(plot_data) + plot_layout(heights = c(1, 13)),
-       units = "cm", width = 16, height = 12, bg = "white")
+       .violin_base(plot_data),
+       units = "cm", width = 16, height = 10, bg = "white")
 
 
 .residual_table <- plot_data |>
