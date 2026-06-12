@@ -99,10 +99,13 @@ plot_data <- plot_data |>
          fill = NULL) +
     scale_fill_manual(
       values = c(.fk_cols, .life_col),
-      breaks = c("Car-free Adopter", "Car-free Non-adopter"),
-      labels = c("Adopter", "Non-adopter"),
+      breaks = c("Car-free Adopter", "Flight-free Adopter", "Meat-free Adopter",
+                 "Car-free Non-adopter"),
+      labels = c("Car-free adopter", "Flight-free adopter", "Meat-free adopter",
+                 "Non-adopter"),
       guide = guide_legend(override.aes = list(
-        fill = c("#4477AA", "#cccccc"), colour = "grey20"
+        fill = c("#4477AA", "#EE6677", "#228833", "#cccccc"),
+        colour = "grey20"
       ))
     ) +
     ylim(-6, 8.5) +
