@@ -97,29 +97,34 @@ plot_data <- plot_data |>
     labs(x = NULL,
          y = expression("Deviation from predicted indirect emissions (tCO"[2]*"e per person/year)"),
          fill = NULL) +
-    scale_fill_manual(
-      values = c(.fk_cols, .life_col),
-      breaks = c("Car-free Adopter", "Flight-free Adopter", "Meat-free Adopter",
-                 "Car-free Non-adopter"),
-      labels = c("Car-free adopter", "Flight-free adopter", "Meat-free adopter",
-                 "Non-adopter"),
-      guide = guide_legend(override.aes = list(
-        fill = c("#4477AA", "#EE6677", "#228833", "#cccccc"),
-        colour = "grey20"
-      ))
-    ) +
+    scale_fill_manual(values = c(.fk_cols, .life_col), guide = "none") +
     ylim(-6, 8.5) +
     coord_flip() +
     theme_minimal(base_size = 11) +
-    theme(legend.position = "top",
+    theme(legend.position = "none",
           panel.grid.major.y = element_blank())
 }
 
+# Hand-drawn legend: tri-colour adopter swatch + grey non-adopter swatch
+legend_v2 <- ggplot() + xlim(0, 12) + ylim(0, 1) +
+  annotate("rect", xmin = 2.0, xmax = 2.27, ymin = 0.30, ymax = 0.70, fill = "#4477AA") +
+  annotate("rect", xmin = 2.27, xmax = 2.54, ymin = 0.30, ymax = 0.70, fill = "#EE6677") +
+  annotate("rect", xmin = 2.54, xmax = 2.81, ymin = 0.30, ymax = 0.70, fill = "#228833") +
+  annotate("text", x = 2.96, y = 0.5, label = "Adopter", hjust = 0,
+           fontface = "italic", size = 3.8) +
+  annotate("rect", xmin = 6.0, xmax = 6.6, ymin = 0.30, ymax = 0.70, fill = "#cccccc") +
+  annotate("text", x = 6.75, y = 0.5, label = "Non-adopter", hjust = 0,
+           fontface = "italic", size = 3.8) +
+  theme_void() +
+  theme(plot.margin = margin(2, 6, 0, 6),
+        panel.border = element_rect(colour = "grey75", fill = NA, linewidth = 0.4))
+
 ggsave(file.path(output, "Residuals distribution ESI.png"),
-       .violin_base(plot_data) + facet_grid(. ~ esi_tetrile),
+       legend_v2 / (.violin_base(plot_data) + facet_grid(. ~ esi_tetrile)) +
+         plot_layout(heights = c(1, 13)),
        units = "cm", width = 24, height = 14, bg = "white")
 ggsave(file.path(output, "Residuals distribution.png"),
-       .violin_base(plot_data),
+       legend_v2 / .violin_base(plot_data) + plot_layout(heights = c(1, 13)),
        units = "cm", width = 15, height = 12, bg = "white")
 
 
