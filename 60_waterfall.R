@@ -495,9 +495,9 @@ blocks_e <- data.frame(category = factor(.lvl_esi, levels = .lvl_esi),
 bands_e  <- pres_esi |> filter(scenario == "high_esi") |> distinct(category, yc)
 
 p_pres_esi <- ggplot(pres_esi) +
-  # grey band behind High ESI sub-rows
+  # grey band behind High ESI sub-rows — capped at panel edge (blk_in_e) to avoid bleeding into colored blocks
   geom_rect(data = bands_e, aes(ymin = yc - .off_esi, ymax = yc + .off_esi),
-            xmin = -Inf, xmax = Inf,
+            xmin = right_lim, xmax = blk_in_e,
             fill = "#ECECEC", color = NA, inherit.aes = FALSE) +
   # coloured lifestyle blocks — span full row height (both sub-rows)
   geom_rect(data = blocks_e,
