@@ -165,7 +165,7 @@ make_panel <- function(ls, show_y = TRUE, show_bracket = FALSE) {
     scale_fill_manual(values = esi_cols[[ls]], name = NULL, guide = "none") +
     labs(x = NULL,
          y = if (ls == "Flight-free")
-               expression("Difference in emission (tCO"[2]*"e per person/year)")
+               expression("Difference in indirect emissions (tCO"[2]*"e per person/year)")
              else NULL) +
     theme_minimal(base_size = 12.5) +
     theme(
@@ -177,15 +177,15 @@ make_panel <- function(ls, show_y = TRUE, show_bracket = FALSE) {
       strip.text         = element_text(face = "bold", size = 13.5, colour = "white"),
       axis.text.x  = element_text(size = 10.5),
       axis.title.x = element_text(size = 12),
-      axis.text.y  = if (show_y) element_text(size = 11) else element_blank(),
+      axis.text.y  = if (show_y) element_text(size = 13) else element_blank(),
       axis.ticks.y = if (show_y) element_line() else element_blank(),
       legend.position = "none",
-      plot.margin = margin(4, if (show_bracket) 118 else 6, 4, if (show_y) 4 else 2)
+      plot.margin = margin(4, if (show_bracket) 130 else 6, 4, if (show_y) 4 else 2)
     )
 
   # Right-hand group brackets (only on the rightmost panel)
   if (show_bracket) {
-    bx  <- x_lim * 1.12          # bracket spine position (estimate units)
+    bx   <- x_lim * 1.14
     tick <- x_lim * 0.045
     p <- p +
       annotate("segment", x = sep_y + 0.1, xend = n_cat + 0.45,
@@ -194,7 +194,7 @@ make_panel <- function(ls, show_y = TRUE, show_bracket = FALSE) {
                y = bx, yend = bx - tick, colour = "grey45", linewidth = 0.4) +
       annotate("segment", x = n_cat + 0.45, xend = n_cat + 0.45,
                y = bx, yend = bx - tick, colour = "grey45", linewidth = 0.4) +
-      annotate("text", x = (sep_y + 0.1 + n_cat + 0.45) / 2, y = bx + tick * 1.5,
+      annotate("text", x = (sep_y + 0.1 + n_cat + 0.45) / 2, y = bx + tick * 3.0,
                label = "Focal\ndomains", angle = -90, size = 3.8,
                colour = "grey35", lineheight = 0.9) +
       annotate("segment", x = 0.55, xend = sep_y - 0.1,
@@ -203,7 +203,7 @@ make_panel <- function(ls, show_y = TRUE, show_bracket = FALSE) {
                y = bx, yend = bx - tick, colour = "grey45", linewidth = 0.4) +
       annotate("segment", x = sep_y - 0.1, xend = sep_y - 0.1,
                y = bx, yend = bx - tick, colour = "grey45", linewidth = 0.4) +
-      annotate("text", x = (0.55 + sep_y - 0.1) / 2, y = bx + tick * 1.5,
+      annotate("text", x = (0.55 + sep_y - 0.1) / 2, y = bx + tick * 3.0,
                label = "Remaining\ncategories", angle = -90, size = 3.8,
                colour = "grey35", lineheight = 0.9)
   }
@@ -235,7 +235,7 @@ p <- legend_plot / p_panels + plot_layout(heights = c(1, 14))
 
 ggsave(
   file.path("results", "category_decomposition_esi.png"),
-  plot = p, width = 15.4, height = 7.6, dpi = 300, bg = "white"
+  plot = p, width = 18.0, height = 8.0, dpi = 300, bg = "white"
 )
 
 cat("Saved: results/category_decomposition_esi.png\n")
