@@ -494,12 +494,15 @@ yo_ind_e <- -0.13
 
 blocks_e <- data.frame(category = factor(.lvl_esi, levels = .lvl_esi),
                        ctr = .ctr_esi[.lvl_esi])
-bands_e  <- pres_esi |> filter(scenario == "high_esi") |> distinct(category, yc)
+# x bounds embedded in the data so scale_x_reverse transforms them correctly
+bands_e  <- pres_esi |> filter(scenario == "high_esi") |> distinct(category, yc) |>
+  mutate(xlo = right_lim, xhi = blk_in_e)
 
 p_pres_esi <- ggplot(pres_esi) +
-  # grey band behind High ESI sub-rows — capped at panel edge (blk_in_e) to avoid bleeding into colored blocks
-  geom_rect(data = bands_e, aes(ymin = yc - .off_esi, ymax = yc + .off_esi),
-            xmin = right_lim, xmax = blk_in_e,
+  # grey band behind High ESI sub-rows — all aesthetics in aes() so scale_x_reverse
+  # applies the reversal transformation to xmin/xmax correctly
+  geom_rect(data = bands_e,
+            aes(xmin = xlo, xmax = xhi, ymin = yc - .off_esi, ymax = yc + .off_esi),
             fill = "#ECECEC", color = NA, inherit.aes = FALSE) +
   # row top/bottom borders — geom_hline spans full panel width reliably
   geom_hline(yintercept = c(.ctr_esi - 2 * .off_esi, .ctr_esi + 2 * .off_esi),
