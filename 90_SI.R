@@ -115,10 +115,10 @@ legend_v2 <- ggplot() + xlim(0, 12) + ylim(0, 1) +
   annotate("rect", xmin = 6.0, xmax = 6.6, ymin = 0.30, ymax = 0.70, fill = "#cccccc") +
   annotate("text", x = 6.75, y = 0.5, label = "Non-adopter", hjust = 0,
            fontface = "italic", size = 3.8) +
-  annotate("rect", xmin = 1.7, xmax = 9.1, ymin = 0.27, ymax = 0.73,
+  annotate("rect", xmin = 1.7, xmax = 9.1, ymin = 0.18, ymax = 0.82,
            color = "grey75", fill = NA, linewidth = 0.4) +
   theme_void() +
-  theme(plot.margin = margin(2, 6, 0, 6))
+  theme(plot.margin = margin(4, 6, 2, 6))
 
 ggsave(file.path(output, "Residuals distribution ESI.png"),
        legend_v2 / (.violin_base(plot_data) + facet_grid(. ~ esi_tetrile)) +

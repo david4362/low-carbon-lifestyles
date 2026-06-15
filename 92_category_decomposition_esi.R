@@ -195,7 +195,7 @@ make_panel <- function(ls, show_y = TRUE, show_bracket = FALSE) {
       annotate("segment", x = n_cat + 0.45, xend = n_cat + 0.45,
                y = bx, yend = bx - tick, colour = "grey45", linewidth = 0.4) +
       annotate("text", x = (sep_y + 0.1 + n_cat + 0.45) / 2, y = bx + tick * 3.0,
-               label = "Focal\ndomains", angle = -90, size = 3.8,
+               label = "Focus\ndomains", angle = -90, size = 3.8,
                colour = "grey35", lineheight = 0.9) +
       annotate("segment", x = 0.55, xend = sep_y - 0.1,
                y = bx, yend = bx, colour = "grey45", linewidth = 0.4) +
@@ -204,27 +204,28 @@ make_panel <- function(ls, show_y = TRUE, show_bracket = FALSE) {
       annotate("segment", x = sep_y - 0.1, xend = sep_y - 0.1,
                y = bx, yend = bx - tick, colour = "grey45", linewidth = 0.4) +
       annotate("text", x = (0.55 + sep_y - 0.1) / 2, y = bx + tick * 3.0,
-               label = "Remaining\ncategories", angle = -90, size = 3.8,
+               label = "Remaining\nconsumption", angle = -90, size = 3.8,
                colour = "grey35", lineheight = 0.9)
   }
   p
 }
 
-# Custom legend: N/A dash, High ESI (dark), Low ESI (light)
-legend_plot <- ggplot() + xlim(0, 12) + ylim(0, 1) +
-  annotate("segment", x = 3.0, xend = 3.6, y = 0.5, yend = 0.5,
+# Custom legend: "Direct effect omitted" dash, High ESI (dark), Low ESI (light)
+legend_plot <- ggplot() + xlim(0, 15) + ylim(0, 1) +
+  annotate("segment", x = 0.6, xend = 1.2, y = 0.5, yend = 0.5,
            colour = "grey55", linewidth = 0.9) +
-  annotate("text", x = 3.8, y = 0.5, label = "N/A", hjust = 0,
+  annotate("text", x = 1.4, y = 0.5, label = "Direct effect omitted", hjust = 0,
            fontface = "italic", size = 4.2) +
-  annotate("rect", xmin = 5.2, xmax = 5.8, ymin = 0.34, ymax = 0.66, fill = "#555555") +
-  annotate("text", x = 5.95, y = 0.5, label = "High ESI", hjust = 0,
+  annotate("rect", xmin = 6.8, xmax = 7.4, ymin = 0.34, ymax = 0.66, fill = "#555555") +
+  annotate("text", x = 7.55, y = 0.5, label = "High ESI", hjust = 0,
            fontface = "italic", size = 4.2) +
-  annotate("rect", xmin = 7.8, xmax = 8.4, ymin = 0.34, ymax = 0.66, fill = "#BBBBBB") +
-  annotate("text", x = 8.55, y = 0.5, label = "Low ESI", hjust = 0,
+  annotate("rect", xmin = 10.2, xmax = 10.8, ymin = 0.34, ymax = 0.66, fill = "#BBBBBB") +
+  annotate("text", x = 10.95, y = 0.5, label = "Low ESI", hjust = 0,
            fontface = "italic", size = 4.2) +
+  annotate("rect", xmin = 0.3, xmax = 14.7, ymin = 0.18, ymax = 0.82,
+           color = "grey75", fill = NA, linewidth = 0.4) +
   theme_void() +
-  theme(plot.margin = margin(2, 6, 0, 6),
-        panel.border = element_rect(colour = "grey75", fill = NA, linewidth = 0.4))
+  theme(plot.margin = margin(4, 6, 2, 6))
 
 p_panels <- make_panel("Car-free", TRUE) +
             make_panel("Flight-free", FALSE) +

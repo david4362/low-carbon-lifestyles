@@ -372,12 +372,9 @@ yo_brk <-  0.31; yo_num <- 0.41          # bracket + number
 brk <- pres_main |> filter(diff_lab != "")
 
 p_pres_main <- ggplot(pres_main) +
-  # per-lifestyle row border boxes (replace flat separator lines)
-  geom_rect(data = distinct(pres_main, yc),
-            aes(ymin = yc - 0.44, ymax = yc + 0.44),
-            xmin = base_x * 1.8, xmax = blk_in,
-            fill = NA, color = "grey75", linewidth = 0.3,
-            inherit.aes = FALSE) +
+  # row top/bottom borders — geom_hline spans full panel width reliably
+  geom_hline(yintercept = c(.yc_main - 0.44, .yc_main + 0.44),
+             color = "grey75", linewidth = 0.3) +
   # grey "emission difference" box (drawn first, behind everything)
   geom_rect(aes(xmin = box_lo, xmax = box_hi,
                 ymin = yc + yo_blo, ymax = yc + yo_bhi),
@@ -458,10 +455,10 @@ legend_plot <- ggplot() + xlim(0, 14.6) + ylim(0, 1) +
   annotate("rect", xmin = 11.7, xmax = 12.4, ymin = 0.34, ymax = 0.66, fill = .grey_box) +
   annotate("text", x = 12.55, y = 0.5, label = "Emission difference",
            hjust = 0, fontface = "italic", size = 3.8) +
-  annotate("rect", xmin = 0.1, xmax = 14.5, ymin = 0.27, ymax = 0.73,
+  annotate("rect", xmin = 0.1, xmax = 14.5, ymin = 0.18, ymax = 0.82,
            color = "grey75", fill = NA, linewidth = 0.4) +
   theme_void() +
-  theme(plot.margin = margin(2, 10, 0, 6))
+  theme(plot.margin = margin(4, 10, 2, 6))
 
 p_pres_main_full <- legend_plot / p_pres_main + plot_layout(heights = c(1, 13))
 
@@ -504,12 +501,9 @@ p_pres_esi <- ggplot(pres_esi) +
   geom_rect(data = bands_e, aes(ymin = yc - .off_esi, ymax = yc + .off_esi),
             xmin = right_lim, xmax = blk_in_e,
             fill = "#ECECEC", color = NA, inherit.aes = FALSE) +
-  # per-lifestyle row border boxes anchoring each row to the axis
-  geom_rect(data = blocks_e,
-            aes(ymin = ctr - 2 * .off_esi, ymax = ctr + 2 * .off_esi),
-            xmin = right_lim, xmax = blk_in_e,
-            fill = NA, color = "grey75", linewidth = 0.3,
-            inherit.aes = FALSE) +
+  # row top/bottom borders — geom_hline spans full panel width reliably
+  geom_hline(yintercept = c(.ctr_esi - 2 * .off_esi, .ctr_esi + 2 * .off_esi),
+             color = "grey75", linewidth = 0.3) +
   # coloured lifestyle blocks — span full row height (both sub-rows)
   geom_rect(data = blocks_e,
             aes(xmin = blk_in_e, xmax = blk_out_e,
@@ -562,10 +556,10 @@ legend_esi <- ggplot() + xlim(0, 14.6) + ylim(0, 1) +
            color = "#333333", linewidth = 1.3) +
   annotate("text", x = 13.25, y = 0.5, label = "Direct effect",
            hjust = 0, fontface = "italic", size = 3.8) +
-  annotate("rect", xmin = 8.5, xmax = 14.5, ymin = 0.27, ymax = 0.73,
+  annotate("rect", xmin = 8.5, xmax = 14.5, ymin = 0.18, ymax = 0.82,
            color = "grey75", fill = NA, linewidth = 0.4) +
   theme_void() +
-  theme(plot.margin = margin(2, 10, 0, 6))
+  theme(plot.margin = margin(4, 10, 2, 6))
 
 p_pres_esi_full <- legend_esi / p_pres_esi + plot_layout(heights = c(1, 13))
 
