@@ -372,8 +372,12 @@ yo_brk <-  0.31; yo_num <- 0.41          # bracket + number
 brk <- pres_main |> filter(diff_lab != "")
 
 p_pres_main <- ggplot(pres_main) +
-  # thin separators between lifestyle rows
-  geom_hline(yintercept = c(1.5, 2.5), color = "grey85", linewidth = 0.4) +
+  # per-lifestyle row border boxes (replace flat separator lines)
+  geom_rect(data = distinct(pres_main, yc),
+            aes(ymin = yc - 0.44, ymax = yc + 0.44),
+            xmin = base_x * 1.8, xmax = blk_in,
+            fill = NA, color = "grey75", linewidth = 0.3,
+            inherit.aes = FALSE) +
   # grey "emission difference" box (drawn first, behind everything)
   geom_rect(aes(xmin = box_lo, xmax = box_hi,
                 ymin = yc + yo_blo, ymax = yc + yo_bhi),
@@ -422,7 +426,7 @@ p_pres_main <- ggplot(pres_main) +
   scale_x_reverse(breaks = seq(0, x_top, 0.5),
                   labels = function(x) ifelse(x == 0, "0.0", paste0("\u2212", sprintf("%.1f", x))),
                   limits = c(blk_out * 1.02, base_x * 1.8)) +
-  scale_y_continuous(limits = c(0.45, 3.65), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0.52, 3.48), expand = c(0, 0)) +
   coord_cartesian(clip = "off") +
   labs(x = expression(italic("Difference in emission (tCO"[2]*"e per person/year)")),
        y = NULL) +
@@ -454,14 +458,15 @@ legend_plot <- ggplot() + xlim(0, 14.6) + ylim(0, 1) +
   annotate("rect", xmin = 11.7, xmax = 12.4, ymin = 0.34, ymax = 0.66, fill = .grey_box) +
   annotate("text", x = 12.55, y = 0.5, label = "Emission difference",
            hjust = 0, fontface = "italic", size = 3.8) +
+  annotate("rect", xmin = 0.1, xmax = 14.5, ymin = 0.27, ymax = 0.73,
+           color = "grey75", fill = NA, linewidth = 0.4) +
   theme_void() +
-  theme(plot.margin = margin(2, 10, 0, 6),
-        panel.border = element_rect(color = "grey75", fill = NA, linewidth = 0.4))
+  theme(plot.margin = margin(2, 10, 0, 6))
 
 p_pres_main_full <- legend_plot / p_pres_main + plot_layout(heights = c(1, 13))
 
 ggsave(file.path(output, "Waterfall_pres_main.png"), p_pres_main_full,
-       units = "cm", width = 24, height = 13, dpi = 200, bg = "white")
+       units = "cm", width = 24, height = 10, dpi = 200, bg = "white")
 
 # ---- Presentation ESI plot (FIGURE 3 design) --------------------------
 # Per lifestyle: two sub-rows (High ESI = dark shade on a grey band, Low ESI =
@@ -499,6 +504,12 @@ p_pres_esi <- ggplot(pres_esi) +
   geom_rect(data = bands_e, aes(ymin = yc - .off_esi, ymax = yc + .off_esi),
             xmin = right_lim, xmax = blk_in_e,
             fill = "#ECECEC", color = NA, inherit.aes = FALSE) +
+  # per-lifestyle row border boxes anchoring each row to the axis
+  geom_rect(data = blocks_e,
+            aes(ymin = ctr - 2 * .off_esi, ymax = ctr + 2 * .off_esi),
+            xmin = right_lim, xmax = blk_in_e,
+            fill = NA, color = "grey75", linewidth = 0.3,
+            inherit.aes = FALSE) +
   # coloured lifestyle blocks — span full row height (both sub-rows)
   geom_rect(data = blocks_e,
             aes(xmin = blk_in_e, xmax = blk_out_e,
@@ -529,7 +540,7 @@ p_pres_esi <- ggplot(pres_esi) +
                     ifelse(x > 0, paste0("\u2212", sprintf("%.1f", x)),
                            paste0("+", sprintf("%.1f", abs(x))))),
                   limits = c(blk_out_e * 1.02, right_lim)) +
-  scale_y_continuous(limits = c(0.0, 6.0), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0.28, 5.72), expand = c(0, 0)) +
   coord_cartesian(clip = "off") +
   labs(x = expression(italic("Difference in emission (tCO"[2]*"e per person/year)")),
        y = NULL) +
@@ -551,14 +562,15 @@ legend_esi <- ggplot() + xlim(0, 14.6) + ylim(0, 1) +
            color = "#333333", linewidth = 1.3) +
   annotate("text", x = 13.25, y = 0.5, label = "Direct effect",
            hjust = 0, fontface = "italic", size = 3.8) +
+  annotate("rect", xmin = 8.5, xmax = 14.5, ymin = 0.27, ymax = 0.73,
+           color = "grey75", fill = NA, linewidth = 0.4) +
   theme_void() +
-  theme(plot.margin = margin(2, 10, 0, 6),
-        panel.border = element_rect(color = "grey75", fill = NA, linewidth = 0.4))
+  theme(plot.margin = margin(2, 10, 0, 6))
 
 p_pres_esi_full <- legend_esi / p_pres_esi + plot_layout(heights = c(1, 13))
 
 ggsave(file.path(output, "Waterfall_pres_esi.png"), p_pres_esi_full,
-       units = "cm", width = 22, height = 13, dpi = 200, bg = "white")
+       units = "cm", width = 22, height = 10, dpi = 200, bg = "white")
 
 # ---- Optional variants -------------------------------------------------
 if (isTRUE(export_waterfall_variants)) {
