@@ -30,6 +30,10 @@
 ###############################################################################
 
 # ---- Working dir + packages -----------------------------------------------
+# keep.source must stay ON so getSrcDirectory() works inside sourced scripts
+# (the canonical load_data.R uses it to find broad-category.csv next to
+# itself; without this it resolves to NA when run non-interactively).
+options(keep.source = TRUE)
 script_dir <- tryCatch(getSrcDirectory(function(){})[1], error = function(e) NA_character_)
 if (is.na(script_dir) || !nzchar(script_dir)) {
   if      (file.exists("10_load_data.R"))      script_dir <- getwd()
@@ -37,6 +41,14 @@ if (is.na(script_dir) || !nzchar(script_dir)) {
   else if (file.exists("Code/10_load_data.R")) script_dir <- file.path(getwd(), "Code")
 }
 if (!is.na(script_dir) && nzchar(script_dir)) setwd(script_dir)
+
+# Remember the code folder as an ABSOLUTE path. The canonical data loader
+# (sourced in Step 1) does a setwd() to the raw-data folder and does not
+# restore it; without this, later source_R() calls and output/ writes would
+# resolve against the wrong directory. source_R() and the load step below use
+# CODE_DIR to stay anchored here.
+CODE_DIR <- normalizePath(getwd(), winslash = "/", mustWork = FALSE)
+options(konsumtion.code_dir = CODE_DIR)
 
 required_packages <- c(
   "dplyr","stringr","purrr","tidyr","readr","haven","readxl","clock",
@@ -91,6 +103,9 @@ if (file.exists("02_csv_table_png.R") || file.exists("R/02_csv_table_png.R")) {
 # ===========================================================================
 cat("--- [1/7] Loading data ---\n")
 source_R("10_load_data.R")
+# The canonical loader may setwd() to the raw-data folder; return to the code
+# folder so the rest of the pipeline finds its scripts and writes output/ here.
+if (!is.null(getOption("konsumtion.code_dir"))) setwd(getOption("konsumtion.code_dir"))
 if (!exists("output") || is.null(output) || !nzchar(output)) output <- "output"
 dir.create(output, recursive = TRUE, showWarnings = FALSE)
 cat(sprintf("  Users: %d | Transactions: %d | Survey: %d | Income records: %d\n",
@@ -133,11 +148,17 @@ source_R("40_interactions.R")        # writes interaction regressions co2e/kr.cs
 cat("--- [5/7] Running category regressions ---\n")
 source_R("50_regressions.R")         # writes category regression co2e/kr.csv
 cat("--- [6/7] Creating waterfall plot ---\n")
-output <- output_dir; source_R("60_waterfall.R")
+output <- output_dir
+tryCatch(source_R("60_waterfall.R"),
+         error = function(e) cat(sprintf("  STEP 6 FAILED (60_waterfall.R): %s\n", conditionMessage(e))))
 cat("--- [6b/7] Creating vertical waterfall plots ---\n")
-output <- output_dir; source_R("61_waterfall_vertical.R")
+output <- output_dir
+tryCatch(source_R("61_waterfall_vertical.R"),
+         error = function(e) cat(sprintf("  STEP 6b FAILED (61_waterfall_vertical.R): %s\n", conditionMessage(e))))
 cat("--- [7/7] Creating S7 plots ---\n")
-output <- output_dir; source_R("70_S7.R")
+output <- output_dir
+tryCatch(source_R("70_S7.R"),
+         error = function(e) cat(sprintf("  STEP 7 FAILED (70_S7.R): %s\n", conditionMessage(e))))
 output <- output_dir
 cat("\n====== Main pipeline complete ======\nResults saved to:", output, "\n\n")
 

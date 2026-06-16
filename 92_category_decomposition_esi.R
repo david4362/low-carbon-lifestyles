@@ -167,20 +167,20 @@ make_panel <- function(ls, show_y = TRUE, show_bracket = FALSE) {
          y = if (ls == "Flight-free")
                expression("Difference in indirect emissions (tCO"[2]*"e per person/year)")
              else NULL) +
-    theme_minimal(base_size = 12.5) +
+    theme_minimal(base_size = 16.5) +
     theme(
       panel.background   = element_blank(),
       panel.border       = element_rect(colour = "grey80", fill = NA, linewidth = 0.3),
       panel.grid.major.y = element_blank(),
       panel.grid.minor   = element_blank(),
       strip.background   = element_rect(fill = strip_bg[ls], colour = NA),
-      strip.text         = element_text(face = "bold", size = 13.5, colour = "white"),
-      axis.text.x  = element_text(size = 10.5),
-      axis.title.x = element_text(size = 12),
-      axis.text.y  = if (show_y) element_text(size = 13) else element_blank(),
+      strip.text         = element_text(face = "bold", size = 17.5, colour = "white"),
+      axis.text.x  = element_text(size = 14),
+      axis.title.x = element_text(size = 15.5),
+      axis.text.y  = if (show_y) element_text(size = 16.5) else element_blank(),
       axis.ticks.y = if (show_y) element_line() else element_blank(),
       legend.position = "none",
-      plot.margin = margin(4, if (show_bracket) 130 else 6, 4, if (show_y) 4 else 2)
+      plot.margin = margin(6, if (show_bracket) 175 else 8, 6, if (show_y) 6 else 4)
     )
 
   # Right-hand group brackets (only on the rightmost panel)
@@ -195,7 +195,7 @@ make_panel <- function(ls, show_y = TRUE, show_bracket = FALSE) {
       annotate("segment", x = n_cat + 0.45, xend = n_cat + 0.45,
                y = bx, yend = bx - tick, colour = "grey45", linewidth = 0.4) +
       annotate("text", x = (sep_y + 0.1 + n_cat + 0.45) / 2, y = bx + tick * 3.0,
-               label = "Focus\ndomains", angle = -90, size = 3.8,
+               label = "Focus\ndomains", angle = -90, size = 6.2,
                colour = "grey35", lineheight = 0.9) +
       annotate("segment", x = 0.55, xend = sep_y - 0.1,
                y = bx, yend = bx, colour = "grey45", linewidth = 0.4) +
@@ -204,7 +204,7 @@ make_panel <- function(ls, show_y = TRUE, show_bracket = FALSE) {
       annotate("segment", x = sep_y - 0.1, xend = sep_y - 0.1,
                y = bx, yend = bx - tick, colour = "grey45", linewidth = 0.4) +
       annotate("text", x = (0.55 + sep_y - 0.1) / 2, y = bx + tick * 3.0,
-               label = "Remaining\nconsumption", angle = -90, size = 3.8,
+               label = "Remaining\nconsumption", angle = -90, size = 6.2,
                colour = "grey35", lineheight = 0.9)
   }
   p
@@ -215,28 +215,28 @@ legend_plot <- ggplot() + xlim(0, 15) + ylim(0, 1) +
   annotate("segment", x = 0.6, xend = 1.2, y = 0.5, yend = 0.5,
            colour = "grey55", linewidth = 0.9) +
   annotate("text", x = 1.4, y = 0.5, label = "Direct effect omitted", hjust = 0,
-           fontface = "italic", size = 4.2) +
+           fontface = "italic", size = 6.2) +
   annotate("rect", xmin = 6.8, xmax = 7.4, ymin = 0.34, ymax = 0.66, fill = "#555555") +
   annotate("text", x = 7.55, y = 0.5, label = "High ESI", hjust = 0,
-           fontface = "italic", size = 4.2) +
+           fontface = "italic", size = 6.2) +
   annotate("rect", xmin = 10.2, xmax = 10.8, ymin = 0.34, ymax = 0.66, fill = "#BBBBBB") +
   annotate("text", x = 10.95, y = 0.5, label = "Low ESI", hjust = 0,
-           fontface = "italic", size = 4.2) +
+           fontface = "italic", size = 6.2) +
   annotate("rect", xmin = 0.3, xmax = 14.7, ymin = 0.18, ymax = 0.82,
            color = "grey75", fill = NA, linewidth = 0.4) +
   theme_void() +
-  theme(plot.margin = margin(4, 6, 2, 6))
+  theme(plot.margin = margin(6, 8, 4, 8))
 
 p_panels <- make_panel("Car-free", TRUE) +
             make_panel("Flight-free", FALSE) +
             make_panel("Meat-free", FALSE, show_bracket = TRUE) +
   plot_layout(ncol = 3)
 
-p <- legend_plot / p_panels + plot_layout(heights = c(1, 14))
+p <- legend_plot / p_panels + plot_layout(heights = c(1.4, 14))
 
 ggsave(
   file.path("results", "category_decomposition_esi.png"),
-  plot = p, width = 18.0, height = 8.0, dpi = 300, bg = "white"
+  plot = p, width = 20.5, height = 9.8, dpi = 300, bg = "white"
 )
 
 cat("Saved: results/category_decomposition_esi.png\n")

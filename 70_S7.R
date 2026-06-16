@@ -60,8 +60,12 @@ make_panel <- function(decomp_df) {
 }
 
 write_panel <- function(pls, path) {
+  if (length(pls) == 0) {
+    cat(sprintf("  Skipping %s: no panels to plot.\n", basename(path)))
+    return(invisible(NULL))
+  }
   pl <- do.call(grid.arrange, c(pls, ncol = 1))
-  ggsave(path, pl, units = "cm", width = 22, height = length(pls) * 8)
+  ggsave(path, pl, units = "cm", width = 22, height = length(pls) * 8, limitsize = FALSE)
 }
 
 categories  <- read.csv2("categories.csv")

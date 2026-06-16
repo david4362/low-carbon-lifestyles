@@ -14,11 +14,18 @@ suppressPackageStartupMessages({
 
 # ---------------------------------------------------------------------------
 # Source a script from R/ (TRE layout) or current directory transparently.
+# Resolves against the remembered absolute code dir first, so it keeps working
+# even if a sourced script (e.g. the data loader) changes the working dir.
 # ---------------------------------------------------------------------------
 source_R <- function(script) {
-  candidates <- c(file.path("R", script), script)
-  for (p in candidates) if (file.exists(p)) { source(p); return(invisible()) }
-  stop(sprintf("Could not find %s in R/ or current directory", script))
+  base <- getOption("konsumtion.code_dir", NULL)
+  candidates <- character(0)
+  if (!is.null(base) && nzchar(base)) {
+    candidates <- c(file.path(base, script), file.path(base, "R", script))
+  }
+  candidates <- c(candidates, script, file.path("R", script))
+  for (p in candidates) if (file.exists(p)) { source(p, keep.source = TRUE); return(invisible()) }
+  stop(sprintf("Could not find %s in code dir, R/, or current directory", script))
 }
 
 # ---------------------------------------------------------------------------

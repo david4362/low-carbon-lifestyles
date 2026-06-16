@@ -352,7 +352,11 @@ pres_main <- plot_data |>
                       sprintf("(%.1f)", baseline_t[as.character(category)])),
     box_lo   = pmin(x_end, rebound_plot_x),
     box_hi   = pmax(x_end, rebound_plot_x),
-    diff_lab = ifelse(is.na(rebound_mean), "", sprintf("%.1f", abs(rebound_mean)))
+    # Gap between the indirect (total) effect endpoint (x_end) and the
+    # re-spending benchmark (rebound_plot_x) — i.e. the visual width of the
+    # grey "emission difference" box.
+    diff_val = abs(box_hi - box_lo),
+    diff_lab = ifelse(is.na(diff_val), "", sprintf("%.1f", diff_val))
   )
 
 # Axis + layout geometry (data units = emission reductions, plotted reversed)
@@ -361,6 +365,8 @@ x_top   <- ceiling(max(c(pres_main$x_mid, pres_main$x_end, pres_main$rebound_plo
 blk_in  <- x_top * 1.07
 blk_out <- x_top * 1.36
 base_x  <- -x_top * 0.04
+left_lim_main  <- blk_out * 1.003
+right_lim_main <- -x_top * 0.06
 
 # Vertical offsets within each lifestyle row (relative to row centre yc)
 yo_dir <-  0.00     # direct effect (solid)
@@ -422,7 +428,7 @@ p_pres_main <- ggplot(pres_main) +
   scale_color_manual(values = .colours_lifestyle, guide = "none") +
   scale_x_reverse(breaks = seq(0, x_top, 0.5),
                   labels = function(x) ifelse(x == 0, "0.0", paste0("\u2212", sprintf("%.1f", x))),
-                  limits = c(blk_out * 1.02, base_x * 1.8)) +
+                  limits = c(left_lim_main, right_lim_main)) +
   scale_y_continuous(limits = c(0.52, 3.48), expand = c(0, 0)) +
   coord_cartesian(clip = "off") +
   labs(x = expression(italic("Difference in emission (tCO"[2]*"e per person/year)")),
@@ -470,7 +476,7 @@ ggsave(file.path(output, "Waterfall_pres_main.png"), p_pres_main_full,
 # light shade). Each sub-row shows direct (solid) + indirect (dashed + circle)
 # joined by a step. Axis allows positive results (emission increases, shown +).
 .lvl_esi <- c("Car-free","Flight-free","Meat-free")
-.ctr_esi <- setNames(c(5, 3, 1), .lvl_esi)
+.ctr_esi <- setNames(c(4.6, 3.0, 1.4), .lvl_esi)
 .off_esi <- 0.32     # vertical offset of each ESI sub-row from its row centre
 
 pres_esi <- plot_data |>
@@ -483,11 +489,13 @@ pres_esi <- plot_data |>
 xr_hi   <- max(c(pres_esi$x_mid, pres_esi$x_end), na.rm = TRUE)
 xr_lo   <- min(c(pres_esi$x_mid, pres_esi$x_end, 0), na.rm = TRUE)
 x_top_e <- ceiling(xr_hi / 0.5) * 0.5
+# Keep breaks on the 0.5 grid (so 0.0 stays labelled and aligned), but clip the
+# axis just before the +0.5 tick so it doesn't stretch all the way to that mark.
 x_bot_e <- floor(min(xr_lo, 0) / 0.5) * 0.5
 blk_in_e  <- x_top_e * 1.16
 blk_out_e <- x_top_e * 1.46
 lab_x_e   <- x_top_e * 1.03
-right_lim <- min(x_bot_e, 0) - x_top_e * 0.04
+right_lim <- min(-0.35, xr_lo - 0.1)
 
 yo_dir_e <-  0.00
 yo_ind_e <- -0.13
@@ -536,8 +544,9 @@ p_pres_esi <- ggplot(pres_esi) +
                   labels = function(x) ifelse(x == 0, "0.0",
                     ifelse(x > 0, paste0("\u2212", sprintf("%.1f", x)),
                            paste0("+", sprintf("%.1f", abs(x))))),
-                  limits = c(blk_out_e * 1.02, right_lim)) +
-  scale_y_continuous(limits = c(0.28, 5.72), expand = c(0, 0)) +
+                  limits = c(blk_out_e * 1.003, right_lim),
+                  expand = expansion(mult = c(0.015, 0.015))) +
+  scale_y_continuous(limits = c(0.62, 5.38), expand = c(0, 0)) +
   coord_cartesian(clip = "off") +
   labs(x = expression(italic("Difference in emission (tCO"[2]*"e per person/year)")),
        y = NULL) +

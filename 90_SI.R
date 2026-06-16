@@ -2,7 +2,6 @@
 # SI.R — Supplementary residual diagnostics + ESI-tetrile group summary table.
 # Outputs:
 #   <output>/Residuals distribution.png
-#   <output>/Residuals distribution ESI.png
 #   <output>/Residuals table.html
 #   <output>/Residuals table ESI.html
 #   <output>/ESI tetrile groups.html
@@ -33,10 +32,14 @@ if (length(esi_values) < 3)
 }
 
 esi_tetriles <- quantile(esi_values, c(0, 1/3, 2/3, 1), na.rm = TRUE)
+# Use the FULL sample so the main residual figure matches the full-sample KS
+# tests in master_analysis.R (Step 5). Respondents with a missing ESI score get
+# esi_tetrile = NA: they appear in the main figure but are excluded from the
+# ESI-faceted companion figure and the residual tables.
 lm_data_si <- lm_data |>
-  filter(is.finite(esi)) |>
   mutate(
   esi_tetrile = case_when(
+    !is.finite(esi)       ~ NA_character_,
     esi < esi_tetriles[2] ~ "Low",
     esi > esi_tetriles[3] ~ "High",
     TRUE                  ~ "Middle"
@@ -56,7 +59,6 @@ lm_cov_residuals <- bind_rows(lapply(LIFESTYLES, function(ls) {
 }))
 
 plot_data <- lm_cov_residuals |>
-  filter(esi_tetrile != "Middle") |>
   mutate(
     mname     = dplyr::case_match(mname,
                                   "indirect_no_car"    ~ "Car-free",
@@ -81,6 +83,11 @@ plot_data <- lm_cov_residuals |>
 plot_data <- plot_data |>
   mutate(fk = factor(paste(mname, lifestyle), levels = .fk_levels))
 
+# High vs Low ESI subset used only for the ESI-faceted companion figure and
+# the residual tables; the main figure (below) uses the full sample so that it
+# matches its caption and the full-sample KS tests in master_analysis.R.
+plot_data_esi <- plot_data |> filter(esi_tetrile %in% c("High", "Low"))
+
 .violin_base <- function(data) {
   ado <- filter(data, lifestyle == "Adopter")
   nad <- filter(data, lifestyle == "Non-adopter")
@@ -98,7 +105,6 @@ plot_data <- plot_data |>
          y = expression("Deviation from predicted indirect emissions (tCO"[2]*"e per person/year)"),
          fill = NULL) +
     scale_fill_manual(values = c(.fk_cols, .life_col), guide = "none") +
-    ylim(-6, 8.5) +
     coord_flip() +
     theme_minimal(base_size = 11) +
     theme(legend.position = "none",
@@ -120,16 +126,12 @@ legend_v2 <- ggplot() + xlim(0, 12) + ylim(0, 1) +
   theme_void() +
   theme(plot.margin = margin(4, 6, 2, 6))
 
-ggsave(file.path(output, "Residuals distribution ESI.png"),
-       legend_v2 / (.violin_base(plot_data) + facet_grid(. ~ esi_tetrile)) +
-         plot_layout(heights = c(1, 13)),
-       units = "cm", width = 24, height = 14, bg = "white")
 ggsave(file.path(output, "Residuals distribution.png"),
        legend_v2 / .violin_base(plot_data) + plot_layout(heights = c(1, 13)),
        units = "cm", width = 15, height = 12, bg = "white")
 
 
-.residual_table <- plot_data |>
+.residual_table <- plot_data_esi |>
   group_by(mname, lifestyle, esi_tetrile) |>
   summarise(
     mean_res   = mean(res, na.rm = TRUE),
