@@ -281,7 +281,7 @@ Because "meat-free" pools several distinct diets, we test the sensitivity of the
 \end{figure}
 
 \subsection*{S6.4 Temporal-window robustness}
-A concern with cross-sectional designs is that low indirect emissions during the observation window may reflect deferred, rather than foregone, consumption. We address this by re-estimating the main models using all available post-COVID months per participant (mean = 21, range 12--39) rather than the baseline 12-month window. Outcomes are annualised by dividing total emissions by the number of observed months and multiplying by 12. Lifestyle indicators are held at their baseline (12-month) definitions throughout. If savings are merely deferred, indirect effects should weaken toward zero under the longer window. Table ��tab:temporal_extended compares the baseline 12-month and extended-window indirect lifestyle coefficients.
+A concern with cross-sectional designs is that low indirect emissions during the observation window may reflect deferred, rather than foregone, consumption. We address this by re-estimating the main models using all available post-COVID months per participant (mean = 21, range 12--39) rather than the baseline 12-month window. Outcomes are annualised by dividing total emissions by the number of observed months and multiplying by 12. Lifestyle indicators are held at their baseline (12-month) definitions throughout. If savings are merely deferred, indirect effects should weaken toward zero under the longer window. Table~\ref{tab:temporal_extended} compares the baseline 12-month and extended-window indirect lifestyle coefficients.
 
 \begin{table}[!htbp]
 \centering
@@ -293,9 +293,9 @@ A concern with cross-sectional designs is that low indirect emissions during the
 \textbf{Lifestyle} & \textbf{12-month baseline} & \textbf{Extended window} & \textbf{\% change} \\
  & ($N=1{,}311$) & ($N=1{,}311$; mean 21\,m) & \\
 \midrule
-Car-free (indirect)     & $-$182 & $-$178 & $-$2 \\
-Flight-free (indirect)  & $-$292 & $-$339 & $+$16 \\
-Meat-free (indirect)   & $-$87  & $+$14  & sign flip \\
+Car-free (indirect)     & $-$258 & $-$253 & $-$2 \\
+Flight-free (indirect)  & $-$218 & $-$275 & $+$26 \\
+Meat-free (indirect)   & $-$10  & $+$99  & sign flip \\
 \bottomrule
 \end{tabular}
 
@@ -306,9 +306,9 @@ Meat-free (indirect)   & $-$87  & $+$14  & sign flip \\
 \end{flushleft}
 \end{table}
 
-For car-free households, the indirect coefficient is essentially unchanged ($-$2\%). The meat-free indirect estimate, which was not significant at baseline ($p = 0.74$), attenuates and changes sign in the extended window, suggesting that the 12-month point estimate was largely noise. Neither pattern is consistent with deferred consumption, which would predict systematic attenuation toward zero from a clearly negative baseline.
+For car-free households, the indirect coefficient is essentially unchanged ($-$2\%). The meat-free indirect estimate, which was near zero and not significant at baseline ($-$10\,kg, $p = 0.97$), changes sign in the extended window, indicating that the 12-month point estimate was largely noise. Neither pattern is consistent with deferred consumption, which would predict systematic attenuation toward zero from a clearly negative baseline.
 
-For flight-free households, the indirect estimate strengthens ($+$16\%). This is likely a sampling effect since the sample of flight-free households decreases under the longer time-window.  The XX respondents who flew in the wider window were included as flight-free in the baseline analysis but are arguably closer to occasional rather than committed flight-free households. Stricter flight-free status is associated with stronger indirect savings, which is consistent with our main interpretation rather than with deferred consumption.
+For flight-free households, the indirect estimate strengthens ($+$26\%). This most likely reflects a composition effect rather than new spillover: the set of households that qualify as flight-free shrinks under the longer window, because some households that recorded no flights within their 12-month window did fly within the wider window. These households---occasional rather than committed non-flyers---were nonetheless counted as flight-free in the baseline analysis. Restricting attention to households that remain flight-free over the longer horizon is associated with stronger indirect savings, which is consistent with our main interpretation rather than with deferred consumption.
 
 % =========================================================
 % S7
@@ -333,20 +333,20 @@ Figure~\ref{fig:key_reg_co2e} and Table~\ref{tab:key_reg_kr} summarize the core 
 \toprule
 \textbf{Lifestyle} & \textbf{Outcome} & \textbf{Main effect} & \textbf{ESI$\times$lifestyle} & \textbf{N} \\
 \midrule
-Car-free & Total & $-$36{,}498 ($p=0.014$) & $-$11{,}402 ($p=0.249$) & 1296 \\
-Car-free & Direct & $-$18{,}114 ($p<0.001$) & $+$3{,}249 ($p=0.027$) & 1296 \\
-Car-free & Indirect & $-$18{,}384 ($p=0.202$) & $-$14{,}650 ($p=0.119$) & 1296 \\
-Flight-free & Total & $-$46{,}184 ($p<0.001$) & $-$6{,}277 ($p=0.575$) & 1296 \\
-Flight-free & Direct & $-$10{,}987 ($p<0.001$) & $-$24 ($p=0.986$) & 1296 \\
-Flight-free & Indirect & $-$35{,}197 ($p=0.010$) & $-$6{,}253 ($p=0.573$) & 1296 \\
-Meat-free & Total & $-$4{,}741 ($p=0.746$) & $-$928 ($p=0.955$) & 1296 \\
-Meat-free & Direct & $+$1{,}185 ($p=0.525$) & $-$1{,}641 ($p=0.372$) & 1296 \\
-Meat-free & Indirect & $-$5{,}926 ($p=0.672$) & $+$714 ($p=0.964$) & 1296 \\
+Car-free & Total & $-$41{,}536 ($p=0.073$) & $-$11{,}713 ($p=0.228$) & 1296 \\
+Car-free & Direct & $-$18{,}455 ($p<0.001$) & $+$3{,}234 ($p=0.028$) & 1296 \\
+Car-free & Indirect & $-$23{,}081 ($p=0.302$) & $-$14{,}947 ($p=0.105$) & 1296 \\
+Flight-free & Total & $-$40{,}168 ($p=0.028$) & $-$10{,}184 ($p=0.373$) & 1296 \\
+Flight-free & Direct & $-$11{,}127 ($p<0.001$) & $-$61 ($p=0.966$) & 1296 \\
+Flight-free & Indirect & $-$29{,}041 ($p=0.108$) & $-$10{,}123 ($p=0.369$) & 1296 \\
+Meat-free & Total & $+$262 ($p=0.986$) & $-$1{,}761 ($p=0.914$) & 1296 \\
+Meat-free & Direct & $+$1{,}272 ($p=0.493$) & $-$1{,}530 ($p=0.402$) & 1296 \\
+Meat-free & Indirect & $-$1{,}010 ($p=0.944$) & $-$230 ($p=0.988$) & 1296 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Full model exports are provided in \texttt{Results/interaction regressions co2e.csv} and \texttt{Results/interaction regressions kr.csv}.
+Full model exports are provided in \texttt{../results/interaction regressions co2e.csv} and \texttt{../results/interaction regressions kr.csv}.
 
 Figure~\ref{fig:interaction_gradient} shows the same ESI moderation as continuous predicted emission levels across the full ESI range ($-2$ to $+2$~SD), decomposed into total, direct, and indirect components.
 
@@ -374,9 +374,9 @@ To assess whether the mean indirect differences reported in the main text are dr
 \toprule
 \textbf{Lifestyle} & \textbf{$D$} & \textbf{$p$} & \textbf{Mean A} & \textbf{Mean NA} & \textbf{Median A} & \textbf{Median NA} \\
 \midrule
-Car-free & 0.0791 & 0.037 & $-$71.1 & 91.6 & $-$540.2 & $-$362.2 \\
-Flight-free & 0.1110 & 0.003 & $-$93.4 & 240.4 & $-$473.0 & $-$40.2 \\
-Meat-free & 0.0914 & 0.156 & $-$253.2 & 40.0 & $-$745.0 & $-$581.4 \\
+Car-free & 0.0823 & 0.027 & $-$96.4 & 124.2 & $-$567.1 & $-$337.5 \\
+Flight-free & 0.1040 & 0.007 & $-$72.0 & 185.2 & $-$423.2 & $-$53.9 \\
+Meat-free & 0.1072 & 0.060 & $-$202.1 & 31.9 & $-$938.2 & $-$502.2 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -390,9 +390,9 @@ Meat-free & 0.0914 & 0.156 & $-$253.2 & 40.0 & $-$745.0 & $-$581.4 \\
 \toprule
 \textbf{Lifestyle} & \textbf{Adopters (\%)} & \textbf{Non-adopters (\%)} & \textbf{Difference (pp)} \\
 \midrule
-Car-free & 37.9 & 42.2 & $-$4.3 \\
-Flight-free & 42.3 & 47.9 & $-$5.6 \\
-Meat-free & 32.2 & 39.2 & $-$7.0 \\
+Car-free & 37.1 & 43.0 & $-$5.9 \\
+Flight-free & 42.5 & 48.2 & $-$5.7 \\
+Meat-free & 32.8 & 40.0 & $-$7.2 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -416,9 +416,9 @@ This benchmark compares observed indirect effects with a neutral proportional re
 \textbf{Lifestyle} & \textbf{Direct saving} & \textbf{CO$_2$e intensity} & \textbf{Predicted} & \textbf{Observed} & \textbf{Gap} \\
  & (SEK) & (kg/SEK) & (kg) & (kg) & (Obs$-$Pred) \\
 \midrule
-Car-free & 18{,}114 & 0.0138 & 249 & $-$182 & $-$431 \\
-Flight-free & 10{,}987 & 0.0136 & 149 & $-$292 & $-$441 \\
-Meat-free & $-$1{,}185 & 0.0148 & $-$18 & $-$87 & $-$70 \\
+Car-free & 18{,}455 & 0.0138 & 254 & $-$258 & $-$512 \\
+Flight-free & 11{,}127 & 0.0136 & 151 & $-$218 & $-$369 \\
+Meat-free & $-$1{,}272 & 0.0148 & $-$19 & $-$10 & $+$9 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -436,7 +436,7 @@ Propensity scores are estimated via logistic regression of each lifestyle indica
 \paragraph{Sampling IPW.}
 To assess whether the lifestyle main effects are robust to differential participation across the invited frame, we construct cell-based sampling weights using the cross-classification of sex, age group (18--29, 30--44, 45--65), and major-city status. Cell-specific raw participation rates range from approximately 1\% to 3\% (Table~\ref{tab:ipw_cells}). Each respondent is assigned the inverse of their cell's participation probability and the weights are normalized to the analytical sample size. We then re-estimate the main interaction models with these weights.
 
-Across all three lifestyle main effects (total, direct, and indirect outcomes), no coefficient changes sign and none crosses the conventional significance threshold under sampling-weighted estimation (Table~\ref{tab:sampling_ipw}). Absolute changes in the lifestyle main effects are typically below 5\%; ESI main effects on indirect emissions remain negative and similarly significant under both weighting schemes. Sign reversals occur only for ESI~$\times$~lifestyle interaction terms that are far from significance in either model (e.g., $|p|\geq 0.6$ in both versions) and so do not change inference.
+Across all three lifestyle main effects (total, direct, and indirect outcomes), the substantive conclusions are unchanged under sampling-weighted estimation (Table~\ref{tab:sampling_ipw}). The large car-free and flight-free total and direct effects change by less than 5\% and remain highly significant; the meat-free total effect remains negative and non-significant under both unweighted and weighted estimation. ESI main effects remain negative and similarly significant under both weighting schemes. The only sign change among the lifestyle main effects is the small meat-free indirect coefficient ($-$10 vs $+$42~kg), which is statistically indistinguishable from zero in both versions ($p\geq0.88$) and economically negligible; sign reversals likewise occur only for ESI~$\times$~lifestyle interaction terms that are far from significance in either model, and so do not change inference.
 
 \begin{table}[!htbp]
 \centering
@@ -472,15 +472,15 @@ Across all three lifestyle main effects (total, direct, and indirect outcomes), 
 \toprule
 \textbf{Lifestyle} & \textbf{Outcome} & \textbf{Unweighted} & \textbf{$p$ (unw.)} & \textbf{IPW} & \textbf{$p$ (IPW)} \\
 \midrule
-Car-free      & Total    & $-$1{,}433 & $<$0.001 & $-$1{,}457 & $<$0.001 \\
-Car-free      & Direct   & $-$1{,}251 & $<$0.001 & $-$1{,}262 & $<$0.001 \\
-Car-free      & Indirect & $-$182    & 0.41    & $-$195    & 0.39 \\
-Flight-free   & Total    & $-$2{,}114 & $<$0.001 & $-$2{,}095 & $<$0.001 \\
-Flight-free   & Direct   & $-$1{,}822 & $<$0.001 & $-$1{,}770 & $<$0.001 \\
-Flight-free   & Indirect & $-$292    & 0.072   & $-$325    & 0.074 \\
-Meat-free    & Total    & $-$557    & 0.043   & $-$564    & 0.040 \\
-Meat-free    & Direct   & $-$469    & $<$0.001 & $-$484    & $<$0.001 \\
-Meat-free    & Indirect & $-$87     & 0.74    & $-$80     & 0.76 \\
+Car-free      & Total    & $-$1{,}507 & $<$0.001 & $-$1{,}460 & $<$0.001 \\
+Car-free      & Direct   & $-$1{,}249 & $<$0.001 & $-$1{,}244 & $<$0.001 \\
+Car-free      & Indirect & $-$258    & 0.38    & $-$216    & 0.45 \\
+Flight-free   & Total    & $-$2{,}064 & $<$0.001 & $-$1{,}973 & $<$0.001 \\
+Flight-free   & Direct   & $-$1{,}846 & $<$0.001 & $-$1{,}793 & $<$0.001 \\
+Flight-free   & Indirect & $-$218    & 0.31    & $-$180    & 0.46 \\
+Meat-free    & Total    & $-$479    & 0.095   & $-$442    & 0.13 \\
+Meat-free    & Direct   & $-$469    & $<$0.001 & $-$485    & $<$0.001 \\
+Meat-free    & Indirect & $-$10     & 0.97    & $+$42     & 0.88 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -510,15 +510,15 @@ Three-way interactions test whether ESI moderation varies systematically across 
 \toprule
 \textbf{Lifestyle} & \textbf{Term} & \textbf{Estimate} & \textbf{$p$} \\
 \midrule
-Car-free & ESI $\times$ Car-free $\times$ Q2 & $+$250.17 & 0.463 \\
-Car-free & ESI $\times$ Car-free $\times$ Q3 & $+$360.68 & 0.385 \\
-Car-free & ESI $\times$ Car-free $\times$ Q4 & $+$121.22 & 0.848 \\
-Flight-free & ESI $\times$ Flight-free $\times$ Q2 & $+$81.08 & 0.842 \\
-Flight-free & ESI $\times$ Flight-free $\times$ Q3 & $-$468.53 & 0.469 \\
-Flight-free & ESI $\times$ Flight-free $\times$ Q4 & $+$559.88 & 0.480 \\
-Meat-free & ESI $\times$ Meat-free $\times$ Q2 & $-$117.47 & 0.793 \\
-Meat-free & ESI $\times$ Meat-free $\times$ Q3 & $+$35.07 & 0.935 \\
-Meat-free & ESI $\times$ Meat-free $\times$ Q4 & $-$193.63 & 0.846 \\
+Car-free & ESI $\times$ Car-free $\times$ Q2 & $-$47.46 & 0.929 \\
+Car-free & ESI $\times$ Car-free $\times$ Q3 & $-$277.18 & 0.612 \\
+Car-free & ESI $\times$ Car-free $\times$ Q4 & $+$395.59 & 0.538 \\
+Flight-free & ESI $\times$ Flight-free $\times$ Q2 & $+$895.24 & 0.266 \\
+Flight-free & ESI $\times$ Flight-free $\times$ Q3 & $+$49.67 & 0.945 \\
+Flight-free & ESI $\times$ Flight-free $\times$ Q4 & $-$885.05 & 0.300 \\
+Meat-free & ESI $\times$ Meat-free $\times$ Q2 & $+$750.06 & 0.328 \\
+Meat-free & ESI $\times$ Meat-free $\times$ Q3 & $-$932.48 & 0.250 \\
+Meat-free & ESI $\times$ Meat-free $\times$ Q4 & $-$698.21 & 0.620 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -538,9 +538,9 @@ Car-free living may reflect structural constraints (e.g., limited parking, good 
 \toprule
 \textbf{Lifestyle} & \textbf{Term} & \textbf{Estimate} & \textbf{$p$} \\
 \midrule
-Car-free & ESI $\times$ Car-free $\times$ Major city & $-$31.10 & 0.962 \\
-Flight-free & ESI $\times$ Flight-free $\times$ Major city & $+$267.34 & 0.683 \\
-Meat-free & ESI $\times$ Meat-free $\times$ Major city & $+$575.84 & 0.365 \\
+Car-free & ESI $\times$ Car-free $\times$ Major city & $-$192.46 & 0.774 \\
+Flight-free & ESI $\times$ Flight-free $\times$ Major city & $+$300.46 & 0.653 \\
+Meat-free & ESI $\times$ Meat-free $\times$ Major city & $+$1{,}001.79 & 0.134 \\
 \bottomrule
 \end{tabular}
 
@@ -560,9 +560,9 @@ No three-way term is statistically significant, indicating that the ESI moderati
 
 The category-level decomposition (Figure~\ref{fig:cat_decomp}) shows where indirect emission differences come from across non-focal consumption domains, and how these patterns differ by environmental self-identity (ESI). For each lifestyle contrast, the focal domain is excluded (car \& public transport for car-free, aviation for flight-free, food for meat-free households), and category-level estimates are evaluated at $+1$~SD (high ESI) and $-1$~SD (low ESI).
 
-Two regularities stand out. First, at high ESI the indirect reductions are broadly distributed: many non-focal domains contribute small to moderate negative differences, with no single category accounting for the bulk of the effect. This pattern is consistent with general consumption restraint among environmentally identified adopters, and it is most pronounced in the categories that are themselves emission-intensive (food, vacation \& long-distance travel, other products). Second, at low ESI the residual differences concentrate in specific substitution channels that are intuitively linked to the foregone behaviour: car-free low-ESI households show a clear positive estimate in aviation \& long-distance travel ($+$0.23~tCO$_2$e), suggesting substitution toward flying; flight-free low-ESI households show a positive estimate in car \& public transport ($+$0.27); and meat-free low-ESI households show a positive estimate in other products ($+$0.37) and a smaller positive estimate in car \& public transport ($+$0.22).
+Two regularities stand out. First, at high ESI the indirect reductions are broadly distributed: many non-focal domains contribute small to moderate negative differences, with no single category accounting for the bulk of the effect. This pattern is consistent with general consumption restraint among environmentally identified adopters, and it is most pronounced in the categories that are themselves emission-intensive (food, vacation \& long-distance travel, other products). Second, at low ESI the residual differences concentrate in specific substitution channels that are intuitively linked to the foregone behaviour: car-free low-ESI households show a clear positive estimate in aviation \& long-distance travel ($+$0.24~tCO$_2$e), suggesting substitution toward flying; flight-free low-ESI households show a positive estimate in car \& public transport ($+$0.27); and meat-free low-ESI households show a positive estimate in other products ($+$0.35) and a smaller positive estimate in car \& public transport ($+$0.19).
 
-For car-free households at high ESI, reductions are spread across other products ($-$0.24), food ($-$0.23), and other/misc ($-$0.17), with smaller negative contributions from vacation \& LDT, other services, and housing. For flight-free households at high ESI, reductions span food ($-$0.17), vacation \& LDT ($-$0.14), other/misc ($-$0.13), and other products ($-$0.10). For meat-free households at high ESI, the directionally largest reductions are in aviation \& LDT ($-$0.18) and car \& public transport ($-$0.17), although the aggregate high-ESI indirect effect for this contrast is not statistically significant ($p=0.13$). 
+For car-free households at high ESI, reductions are spread across other products ($-$0.23), food ($-$0.22), and other/misc ($-$0.16), with smaller negative contributions from vacation \& LDT, other services, and housing. For flight-free households at high ESI, reductions span food ($-$0.18), vacation \& LDT ($-$0.15), other/misc ($-$0.14), and other products ($-$0.10). For meat-free households at high ESI, the directionally largest reductions are in aviation \& LDT ($-$0.13) and car \& public transport ($-$0.10), although the aggregate high-ESI indirect effect for this contrast is not statistically significant ($p=0.23$). 
 
 \begin{figure}[!htbp]
 \centering
@@ -578,14 +578,33 @@ For car-free households at high ESI, reductions are spread across other products
 
 The green oversample (Section~S1) is recruited from electoral districts with high Green Party vote shares but, as Table~\ref{tab:esi_benchmark} shows, it does \emph{not} score higher than the random sample on the ESI scale. Voting Green and self-identifying as environmental on the three-item instrument therefore measure different things, and the green oversample should not be interpreted as a high-ESI subgroup. We use it instead as an independent verification sample: a different recruitment frame and a different community context, but the same data pipeline.
 
-Figure~\ref{fig:robustness_comparison} compares the green-sample lifestyle main effects on total emissions with the random-sample baseline and the IPW estimates. All three contrasts replicate in direction and significance: car-free $-$1{,}715~kg, $p<0.001$; flight-free $-$1{,}769~kg, $p<0.001$; meat-free $-$547~kg, $p<0.001$. ESI~$\times$~lifestyle interactions on total emissions are non-significant in the green sample, consistent with the random-sample finding that interaction terms on total emissions are typically small. The replication of the lifestyle main effects in a separately recruited sample is a useful external check that the result is not an artefact of the random-sample frame or pipeline.
+Figure~\ref{fig:robustness_comparison} compares the green-sample lifestyle main effects on total emissions with the random-sample baseline and the IPW estimates. All three contrasts replicate in direction and significance: car-free $-$1{,}886~kg, $p<0.001$; flight-free $-$1{,}886~kg, $p<0.001$; meat-free $-$640~kg, $p<0.001$. ESI~$\times$~lifestyle interactions on total emissions are non-significant in the green sample, consistent with the random-sample finding that interaction terms on total emissions are typically small. The replication of the lifestyle main effects in a separately recruited sample is a useful external check that the result is not an artefact of the random-sample frame or pipeline.
 
 % =========================================================
 % S14
 % =========================================================
 \section*{S14. Recategorized-transactions robustness}
 
-A full re-estimation of the main interaction models on a recategorized version of the transaction data (using the alternative \texttt{full\_data\_norecats\_filters\_260121.dta} input) is implemented in the analysis pipeline but has not been run on the current TRE export. The loading and robustness code supports both prerecategorized and norecategorized inputs; the next TRE run will produce the corresponding estimates and they will be inserted here.
+To verify that the results do not depend on the transaction recategorization rules applied in the main pipeline, we re-estimated the main interaction models on an alternative version of the transaction data that omits those rules (the \texttt{full\_data\_norecats\_filters\_260121.dta} input), holding the sample and all controls fixed ($N=1{,}297$). The qualitative pattern is preserved: all three lifestyle main effects on total emissions remain negative, and the ESI~$\times$~lifestyle interaction terms remain small and non-significant, as in the main analysis (Table~\ref{tab:recategorized}). As expected, omitting the recategorization step---under which a larger share of spending remains uncategorized and is therefore attributed less precisely to emission-intensive domains---attenuates the magnitudes: the car-free ($-$670~kg, $p<0.001$) and meat-free ($-$358~kg, $p<0.001$) total effects remain statistically significant, while the flight-free total effect attenuates to non-significance ($-$123~kg, $p=0.10$). None of the ESI interactions approaches significance ($p\geq0.52$). The robustness of the direction of all effects, and of the significance of the car-free and meat-free effects, indicates that the recategorization rules are not responsible for the reported associations.
+
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Total-emissions lifestyle main effects and ESI~$\times$~lifestyle interactions estimated on the recategorized (norecats) transaction data (kg CO$_2$e/year; $N=1{,}297$).}
+\label{tab:recategorized}
+\begin{tabular}{llrr}
+\toprule
+\textbf{Lifestyle} & \textbf{Term} & \textbf{Estimate} & \textbf{$p$} \\
+\midrule
+Car-free    & Lifestyle main effect      & $-$670 & $<$0.001 \\
+Car-free    & ESI $\times$ lifestyle      & $+$44  & 0.52 \\
+Flight-free & Lifestyle main effect      & $-$123 & 0.10 \\
+Flight-free & ESI $\times$ lifestyle      & $-$37  & 0.59 \\
+Meat-free   & Lifestyle main effect      & $-$358 & $<$0.001 \\
+Meat-free   & ESI $\times$ lifestyle      & $+$10  & 0.91 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 % =========================================================
 % S15

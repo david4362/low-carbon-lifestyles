@@ -53,7 +53,7 @@ lm_cov_residuals <- bind_rows(lapply(LIFESTYLES, function(ls) {
   ci_pos <- .safe_norm_ci(reps, index = 1, prefix = "ci_pos")
   ci_neg <- .safe_norm_ci(reps, index = 2, prefix = "ci_neg")
   res    <- residuals(lm(f, data = lm_data_si))
-  cbind(res = res * 12 / 1000,
+  cbind(res = res / 1000,
         lm_data_si |> select(all_of(ls), esi_tetrile) |> rename(lifestyle = 1),
         mname = indirect, ci_pos = ci_pos, ci_neg = ci_neg)
 }))
@@ -91,21 +91,25 @@ plot_data_esi <- plot_data |> filter(esi_tetrile %in% c("High", "Low"))
 .violin_base <- function(data) {
   ado <- filter(data, lifestyle == "Adopter")
   nad <- filter(data, lifestyle == "Non-adopter")
+  q <- quantile(data$res, c(0.05, 0.95), na.rm = TRUE)
+  lim <- max(abs(q))
   # per-lifestyle adopter box colours
   ado_cols <- .life_col[as.character(unique(ado$mname))]
   ggplot(data, aes(x = mname, y = res, fill = fk)) +
     geom_split_violin(alpha = 0.7) +
     geom_boxplot(data = ado, aes(x = mname, y = res, fill = mname), inherit.aes = FALSE,
                  width = 0.15, position = position_nudge(x = 0.13),
-                 outliers = FALSE, colour = "grey20", linewidth = 0.4) +
+                 outliers = FALSE, coef = 0, staplewidth = 0,
+                 colour = "grey20", linewidth = 0.4) +
     geom_boxplot(data = nad, aes(x = mname, y = res), inherit.aes = FALSE,
                  width = 0.15, position = position_nudge(x = -0.13),
-                 outliers = FALSE, fill = "#cccccc", colour = "grey20", linewidth = 0.4) +
+                 outliers = FALSE, coef = 0, staplewidth = 0,
+                 fill = "#cccccc", colour = "grey20", linewidth = 0.4) +
     labs(x = NULL,
          y = expression("Deviation from predicted indirect emissions (tCO"[2]*"e per person/year)"),
          fill = NULL) +
     scale_fill_manual(values = c(.fk_cols, .life_col), guide = "none") +
-    coord_flip() +
+        coord_flip(ylim = c(-lim, lim)) +
     theme_minimal(base_size = 11) +
     theme(legend.position = "none",
           panel.grid.major.y = element_blank())

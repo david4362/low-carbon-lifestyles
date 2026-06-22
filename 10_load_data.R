@@ -51,6 +51,9 @@ if (.is_real_loader(REAL_LOADER_DIR)) {
 	# getSrcDirectory() to locate broad-category.csv next to itself. Without
 	# keep.source it resolves to NA and fails with 'NA/broad-category.csv'.
 	source(.real, keep.source = TRUE)
+	# Ground-truth flag for downstream steps (e.g. Step 6b sampling-IPW) to tell a
+	# real TRE run from a mock/fallback run. Real run => missing objects are errors.
+	USING_REAL_DATA <- TRUE
 	suppressWarnings(rm(.this_dir, .real, .ov, .is_real_loader))
 } else {
 	# --- Local fallback (no raw data available) ----------------------------
@@ -69,6 +72,7 @@ if (.is_real_loader(REAL_LOADER_DIR)) {
 	}
 	load(local_rdata)
 	# Expect objects: transactions, survey, users, monthly_incomes, selected_months, selected_aids, etc.
+	USING_REAL_DATA <- FALSE
 	suppressWarnings(rm(.this_dir, .ov, .is_real_loader))
 
 	# Load broad category lookups for local/synthetic data

@@ -410,6 +410,18 @@ cat("  Saved: ipw_robustness.csv\n\n")
 cat("--- Step 6b: Sampling IPW (representativeness) ---\n")
 
 if (!exists("sampling_frame") || !is.data.frame(sampling_frame)) {
+  # On a REAL TRE run, a missing sampling_frame must NOT be skipped silently:
+  # doing so leaves the previous export's STALE sampling-IPW numbers in place
+  # (this is exactly what happened in the Jun 2026 run). Fail loudly instead.
+  if (isTRUE(get0("USING_REAL_DATA", ifnotfound = FALSE))) {
+    stop("STOP (Step 6b): real-data run but `sampling_frame` is missing.\n",
+         "  The sampling-IPW robustness table (SI Table 'tab:sampling_ipw') would\n",
+         "  otherwise be SILENTLY SKIPPED, leaving STALE numbers in the export.\n",
+         "  Fix: ensure the canonical loader (REAL_LOADER_DIR/load_data.R) builds\n",
+         "  `sampling_frame` with columns (aid, postort, age, gender, randomsample)\n",
+         "  for the ~80k random-invitation frame, then re-run.\n",
+         "  See TRE_RA_RUNBOOK.txt sections 3 and 7 for the pre-flight check.")
+  }
   cat("  Skipping: sampling_frame not available (mock mode).\n\n")
 } else {
 
