@@ -1,5 +1,7 @@
 ###############################################################################
-# interactions.R — fit ESI × lifestyle interaction models and write
+# interactions.R — fit the headline ESI + lifestyle additive models AND the
+#   ESI × lifestyle interaction models, writing
+#   "additive regressions {co2e,kr}.{csv,txt}" and
 #   "interaction regressions {co2e,kr}.{csv,txt}" + per-model PNGs.
 ###############################################################################
 
@@ -71,9 +73,9 @@ lm_models_df  <- co2e_res$df
 lm_models_kr_df <- kr_res$df
 
 # --- Stargazer + CSV outputs ---------------------------------------------
-.write_outputs <- function(models, df, value) {
-  txt_path <- file.path(output, sprintf("interaction regressions %s.txt", value))
-  csv_path <- file.path(output, sprintf("interaction regressions %s.csv", value))
+.write_outputs <- function(models, df, value, prefix = "interaction regressions") {
+  txt_path <- file.path(output, sprintf("%s %s.txt", prefix, value))
+  csv_path <- file.path(output, sprintf("%s %s.csv", prefix, value))
   ses <- lapply(models, function(m) sqrt(diag(vcovHC(m, type = "HC3"))))
   tryCatch(
     stargazer(models, se = ses, out = txt_path),
@@ -94,3 +96,14 @@ lm_models_kr_df <- kr_res$df
 }
 .write_outputs(lm_models,    lm_models_df,    "co2e")
 .write_outputs(lm_models_kr, lm_models_kr_df, "kr")
+
+# --- Additive (main-effects) models: HEADLINE specification --------------
+# outcome ~ esi + lifestyle + controls (no ESI x lifestyle interaction).
+# This is the primary/headline model reported in the manuscript; the
+# interaction models above provide the stricter ESI-moderation test.
+# Fit on the same person-level data and written to
+#   "additive regressions {co2e,kr}.{csv,txt}".
+add_co2e_res <- run_additive_models(lm_data,    ctrl_vars, value = "co2e")
+add_kr_res   <- run_additive_models(lm_data_kr, ctrl_vars, value = "kr")
+.write_outputs(add_co2e_res$models, add_co2e_res$df, "co2e", prefix = "additive regressions")
+.write_outputs(add_kr_res$models,   add_kr_res$df,   "kr",   prefix = "additive regressions")

@@ -217,6 +217,13 @@ make_interaction_formula <- function(outcome, lifestyle, ctrl_vars) {
   as.formula(paste(outcome, "~", rhs))
 }
 
+# Additive (main-effects) formula — the headline specification:
+#   outcome ~ esi + lifestyle + ctrl_vars   (no ESI x lifestyle interaction)
+make_additive_formula <- function(outcome, lifestyle, ctrl_vars) {
+  rhs <- paste(c("esi", lifestyle, ctrl_vars), collapse = " + ")
+  as.formula(paste(outcome, "~", rhs))
+}
+
 ctrl_var_names <- function(control_data) {
   setdiff(names(control_data), "aid")
 }
@@ -367,6 +374,34 @@ run_interaction_models <- function(person_data, ctrl_vars, value = c("co2e", "kr
       i <- i + 1
       dv <- if (tp == "total") "total" else paste0(tp, "_", ls)
       f  <- make_interaction_formula(dv, ls, ctrl_vars)
+      rb <- fit_robust(f, person_data, glance = TRUE)
+      models[[i]] <- attr(rb, "model")
+      rows[[i]]   <- rb |>
+        rename(term = variable, std.error = stderr, statistic = t, p.value = p) |>
+        mutate(model_name = labels[[i]])
+    }
+  }
+  list(models = models, df = bind_rows(rows))
+}
+
+# ---------------------------------------------------------------------------
+# Run the headline ADDITIVE (main-effects) regressions for the three
+# lifestyles x {total, direct, indirect}. Identical structure to
+# run_interaction_models() but with no ESI x lifestyle term, so the lifestyle
+# coefficient is the average adopter-vs-comparison difference (at any ESI).
+# Returns a per-coef tibble plus the named list of fitted lm objects.
+# ---------------------------------------------------------------------------
+run_additive_models <- function(person_data, ctrl_vars, value = c("co2e", "kr")) {
+  value <- match.arg(value)
+  labels <- if (value == "co2e") interaction_model_labels else interaction_model_labels_kr
+  models <- vector("list", 9); names(models) <- labels
+  rows <- vector("list", 9)
+  i <- 0
+  for (ls in LIFESTYLES) {
+    for (tp in c("total", "direct", "indirect")) {
+      i <- i + 1
+      dv <- if (tp == "total") "total" else paste0(tp, "_", ls)
+      f  <- make_additive_formula(dv, ls, ctrl_vars)
       rb <- fit_robust(f, person_data, glance = TRUE)
       models[[i]] <- attr(rb, "model")
       rows[[i]]   <- rb |>

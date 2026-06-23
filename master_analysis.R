@@ -21,6 +21,7 @@
 #   STEP 9   Uncategorized-threshold sensitivity
 #   STEP 9b  P99 winsorization sensitivity ladder
 #   STEP 10  Deferred-consumption tests
+#   STEP 10c Equivalence (TOST) + income x lifestyle two-way tests
 #   STEP 11  Recategorized transactions
 #   STEP 12  Green-sample replication
 #   STEP 13  Diet-definition robustness
@@ -588,10 +589,21 @@ cat("\n")
 # STEP 7 — Proportional re-spending benchmark
 # ===========================================================================
 cat("--- Step 7: Proportional Re-spending Benchmark ---\n")
-lm_coefs_co2e <- read.csv(file.path(output, "interaction regressions co2e.csv")) |>
-  select(-any_of("X"))
-lm_coefs_kr   <- read.csv(file.path(output, "interaction regressions kr.csv")) |>
-  select(-any_of("X"))
+# Use the HEADLINE additive (main-effects) model for both the direct saving and
+# the observed indirect effect, so the benchmark is internally consistent with
+# the totals reported in the main text. The additive lifestyle coefficient is
+# the average adopter-vs-comparison difference (no ESI x lifestyle term). Falls
+# back to the interaction-model coefficients if the additive export is absent.
+.read_headline_coefs <- function(value) {
+  add_path <- file.path(output, sprintf("additive regressions %s.csv", value))
+  int_path <- file.path(output, sprintf("interaction regressions %s.csv", value))
+  path <- if (file.exists(add_path)) add_path else int_path
+  if (!file.exists(add_path))
+    cat(sprintf("  NOTE: additive regressions %s.csv not found; using interaction coefficients for benchmark\n", value))
+  read.csv(path) |> select(-any_of("X"))
+}
+lm_coefs_co2e <- .read_headline_coefs("co2e")
+lm_coefs_kr   <- .read_headline_coefs("kr")
 
 .coef_pull <- function(df, model_pat) df |>
   filter(grepl(model_pat, model_name),
@@ -912,6 +924,15 @@ gc()
 # ===========================================================================
 cat("--- Step 10: Deferred Consumption Tests ---\n")
 source_R("80_deferred_consumption_tests.R"); cat("\n")
+
+# ===========================================================================
+# STEP 10c — Equivalence (TOST) + income x lifestyle two-way tests
+# ===========================================================================
+cat("--- Step 10c: Equivalence + Income x Lifestyle Tests ---\n")
+output <- output_dir
+tryCatch(source_R("81_equivalence_income_tests.R"),
+         error = function(e) cat(sprintf("  STEP 10c FAILED (81_equivalence_income_tests.R): %s\n", conditionMessage(e))))
+cat("\n")
 
 # ===========================================================================
 # STEP 11 — Recategorized-transactions robustness
@@ -1237,6 +1258,8 @@ if (isTRUE(SYNC_RESULTS_TO_MANUSCRIPT_DIR)) {
   files_to_sync <- c(
     "interaction regressions co2e.csv","interaction regressions kr.csv",
     "interaction regressions co2e.txt","interaction regressions kr.txt",
+    "additive regressions co2e.csv","additive regressions kr.csv",
+    "additive regressions co2e.txt","additive regressions kr.txt",
     "category regression co2e.csv","category regression kr.csv",
     "Waterfall.png","Waterfall_pres_main.png","Waterfall_pres_esi.png",
     "category_decomposition_esi.png","esi_distribution.png","Residuals distribution.png",
@@ -1249,6 +1272,7 @@ if (isTRUE(SYNC_RESULTS_TO_MANUSCRIPT_DIR)) {
     "sensitivity_uncat_threshold.csv",
     "sensitivity_p99_ladder.csv",
     "deferred_consumption_extended_window.csv",
+    "equivalence_tests.csv","income_lifestyle_interactions.csv",
     "robustness_green_sample_summary.csv","robustness_recategorized_summary.csv",
     "robustness_diet_definitions_summary.csv"
   )

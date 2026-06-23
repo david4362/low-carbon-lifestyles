@@ -423,6 +423,12 @@ Meat-free & $-$1{,}272 & 0.0148 & $-$19 & $-$10 & $+$9 \\
 \end{tabular}
 \end{table}
 
+\subsection*{S9.1 Equivalence tests against the re-spending benchmark}
+
+A non-significant indirect coefficient indicates only that a zero effect cannot be rejected; it does not establish that rebound is absent. To address this directly, we apply two one-sided tests (TOST) of statistical equivalence. For each lifestyle we take the headline (additive) indirect-emissions estimate $\hat\beta$ and its HC3 standard error, and specify an equivalence margin $\Delta$ equal to the proportional re-spending benchmark for that lifestyle (Table~\ref{tab:benchmark_rebound}). Because $\Delta$ is the indirect-emissions increase a standard proportional re-spending model predicts, it is the policy-relevant rebound magnitude. The two one-sided tests evaluate $H_0^{-}:\beta \le -\Delta$ and $H_0^{+}:\beta \ge +\Delta$; rejecting both (i.e.\ the larger of the two $p$-values falls below $0.05$) implies the indirect effect lies within $\pm\Delta$ of zero and is thus statistically equivalent to no economically meaningful rebound. We additionally report the one-sided rebound-exclusion test $H_0:\beta \ge +\Delta$, which asks whether the data rule out a rebound as large as the benchmark, together with the 90\% confidence interval matched to the $\alpha=0.05$ one-sided tests. These quantities are produced by \texttt{81\_equivalence\_income\_tests.R} and exported to \texttt{equivalence\_tests.csv}.
+
+\textit{[Table to be populated from the next secure-environment (TRE) export of} \texttt{equivalence\_tests.csv}\textit{; reporting columns: lifestyle, indirect estimate (kg), 90\% CI, margin $\Delta$, equivalence $p$ (TOST), and rebound-exclusion $p$.]}
+
 % =========================================================
 % S10
 % =========================================================
@@ -552,6 +558,12 @@ Meat-free & ESI $\times$ Meat-free $\times$ Major city & $+$1{,}001.79 & 0.134 \
 \end{table}
 
 No three-way term is statistically significant, indicating that the ESI moderation of lifestyle effects operates similarly in urban and non-urban settings. The main lifestyle effects are also robust to this specification.
+
+\subsection*{S11.3 Income $\times$ lifestyle interaction}
+
+If the headline no-rebound result merely reflected the limited financial slack of adopters, re-spending---and hence indirect emissions---should rise with income among adopters. We test this with an income~$\times$~lifestyle interaction. Disposable income is standardized to unit standard deviation among income-observed households (mean-imputed and flagged otherwise), and we regress each emission outcome (total, direct, indirect) on standardized income, the lifestyle indicator, their interaction, ESI, and the remaining controls, with HC3 standard errors. The coefficient of interest is the income~$\times$~lifestyle term on indirect emissions: a non-significant interaction indicates that the absence of rebound is not an artefact of low adopter budgets, since higher-income adopters---who free more money---do not show systematically higher indirect emissions. Estimates are produced by \texttt{81\_equivalence\_income\_tests.R} and exported to \texttt{income\_lifestyle\_interactions.csv}.
+
+\textit{[Table to be populated from the next secure-environment (TRE) export of} \texttt{income\_lifestyle\_interactions.csv}\textit{; reporting per lifestyle and outcome: lifestyle main effect, income main effect, and the income $\times$ lifestyle interaction with HC3 $p$-values.]}
 
 % =========================================================
 % S12
