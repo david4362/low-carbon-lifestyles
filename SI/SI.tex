@@ -155,10 +155,7 @@ Random-sample frame & 47.0 & 27.7 & 34.7 & 37.6 & 16.2 & 53.7 & n/a  & n/a \\
 {\footnotesize\raggedright
 \textit{Notes:} Frame benchmarks are computed from the random-sample frame
 cross-classification reported in Table~\ref{tab:ipw_cells}. The frame is
-restricted to ages 18--65 by design; analytical-sample respondents aged 65+
-(1.7\%) are not benchmarked. The car-free frame value is the complement of the
-registry $\geq$1-car ownership rate (46.3\%). Education and income are not in
-the frame extract. Single-adult household share is 100\% by construction.\par}
+restricted to ages 18 and above by design; analytical-sample respondents aged 65+ (1.7\%) are not benchmarked. The car-free frame value is the complement of the registry $\geq$1-car ownership rate (46.3\%). Education and income are not in the frame extract. Single-adult household share is 100\% by construction.\par}
 \end{table}
 
 % =========================================================
@@ -168,7 +165,7 @@ the frame extract. Single-adult household share is 100\% by construction.\par}
 
 Carbon footprints are calculated using a hybrid approach integrating transaction-level expenditures, category-specific emissions intensities, and targeted profile and registry refinements, following \citet{andersson2020novel}. Expenditures are mapped to footprint categories, harmonized over time, and aggregated to daily and annual totals.
 
-At the transaction level, emissions are obtained by multiplying expenditure by category-specific intensity factors (kg CO$_2$e/SEK). For selected domains where expenditure is an especially noisy proxy for physical quantities, registry and profile information is used to refine the mapping. In particular, transport and housing components are refined where relevant information is available, and food-related estimates are calibrated using diet information from the profile survey.
+At the transaction level, emissions are obtained by multiplying expenditure by category-specific intensity factors (kg CO$_2$e/SEK). For selected domains where expenditure is an especially noisy proxy for physical quantities, registry and profile information is used to refine the mapping. In particular, transport and housing components are refined where relevant information is available, and food-related estimates are calibrated using diet information from the app's profile survey.
 
 \paragraph{Aviation emission intensity override.}
 The default input--output-based emission intensity for aviation is replaced with a bottom-up estimate that accounts for non-CO$_2$ climate effects (contrails, contrail-induced cirrus, NO$_x$-driven ozone formation, and water vapour). Aviation combustion emits approximately 0.08~kg~CO$_2$/pkm. To convert expenditure to physical units, we use an average ticket yield of 0.82~SEK/pkm. Non-CO$_2$ effects are incorporated via a multiplicative uplift factor of 1.5 applied to combustion CO$_2$, following the central estimate of \citet{lee2021contribution} for the ratio of aviation's total effective radiative forcing to its CO$_2$-only forcing expressed in GWP$^*$-equivalent terms. An additional 20\% of combustion CO$_2$ is added to account for upstream (well-to-tank) emissions from crude extraction, refining, and fuel transport, consistent with the conventional Jet~A life-cycle inventory of \citet{stratton2010lifecycle}. The resulting intensity is:
@@ -302,13 +299,13 @@ Meat-free (indirect)   & $-$10  & $+$99  & sign flip \\
 \vspace{1mm}
 \begin{flushleft}
 \footnotesize
-\textit{Notes:} Extended-window estimates use all available post-COVID months per person, annualised. Baseline values from Figure~\ref{fig:key_reg_co2e}. Percentage change is in absolute magnitude; positive = effect strengthens, negative = effect attenuates. None of the estimates are individually significant at $p < 0.05$ in either window.
+\textit{Notes:} Extended-window estimates use all available post-COVID months per person, annualised, holding lifestyle indicators at their baseline (12-month) definitions. Baseline values from Figure~\ref{fig:key_reg_co2e}. Percentage change is in absolute magnitude; positive = effect strengthens, negative = effect attenuates. None of the estimates in the two windows shown are individually significant at $p < 0.05$; for the redefined flight-free definition (group membership also measured over the extended window) see the text below.
 \end{flushleft}
 \end{table}
 
 For car-free households, the indirect coefficient is essentially unchanged ($-$2\%). The meat-free indirect estimate, which was near zero and not significant at baseline ($-$10\,kg, $p = 0.97$), changes sign in the extended window, indicating that the 12-month point estimate was largely noise. Neither pattern is consistent with deferred consumption, which would predict systematic attenuation toward zero from a clearly negative baseline.
 
-For flight-free households, the indirect estimate strengthens ($+$26\%). This most likely reflects a composition effect rather than new spillover: the set of households that qualify as flight-free shrinks under the longer window, because some households that recorded no flights within their 12-month window did fly within the wider window. These households---occasional rather than committed non-flyers---were nonetheless counted as flight-free in the baseline analysis. Restricting attention to households that remain flight-free over the longer horizon is associated with stronger indirect savings, which is consistent with our main interpretation rather than with deferred consumption.
+For flight-free households, the indirect estimate strengthens ($+$26\%). This most likely reflects a composition effect rather than new spillover: the set of households that qualify as flight-free shrinks under the longer window, because some households that recorded no flights within their 12-month window did fly within the wider window. These households---occasional rather than committed non-flyers---were nonetheless counted as flight-free in the baseline analysis. Restricting attention to households that remain flight-free over the longer horizon (zero aviation spending across the full window, mean 21 months) strengthens the indirect coefficient to $-$463\,kg CO$_2$e/year ($p = 0.027$), i.e.\ it becomes individually significant under the stricter, internally consistent definition in which both group membership and emissions are measured over the same extended window. This is consistent with our main interpretation---genuine cross-domain restraint among committed non-flyers---rather than with deferred consumption.
 
 % =========================================================
 % S7
@@ -327,7 +324,7 @@ Figure~\ref{fig:key_reg_co2e} and Table~\ref{tab:key_reg_kr} summarize the core 
 \begin{table}[!htbp]
 \centering
 \small
-\caption{Key interaction-model coefficients for spending (SEK/year). $N=1{,}296$ reflects the regression sample retained after listwise deletion of 15 of 1{,}311 analytical-sample respondents with missing values on one or more control variables; the same regression sample is used for the corresponding emission models.}
+\caption{Key interaction-model coefficients for spending (SEK/year). $N=1{,}296$ reflects the regression sample retained after excluding 15 of the 1{,}311 analytical-sample respondents whose credit-card transfers exceed 30\% of consumption (so that their downstream spending cannot be attributed to consumption domains; Section~S1); the same regression sample is used for the corresponding emission models.}
 \label{tab:key_reg_kr}
 \begin{tabular}{llrrr}
 \toprule
@@ -416,9 +413,9 @@ This benchmark compares observed indirect effects with a neutral proportional re
 \textbf{Lifestyle} & \textbf{Direct saving} & \textbf{CO$_2$e intensity} & \textbf{Predicted} & \textbf{Observed} & \textbf{Gap} \\
  & (SEK) & (kg/SEK) & (kg) & (kg) & (Obs$-$Pred) \\
 \midrule
-Car-free & 18{,}455 & 0.0138 & 254 & $-$258 & $-$512 \\
-Flight-free & 11{,}127 & 0.0136 & 151 & $-$218 & $-$369 \\
-Meat-free & $-$1{,}272 & 0.0148 & $-$19 & $-$10 & $+$9 \\
+Car-free & 18{,}579 & 0.0138 & 256 & $-$255 & $-$510 \\
+Flight-free & 11{,}124 & 0.0136 & 151 & $-$212 & $-$362 \\
+Meat-free & $-$518 & 0.0148 & $-$8 & $-$5 & $+$2 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -427,7 +424,24 @@ Meat-free & $-$1{,}272 & 0.0148 & $-$19 & $-$10 & $+$9 \\
 
 A non-significant indirect coefficient indicates only that a zero effect cannot be rejected; it does not establish that rebound is absent. To address this directly, we apply two one-sided tests (TOST) of statistical equivalence. For each lifestyle we take the headline (additive) indirect-emissions estimate $\hat\beta$ and its HC3 standard error, and specify an equivalence margin $\Delta$ equal to the proportional re-spending benchmark for that lifestyle (Table~\ref{tab:benchmark_rebound}). Because $\Delta$ is the indirect-emissions increase a standard proportional re-spending model predicts, it is the policy-relevant rebound magnitude. The two one-sided tests evaluate $H_0^{-}:\beta \le -\Delta$ and $H_0^{+}:\beta \ge +\Delta$; rejecting both (i.e.\ the larger of the two $p$-values falls below $0.05$) implies the indirect effect lies within $\pm\Delta$ of zero and is thus statistically equivalent to no economically meaningful rebound. We additionally report the one-sided rebound-exclusion test $H_0:\beta \ge +\Delta$, which asks whether the data rule out a rebound as large as the benchmark, together with the 90\% confidence interval matched to the $\alpha=0.05$ one-sided tests. These quantities are produced by \texttt{81\_equivalence\_income\_tests.R} and exported to \texttt{equivalence\_tests.csv}.
 
-\textit{[Table to be populated from the next secure-environment (TRE) export of} \texttt{equivalence\_tests.csv}\textit{; reporting columns: lifestyle, indirect estimate (kg), 90\% CI, margin $\Delta$, equivalence $p$ (TOST), and rebound-exclusion $p$.]}
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Equivalence (TOST) tests of indirect emission effects against the proportional re-spending benchmark margin. Estimates are headline (additive) indirect-emission coefficients (kg CO$_2$e per person-year) with HC3 standard errors; the 90\% confidence interval is matched to the $\alpha=0.05$ one-sided tests. \textit{TOST $p$} is the equivalence $p$-value (the larger of the two one-sided tests); \textit{Rebound-excl.\ $p$} is the one-sided test of $H_0:\beta\ge+\Delta$.}
+\label{tab:equivalence}
+\begin{tabular}{lrrrrr}
+\toprule
+\textbf{Lifestyle} & \textbf{Indirect} & \textbf{90\% CI} & \textbf{Margin $\Delta$} & \textbf{TOST $p$} & \textbf{Rebound-excl.\ $p$} \\
+ & (kg) & (kg) & (kg) & & \\
+\midrule
+Car-free    & $-$254.6 & [$-$737.1, $+$227.9] & 256 & 0.498 & 0.041 \\
+Flight-free & $-$211.6 & [$-$563.6, $+$140.4] & 151 & 0.612 & 0.045 \\
+Meat-free   & $-$5.3   & [$-$445.6, $+$434.9] & 8   & 0.496 & 0.480 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For car-free and flight-free households, the one-sided test rejects a rebound as large as the proportional re-spending benchmark ($p=0.041$ and $p=0.045$, respectively): the data are inconsistent with indirect emissions rising to the benchmark level implied by standard re-spending assumptions. The symmetric TOST is not significant because the indirect point estimates lie near the lower (reduction) margin rather than near zero---these effects are reductions, not nulls---so equivalence to a null within $\pm\Delta$ cannot be claimed. For meat-free households the benchmark margin is very small ($\pm$8~kg, reflecting negligible focal-domain savings), so neither test is informative.
 
 % =========================================================
 % S10
@@ -502,7 +516,6 @@ Meat-free    & Indirect & $-$10     & 0.97    & $+$42     & 0.88 \\
 % S11
 % =========================================================
 \section*{S11. Income and urban/rural sensitivity}
-
 Three-way interactions test whether ESI moderation varies systematically across the income distribution or between urban and non-urban contexts.
 
 \subsection*{S11.1 Income quartiles}
@@ -563,7 +576,30 @@ No three-way term is statistically significant, indicating that the ESI moderati
 
 If the headline no-rebound result merely reflected the limited financial slack of adopters, re-spending---and hence indirect emissions---should rise with income among adopters. We test this with an income~$\times$~lifestyle interaction. Disposable income is standardized to unit standard deviation among income-observed households (mean-imputed and flagged otherwise), and we regress each emission outcome (total, direct, indirect) on standardized income, the lifestyle indicator, their interaction, ESI, and the remaining controls, with HC3 standard errors. The coefficient of interest is the income~$\times$~lifestyle term on indirect emissions: a non-significant interaction indicates that the absence of rebound is not an artefact of low adopter budgets, since higher-income adopters---who free more money---do not show systematically higher indirect emissions. Estimates are produced by \texttt{81\_equivalence\_income\_tests.R} and exported to \texttt{income\_lifestyle\_interactions.csv}.
 
-\textit{[Table to be populated from the next secure-environment (TRE) export of} \texttt{income\_lifestyle\_interactions.csv}\textit{; reporting per lifestyle and outcome: lifestyle main effect, income main effect, and the income $\times$ lifestyle interaction with HC3 $p$-values.]}
+\begin{table}[!htbp]
+\centering
+\small
+\caption{Income $\times$ lifestyle interaction models. Coefficients in kg CO$_2$e per person-year; income is standardized (per 1~SD of disposable income). The income $\times$ lifestyle column is the term of interest. HC3-robust $p$-values; $^{*}p<0.05$, $^{**}p<0.01$, $^{***}p<0.001$.}
+\label{tab:income_lifestyle}
+\begin{tabular}{llrrr}
+\toprule
+\textbf{Lifestyle} & \textbf{Outcome} & \textbf{Lifestyle} & \textbf{Income} & \textbf{Income $\times$ lifestyle} \\
+ & & (kg) & (kg/SD) & (kg/SD; $p$) \\
+\midrule
+Car-free    & Total    & $-$1{,}440$^{***}$ & $+$1{,}656$^{**}$  & $-$1{,}035 \ ($p=0.368$) \\
+Car-free    & Direct   & $-$1{,}244$^{***}$ & $+$228            & $-$169 \ ($p=0.489$) \\
+Car-free    & Indirect & $-$195             & $+$1{,}428$^{***}$ & $-$866 \ ($p=0.373$) \\
+Flight-free & Total    & $-$2{,}075$^{***}$ & $+$422            & $+$1{,}176 \ ($p=0.311$) \\
+Flight-free & Direct   & $-$1{,}841$^{***}$ & $+$125            & $-$245 \ ($p=0.504$) \\
+Flight-free & Indirect & $-$234             & $+$298            & $+$1{,}421 \ ($p=0.089$) \\
+Meat-free   & Total    & $-$507             & $+$962            & $-$171 \ ($p=0.872$) \\
+Meat-free   & Direct   & $-$484$^{***}$     & $+$21             & $-$79 \ ($p=0.141$) \\
+Meat-free   & Indirect & $-$22              & $+$941            & $-$92 \ ($p=0.930$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+None of the income~$\times$~lifestyle interactions on indirect emissions reach significance at the 5\% level. The only marginal term is flight-free ($+$1{,}421~kg/SD, $p=0.089$), in the direction of modestly higher indirect emissions among higher-income flight-free households; the car-free and meat-free interactions are negative and far from significant. The income main effect on indirect emissions is itself positive and significant for car-free households (and positive throughout), confirming that higher income is associated with higher indirect emissions in general---but this gradient does not differ systematically between adopters and their comparison groups. The headline no-rebound pattern is therefore not explained by adopters' limited financial slack.
 
 % =========================================================
 % S12

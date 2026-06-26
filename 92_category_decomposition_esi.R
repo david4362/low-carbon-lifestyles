@@ -45,6 +45,9 @@ focal_domain <- c(
 # est_low / est_high give the within-ESI lifestyle difference (adopter vs non-adopter
 # at the same ESI level). To match Fig. 1's common reference (ESI=0 non-adopter),
 # we add the ESI main effect: high = est_high + beta_esi, low = est_low - beta_esi.
+# This displays where high- vs low-ESI ADOPTERS land relative to a common ESI=0
+# non-adopter benchmark, i.e. how the redirected-spending position is graded by ESI
+# (a main-effect/allocation question), NOT the adopter-vs-nonadopter interaction.
 interaction_data <- cat_df |>
   filter(
     part %in% broad_cats,
@@ -74,7 +77,6 @@ esi_main <- cat_df |>
     beta_esi = estimate
   )
 
-# --- Build plot data ---
 # Common reference = ESI=0 non-adopter (matching Fig. 1)
 # High ESI adopter vs ESI=0 non-adopter: est_high + beta_esi
 # Low ESI adopter vs ESI=0 non-adopter: est_low - beta_esi

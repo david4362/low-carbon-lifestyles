@@ -97,6 +97,18 @@ lm_models_kr_df <- kr_res$df
 .write_outputs(lm_models,    lm_models_df,    "co2e")
 .write_outputs(lm_models_kr, lm_models_kr_df, "kr")
 
+# --- ESI-conditional marginal effects ------------------------------------
+# Adopter-vs-comparison predicted difference at low/mean/high ESI (-1/0/+1 SD),
+# i.e. the vertical gap between the two lines in the ESI interaction figure,
+# with HC3-robust SEs and p-values. These feed the manuscript abstract and the
+# Results "role of environmental motivation" numbers (predicted indirect
+# differences at high vs low ESI). Estimates are in native units (kg CO2e/year
+# or SEK/year); divide by 1000 for the tCO2e values used in the text.
+write.csv(compute_esi_marginal_effects(co2e_res$models, lm_data,    "co2e"),
+          file.path(output, "esi marginal effects co2e.csv"), row.names = FALSE)
+write.csv(compute_esi_marginal_effects(kr_res$models,   lm_data_kr, "kr"),
+          file.path(output, "esi marginal effects kr.csv"),   row.names = FALSE)
+
 # --- Additive (main-effects) models: HEADLINE specification --------------
 # outcome ~ esi + lifestyle + controls (no ESI x lifestyle interaction).
 # This is the primary/headline model reported in the manuscript; the

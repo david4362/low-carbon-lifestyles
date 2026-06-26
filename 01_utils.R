@@ -413,6 +413,63 @@ run_additive_models <- function(person_data, ctrl_vars, value = c("co2e", "kr"))
 }
 
 # ---------------------------------------------------------------------------
+# ESI-conditional marginal effects: the adopter-vs-comparison predicted
+# difference at low (mean - 1 SD), mean, and high (mean + 1 SD) ESI, taken
+# from the fitted INTERACTION models. This is the vertical gap between the two
+# lines in the ESI interaction figure (40_interactions.R inter_plot, which uses
+# the same xvals = c(m - s, m, m + s)), with HC3-robust standard errors and a
+# p-value for the linear combination
+#     diff(e) = b[lifestyleTRUE] + e * b[esi:lifestyleTRUE].
+# Returns one row per lifestyle x outcome x esi_level. Estimates are in the
+# model's native units (kg CO2e/year or SEK/year); divide by 1000 for the
+# tCO2e values reported in the manuscript abstract / Results.
+# ---------------------------------------------------------------------------
+compute_esi_marginal_effects <- function(models, person_data,
+                                         value = c("co2e", "kr")) {
+  value <- match.arg(value)
+  m <- mean(person_data$esi, na.rm = TRUE)
+  s <- sd(  person_data$esi, na.rm = TRUE)
+  levels_tbl <- tibble(esi_level = c("low", "mean", "high"),
+                       esi_value = c(m - s, m, m + s))
+  types <- c("total", "direct", "indirect")
+  rows <- list()
+  for (i in seq_along(models)) {
+    mod <- models[[i]]
+    if (is.null(mod)) next
+    lifestyle <- LIFESTYLES[ceiling(i / 3)]
+    outcome   <- types[((i - 1) %% 3) + 1]
+    ls_term <- paste0(lifestyle, "TRUE")
+    ix_term <- paste0("esi:", lifestyle, "TRUE")
+    b <- coef(mod)
+    if (!(ls_term %in% names(b)) || !(ix_term %in% names(b))) next
+    V        <- sandwich::vcovHC(mod, type = "HC3")
+    df_resid <- mod$df.residual
+    for (j in seq_len(nrow(levels_tbl))) {
+      e    <- levels_tbl$esi_value[j]
+      est  <- b[[ls_term]] + e * b[[ix_term]]
+      varc <- V[ls_term, ls_term] + e^2 * V[ix_term, ix_term] +
+              2 * e * V[ls_term, ix_term]
+      se   <- sqrt(varc)
+      tval <- est / se
+      rows[[length(rows) + 1L]] <- tibble(
+        model_name = names(models)[i],
+        lifestyle  = lifestyle,
+        outcome    = outcome,
+        esi_level  = levels_tbl$esi_level[j],
+        esi_value  = e,
+        estimate   = est,
+        se         = se,
+        t          = tval,
+        df         = df_resid,
+        p          = 2 * pt(-abs(tval), df_resid),
+        n          = stats::nobs(mod)
+      )
+    }
+  }
+  bind_rows(rows)
+}
+
+# ---------------------------------------------------------------------------
 # Standard filter for "headline" model coefficients: lifestyle main effects
 # (no_carTRUE etc.), the ESI main effect, and ESI x lifestyle interactions.
 # Centralises the regex used in master_analysis.R / 93_si_figures.R.

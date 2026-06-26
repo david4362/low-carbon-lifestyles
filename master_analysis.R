@@ -1260,6 +1260,7 @@ if (isTRUE(SYNC_RESULTS_TO_MANUSCRIPT_DIR)) {
     "interaction regressions co2e.txt","interaction regressions kr.txt",
     "additive regressions co2e.csv","additive regressions kr.csv",
     "additive regressions co2e.txt","additive regressions kr.txt",
+    "esi marginal effects co2e.csv","esi marginal effects kr.csv",
     "category regression co2e.csv","category regression kr.csv",
     "Waterfall.png","Waterfall_pres_main.png","Waterfall_pres_esi.png",
     "category_decomposition_esi.png","esi_distribution.png","Residuals distribution.png",
