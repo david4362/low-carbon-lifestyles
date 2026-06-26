@@ -1,0 +1,30 @@
+{
+  "title": "Low-carbon lifestyles deliver broad emission reductions without automatic rebound: analysis code",
+  "description": "Analysis pipeline (R) for the manuscript on whether low-carbon lifestyles (car-free, flight-free, meat-free) reduce emissions both directly and indirectly, and the role of environmental self-identity (ESI). The underlying individual-level bank-transaction and registry microdata are confidential and held in a secure Trusted Research Environment; a parametric synthetic-data generator (generate_synthetic_data.R) is included so that the full pipeline can be executed without the confidential data.",
+  "upload_type": "software",
+  "license": "MIT",
+  "access_right": "open",
+  "keywords": [
+    "low-carbon lifestyles",
+    "rebound effect",
+    "indirect emissions",
+    "environmental self-identity",
+    "consumption-based carbon footprint",
+    "demand-side mitigation",
+    "Sweden"
+  ],
+  "creators": [
+    {
+      "name": "Andersson, David",
+      "affiliation": "Chalmers University of Technology, Gothenburg, Sweden"
+    },
+    {
+      "name": "Enlund, Jakob",
+      "affiliation": "Linnaeus University, Växjö, Sweden; University of Gothenburg, Gothenburg, Sweden"
+    },
+    {
+      "name": "Nässén, Jonas",
+      "affiliation": "Chalmers University of Technology, Gothenburg, Sweden"
+    }
+  ]
+}
