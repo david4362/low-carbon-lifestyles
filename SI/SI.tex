@@ -82,7 +82,7 @@ Installed app, linked bank, and consented   &      & 2{,}347 \\
 \smallskip
 {\footnotesize\raggedright
 \textit{Notes:} The final analytical sample is $\approx$1.6\% of the
-$\approx$80{,}000 random-sample invitations (2{,}347/80{,}000 $\approx$ 2.9\% installed the app, linked a bank account, and consented). The green oversample frame ($\approx$100{,}000 invited) yielded 2{,}008 valid app linkages and, after the identical filtering, the $N=1{,}909$ replication sample analysed in Section~S13.\par}
+$\approx$80{,}000 random-sample invitations (2{,}347/80{,}000 $\approx$ 2.9\% installed the app, linked a bank account, and consented). Regression analyses additionally exclude 15 households whose credit-card transfers exceed 30\% of total spending, because their downstream spending cannot be attributed to consumption domains, yielding a regression sample of $N=1{,}296$ (Table~\ref{tab:key_reg_kr}). The green oversample frame ($\approx$100{,}000 invited) yielded 2{,}008 valid app linkages and, after the identical filtering, the $N=1{,}909$ replication sample analysed in Section~S13.\par}
 \end{table}
 
 \subsection*{S2.2 Descriptive characteristics of the analytical sample}
@@ -155,7 +155,7 @@ Random-sample frame & 47.0 & 27.7 & 34.7 & 37.6 & 16.2 & 53.7 & n/a  & n/a \\
 {\footnotesize\raggedright
 \textit{Notes:} Frame benchmarks are computed from the random-sample frame
 cross-classification reported in Table~\ref{tab:ipw_cells}. The frame is
-restricted to ages 18 and above by design; analytical-sample respondents aged 65+ (1.7\%) are not benchmarked. The car-free frame value is the complement of the registry $\geq$1-car ownership rate (46.3\%). Education and income are not in the frame extract. Single-adult household share is 100\% by construction.\par}
+restricted to ages 18--65 by design; analytical-sample respondents aged 65+ (1.7\%) are not benchmarked. The car-free frame value is the complement of the registry $\geq$1-car ownership rate (46.3\%). Education and income are not in the frame extract. Single-adult household share is 100\% by construction.\par}
 \end{table}
 
 % =========================================================
@@ -324,7 +324,7 @@ Figure~\ref{fig:key_reg_co2e} and Table~\ref{tab:key_reg_kr} summarize the core 
 \begin{table}[!htbp]
 \centering
 \small
-\caption{Key interaction-model coefficients for spending (SEK/year). $N=1{,}296$ reflects the regression sample retained after excluding 15 of the 1{,}311 analytical-sample respondents whose credit-card transfers exceed 30\% of consumption (so that their downstream spending cannot be attributed to consumption domains; Section~S1); the same regression sample is used for the corresponding emission models.}
+\caption{Key interaction-model coefficients for spending (SEK/year). $N=1{,}296$ reflects the regression sample retained after excluding 15 of the 1{,}311 analytical-sample respondents whose credit-card transfers exceed 30\% of consumption (so that their downstream spending cannot be attributed to consumption domains; Section~S2.1); the same regression sample is used for the corresponding emission models. Coefficients are from the interaction specification (Section~S6.1) and are therefore evaluated at mean ESI; the direct-saving inputs to the re-spending benchmark (Table~\ref{tab:benchmark_rebound}) come instead from the headline additive specification and differ accordingly.}
 \label{tab:key_reg_kr}
 \begin{tabular}{llrrr}
 \toprule
@@ -394,7 +394,7 @@ Meat-free & 32.8 & 40.0 & $-$7.2 \\
 \end{tabular}
 \end{table}
 
-Distributional diagnostics are reported for all three lifestyle contrasts to complement mean-based regression estimates. The corresponding violin plot is shown in the main text (Fig.~4 of the main manuscript) and is not duplicated here.
+Distributional diagnostics are reported for all three lifestyle contrasts to complement mean-based regression estimates. The corresponding violin plot is shown in the main text (Fig.~2 of the main manuscript) and is not duplicated here.
 
 % =========================================================
 % S9
@@ -406,7 +406,7 @@ This benchmark compares observed indirect effects with a neutral proportional re
 \begin{table}[!htbp]
 \centering
 \small
-\caption{Proportional re-spending benchmark vs observed indirect effects.}
+\caption{Proportional re-spending benchmark vs observed indirect effects. Direct savings and observed indirect effects are taken from the headline additive (main-effects) specification, consistent with the totals reported in the main text; they therefore differ from the interaction-model coefficients in Table~\ref{tab:key_reg_kr}, which include an ESI~$\times$~lifestyle term and are evaluated at mean ESI.}
 \label{tab:benchmark_rebound}
 \begin{tabular}{lrrrrr}
 \toprule
@@ -441,7 +441,7 @@ Meat-free   & $-$5.3   & [$-$445.6, $+$434.9] & 8   & 0.496 & 0.480 \\
 \end{tabular}
 \end{table}
 
-For car-free and flight-free households, the one-sided test rejects a rebound as large as the proportional re-spending benchmark ($p=0.041$ and $p=0.045$, respectively): the data are inconsistent with indirect emissions rising to the benchmark level implied by standard re-spending assumptions. The symmetric TOST is not significant because the indirect point estimates lie near the lower (reduction) margin rather than near zero---these effects are reductions, not nulls---so equivalence to a null within $\pm\Delta$ cannot be claimed. For meat-free households the benchmark margin is very small ($\pm$8~kg, reflecting negligible focal-domain savings), so neither test is informative.
+For car-free and flight-free households, the one-sided test rejects a rebound as large as the proportional re-spending benchmark ($p=0.041$ and $p=0.045$, respectively): the data are inconsistent with indirect emissions rising to the benchmark level implied by standard re-spending assumptions. The symmetric TOST is not significant because the indirect point estimates lie near the lower (reduction) margin rather than near zero---these effects are reductions, not nulls---so equivalence to a null within $\pm\Delta$ cannot be claimed. For meat-free households the benchmark margin is very small ($\pm$8~kg, reflecting negligible focal-domain savings), so neither test is informative. A caveat applies to all of these tests: the margin $\Delta$ is treated as a fixed quantity, although it is constructed from an estimated spending coefficient with its own sampling error, which is not propagated into the test statistics; the rebound-exclusion $p$-values should therefore be read as conditional on the benchmark point estimate.
 
 % =========================================================
 % S10
@@ -451,7 +451,7 @@ For car-free and flight-free households, the one-sided test rejects a rebound as
 We report two complementary inverse-probability weighting (IPW) checks. IPW reweights the sample so that under-represented groups count for more and over-represented groups for less, approximating the estimate that would be obtained from a more balanced or representative sample. The first re-weights for selection on observed characteristics (observables) \emph{into} lifestyle groups (treatment IPW). The second re-weights for selection \emph{into the analytical sample} from the invited population frame (sampling IPW), addressing concerns that environmentally oriented or otherwise non-representative individuals may be over-represented among consenting participants.
 
 \paragraph{Treatment IPW.}
-Propensity scores are estimated via logistic regression of each lifestyle indicator on the full set of control variables. Figure~\ref{fig:robustness_comparison} compares IPW-weighted and green-sample (Section~S13) total-outcome coefficients alongside the unweighted baseline. The core findings are robust: large, significant lifestyle main effects for car-free and flight-free households, with magnitudes comparable to the unweighted estimates. The meat-free total effect is also significantly negative under both unweighted and IPW estimation. ESI~$\times$~lifestyle interactions on total emissions are non-significant in all cases, consistent with the baseline models.
+Propensity scores are estimated via logistic regression of each lifestyle indicator on the full set of control variables. Figure~\ref{fig:robustness_comparison} compares IPW-weighted and green-sample (Section~S13) total-outcome coefficients alongside the unweighted baseline. The core findings are robust: large, significant lifestyle main effects for car-free and flight-free households, with magnitudes comparable to the unweighted estimates. The meat-free total effect remains negative and reaches significance under treatment IPW ($-$608~kg, $p = 0.037$), while remaining marginal in the unweighted models (Table~\ref{tab:sampling_ipw}). ESI~$\times$~lifestyle interactions on total emissions are non-significant in all cases, consistent with the baseline models.
 
 \paragraph{Sampling IPW.}
 To assess whether the lifestyle main effects are robust to differential participation across the invited frame, we construct cell-based sampling weights using the cross-classification of sex, age group (18--29, 30--44, 45--65), and major-city status. Cell-specific raw participation rates range from approximately 1\% to 3\% (Table~\ref{tab:ipw_cells}). Each respondent is assigned the inverse of their cell's participation probability and the weights are normalized to the analytical sample size. We then re-estimate the main interaction models with these weights.
@@ -486,7 +486,7 @@ Across all three lifestyle main effects (total, direct, and indirect outcomes), 
 \begin{table}[!htbp]
 \centering
 \small
-\caption{Lifestyle main-effect estimates: unweighted vs sampling-IPW (kg CO$_2$e/year).}
+\caption{Lifestyle main-effect estimates: unweighted vs sampling-IPW (kg CO$_2$e/year). Both columns are estimated from the interaction specification (Section~S6.1), so unweighted coefficients differ slightly from the headline additive estimates reported in the main text.}
 \label{tab:sampling_ipw}
 \begin{tabular}{llrrrr}
 \toprule
@@ -615,7 +615,7 @@ For car-free households at high ESI, reductions are spread across other products
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.90\textwidth]{../results/category_decomposition_esi.png}
-\caption{Category-level decomposition of indirect emission differences by environmental self-identity (ESI). Reproduced from Fig.~3 of the main text. For each lifestyle contrast, horizontal bars show the regression-adjusted emission difference (tCO$_2$e per person-year) in each non-focal consumption domain, evaluated at $+1$~SD ESI (teal) and $-1$~SD ESI (orange), relative to the mean non-adopter at ESI~$= 0$. Own-domain categories are excluded from each panel.}
+\caption{Category-level decomposition of indirect emission differences by environmental self-identity (ESI). Reproduced from Fig.~4 of the main text. For each lifestyle contrast, horizontal bars show the regression-adjusted emission difference (tCO$_2$e per person-year) in each non-focal consumption domain, evaluated at $+1$~SD ESI (teal) and $-1$~SD ESI (orange), relative to the mean non-adopter at ESI~$= 0$. Own-domain categories are excluded from each panel.}
 \label{fig:cat_decomp}
 \end{figure}
 
@@ -659,7 +659,7 @@ Meat-free   & ESI $\times$ lifestyle      & $+$10  & 0.91 \\
 % =========================================================
 \section*{S15. Data and code availability}
 
-All analysis code and SI-generation scripts are maintained in the project repository. Individual-level bank transaction and registry microdata cannot be publicly shared due legal and ethical restrictions. The exported disclosure-controlled result files in the \texttt{Results} folder provide the aggregated evidence used in this manuscript draft.
+All analysis code and SI-generation scripts are maintained in the project repository. Individual-level bank transaction and registry microdata cannot be publicly shared due to legal and ethical restrictions. The exported disclosure-controlled result files in the \texttt{Results} folder provide the aggregated evidence used in this manuscript draft.
 
 % =========================================================
 % References
