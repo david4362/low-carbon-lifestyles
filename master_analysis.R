@@ -290,6 +290,10 @@ write.csv(
 )
 cat("  Saved: table1_continuous.csv, table1_categorical.csv, table4_controls_descriptives.csv\n\n")
 
+# Lifestyle group overlap (SI): 8-cell table + Venn diagram
+tryCatch(source_R("95_lifestyle_overlap.R"),
+         error = function(e) cat(sprintf("  OVERLAP STEP FAILED (95_lifestyle_overlap.R): %s\n", conditionMessage(e))))
+
 # ===========================================================================
 # STEP 4 — ESI diagnostics
 # ===========================================================================
@@ -1275,7 +1279,9 @@ if (isTRUE(SYNC_RESULTS_TO_MANUSCRIPT_DIR)) {
     "deferred_consumption_extended_window.csv",
     "equivalence_tests.csv","income_lifestyle_interactions.csv",
     "robustness_green_sample_summary.csv","robustness_recategorized_summary.csv",
-    "robustness_diet_definitions_summary.csv"
+    "robustness_diet_definitions_summary.csv",
+    "lifestyle_overlap.csv","lifestyle_overlap_summary.csv",
+    "lifestyle_overlap_venn.png"
   )
   cat("Manuscript Results sync:\n"); missing_files <- character()
   for (target_dir in manuscript_results_dirs) {
