@@ -86,6 +86,10 @@ if (.is_real_loader(REAL_LOADER_DIR)) {
 
 # --- Aviation emission-intensity override (applies after both branches) ---
 # Keep local mock/fallback runs aligned with the manuscript aviation override.
+# 0.08 kg CO2/pkm: EASA European fleet average (83 g/pkm for 2023, EAER 2025).
+# 0.82 SEK/pkm: RPK-share-weighted FY2024 passenger revenue yield across
+# Ryanair/Lufthansa/easyJet/Wizz/SAS/Norwegian annual reports (J. Larsson
+# compilation, Riksbanken 2024 avg exchange rates); FY2023 equivalent 0.81.
 AVIATION_COMBUSTION_CO2_PER_PKM <- 0.08
 AVIATION_TICKET_SEK_PER_PKM <- 0.82
 AVIATION_NON_CO2_UPLIFT <- 1.5
