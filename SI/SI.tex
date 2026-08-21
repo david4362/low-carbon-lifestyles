@@ -268,14 +268,18 @@ Control variables follow the main text: sex, age group, education, disposable in
 % =========================================================
 \section*{S6. Model specification and robustness checks}
 
-\subsection*{S6.1 Baseline specification}
-For each lifestyle indicator $B_i \in \{0,1\}$ (car-free, flight-free, meat-free) we estimate an ordinary least squares (OLS) regression of household $i$'s annualised emissions $E_i$:
+\subsection*{S6.1 Model specifications}
+Two OLS specifications are used throughout, mirroring the main text (Methods). The \emph{headline additive model} regresses household $i$'s annualised emissions $E_i$ on the lifestyle indicator $B_i \in \{0,1\}$ (car-free, flight-free, meat-free), standardized environmental self-identity, and controls:
+\[
+E_i = \beta_0 + \beta_1 B_i + \beta_2 \mathit{ESI}_i + \mathbf{X}_i\boldsymbol{\gamma} + \varepsilon_i .
+\]
+All headline lifestyle effects and the re-spending benchmark are based on this model. The \emph{interaction model} adds the ESI moderation term:
 \[
 E_i = \beta_0 + \beta_1 B_i + \beta_2 \mathit{ESI}_i + \beta_3 (B_i \times \mathit{ESI}_i) + \mathbf{X}_i\boldsymbol{\gamma} + \varepsilon_i .
 \]
-$\beta_1$ is the lifestyle main effect at mean ESI; $\beta_2$ is the ESI main effect among non-adopters; $\beta_3$ tests whether the lifestyle effect varies with ESI. $\mathbf{X}_i$ collects the controls listed in Section~S5. All standard errors are heteroskedasticity-robust of the HC3 form.
+$\beta_1$ is the lifestyle main effect at mean ESI; $\beta_2$ is the ESI main effect among non-adopters; $\beta_3$ tests whether the lifestyle effect varies with ESI. All ESI-conditioned quantities are based on this model. $\mathbf{X}_i$ collects the controls listed in Section~S5. All standard errors are heteroskedasticity-robust of the HC3 form.
 
-The lifestyle indicators retain adequate within-sample variation for estimating both main and interaction terms under the baseline specification.
+The lifestyle indicators retain adequate within-sample variation for estimating both main and interaction terms.
 
 \subsection*{S6.2 Sensitivity to uncategorized-share threshold}
 
@@ -474,7 +478,7 @@ For car-free and flight-free households, the one-sided test rejects a rebound as
 We report two complementary inverse-probability weighting (IPW) checks. IPW reweights the sample so that under-represented groups count for more and over-represented groups for less, approximating the estimate that would be obtained from a more balanced or representative sample. The first re-weights for selection on observed characteristics (observables) \emph{into} lifestyle groups (treatment IPW). The second re-weights for selection \emph{into the analytical sample} from the invited population frame (sampling IPW), addressing concerns that environmentally oriented or otherwise non-representative individuals may be over-represented among consenting participants.
 
 \paragraph{Treatment IPW.}
-Propensity scores are estimated via logistic regression of each lifestyle indicator on the full set of control variables. Figure~\ref{fig:robustness_comparison} compares IPW-weighted and green-sample (Section~S13) total-outcome coefficients alongside the unweighted baseline. The core findings are robust: large, significant lifestyle main effects for car-free and flight-free households, with magnitudes comparable to the unweighted estimates. The meat-free total effect remains negative and reaches significance under treatment IPW ($-$608~kg, $p = 0.037$), while remaining marginal in the unweighted models (Table~\ref{tab:sampling_ipw}). ESI~$\times$~lifestyle interactions on total emissions are non-significant in all cases, consistent with the baseline models.
+Propensity scores are estimated via logistic regression of each lifestyle indicator on the full set of control variables. Figure~\ref{fig:robustness_comparison} compares IPW-weighted and green-sample (Section~S13) total-outcome coefficients alongside the unweighted baseline. The core findings are robust: large, significant lifestyle main effects for car-free and flight-free households, with magnitudes comparable to the unweighted estimates. The meat-free total effect remains negative and reaches significance under treatment IPW ($-$608~kg, $p = 0.037$), while remaining marginal in the unweighted models (Table~\ref{tab:sampling_ipw}). ESI~$\times$~lifestyle interactions on total emissions are non-significant in all cases, consistent with the unweighted interaction models.
 
 \paragraph{Sampling IPW.}
 To assess whether the lifestyle main effects are robust to differential participation across the invited frame, we construct cell-based sampling weights using the cross-classification of sex, age group (18--29, 30--44, 45--65), and major-city status. Cell-specific raw participation rates range from approximately 1\% to 3\% (Table~\ref{tab:ipw_cells}). Each respondent is assigned the inverse of their cell's participation probability and the weights are normalized to the analytical sample size. We then re-estimate the main interaction models with these weights.
@@ -568,7 +572,9 @@ Meat-free & ESI $\times$ Meat-free $\times$ Q4 & $-$698.21 & 0.620 \\
 None of the income-quartile three-way interaction terms are statistically significant, indicating that the ESI moderation of lifestyle effects does not vary systematically across the income distribution.
 
 \subsection*{S11.2 Urban/rural (major-city indicator)}
-Car-free living may reflect structural constraints (e.g., limited parking, good public transit) in major cities rather than a deliberate low-carbon choice. To test whether the ESI moderation of lifestyle effects differs between urban and non-urban contexts, we estimate three-way interactions with the major-city indicator. This is particularly relevant for the car-free contrast: 77\% of car-free adopters in the sample reside in major-city municipalities, compared with 17\% of car owners. Table~\ref{tab:urban_sensitivity} reports results.
+Car-free living may reflect structural constraints (e.g., limited parking, good public transit) in major cities rather than a deliberate low-carbon choice. To test whether the ESI moderation of lifestyle effects differs between urban and non-urban contexts, we estimate three-way interactions with the major-city indicator. % TODO: insert exact car-free x major-city crosstab from the TRE export
+% (lifestyle_major_city.csv, produced by 95_lifestyle_overlap.R).
+This is particularly relevant for the car-free contrast, since car-free households are disproportionately concentrated in major-city municipalities. Table~\ref{tab:urban_sensitivity} reports results.
 
 \begin{table}[!htbp]
 \centering
@@ -588,7 +594,7 @@ Meat-free & ESI $\times$ Meat-free $\times$ Major city & $+$1{,}001.79 & 0.134 \
 \vspace{1mm}
 \begin{flushleft}
 \footnotesize
-\textit{Notes:} Major city = municipality of Stockholm, Gothenburg, or Malm\"{o}. The major-city indicator is included as a main effect and in all lower-order interactions; remaining control variables as in the baseline specification.
+\textit{Notes:} Major city = municipality of Stockholm, Gothenburg, or Malm\"{o}. The major-city indicator is included as a main effect and in all lower-order interactions; remaining control variables as in the interaction specification.
 \end{flushleft}
 \end{table}
 

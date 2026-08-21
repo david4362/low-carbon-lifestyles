@@ -44,6 +44,28 @@ write.csv(lifestyle_overlap, file.path(output, "lifestyle_overlap.csv"),
 write.csv(lifestyle_overlap_summary,
           file.path(output, "lifestyle_overlap_summary.csv"), row.names = FALSE)
 
+# Lifestyle x major-city crosstab (verifies/replaces the SI S11.2 shares)
+if ("major_city" %in% names(.ov_data)) {
+  lifestyle_major_city <- tibble(
+    group = c("car_free", "car_owner", "flight_free", "flyer",
+              "meat_free", "meat_eater", "all"),
+    N = c(sum(.ov_data$no_car), sum(!.ov_data$no_car),
+          sum(.ov_data$no_flying), sum(!.ov_data$no_flying),
+          sum(.ov_data$no_meat), sum(!.ov_data$no_meat), nrow(.ov_data)),
+    share_major_city = round(c(
+      mean(.ov_data$major_city[.ov_data$no_car]),
+      mean(.ov_data$major_city[!.ov_data$no_car]),
+      mean(.ov_data$major_city[.ov_data$no_flying]),
+      mean(.ov_data$major_city[!.ov_data$no_flying]),
+      mean(.ov_data$major_city[.ov_data$no_meat]),
+      mean(.ov_data$major_city[!.ov_data$no_meat]),
+      mean(.ov_data$major_city)), 4)
+  )
+  write.csv(lifestyle_major_city,
+            file.path(output, "lifestyle_major_city.csv"), row.names = FALSE)
+  cat("  Saved: lifestyle_major_city.csv\n")
+}
+
 # --- Venn diagram (three fixed circles, no extra packages) -------------------
 .circle <- function(cx, cy, r, n = 200) {
   t <- seq(0, 2 * pi, length.out = n)
