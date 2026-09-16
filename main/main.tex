@@ -152,6 +152,9 @@ B_j = \Delta S_j \cdot \bar{\iota}_{-j}, \qquad \bar{\iota}_{-j} = \frac{\sum_{i
 \end{equation}
 where $\mathcal{C}_j$ is the comparison group of non-adopters and $E_{-j,i}$ and $S_{-j,i}$ denote household $i$'s emissions and spending outside the focal domain, so that $\bar{\iota}_{-j}$ is the comparison group's mean non-focal emission intensity (kg~CO$_2$e per SEK). $B_j$ approximates the indirect emission increase expected if freed financial resources were reallocated proportionally across the comparison group's non-focal consumption bundle. Because it assumes full re-spending at average intensity, the benchmark reflects the proportional reallocation assumption standard in modelling applications \citep{Bjelle2018,Chitnis2014,grabs2015rebound}; it is a demanding but not maximal comparison, since re-spending concentrated in more emission-intensive categories---a marginal re-spending pattern---could exceed it. One-sided tests of the observed indirect estimates against $B_j$ are reported in Supplementary Information, Section~S9.1.
 
+\subsection{Use of AI tools}
+Generative AI tools were used to assist with language editing and manuscript structure, and to suggest ideas for robustness analyses and figure design that the authors then implemented, and evaluated. No AI tools were used to generate data or conduct statistical analyses. All analyses, interpretations, and conclusions were developed and verified by the authors, who take full responsibility for the content.
+
 \section{Acknowledgements}
 This work was supported by Swedish research council for sustainable development Formas (grant 2024-02461) and the Swedish Energy Agency (grant P2022-01082). We wish to thank Ross Linscott and Tim Johansson (Svalna AB) for support during data collection and project implementation, and Mikael Eriksson for research assistance. We also wish to thank Steffen Kallbekken, Emma Ejelöv, Göran Finnveden, Jörgen Larsson, Johannes Morfeldt and Maximilian Forberg for comments on earlier versions of the manuscript. The authors also wish to acknowledge support from InfraVis for providing application expertise for visualization through the Swedish Research Council grant 2021-00181. 
 
@@ -166,9 +169,6 @@ Transaction and registry microdata are subject to legal and ethical restrictions
 
 \section{Code availability}
 All analysis code used to generate the results, figures, and tables is openly available at \url{https://github.com/david4362/low-carbon-lifestyles} and archived at Zenodo (DOI: \url{https://doi.org/10.5281/zenodo.21902425}). Because the underlying microdata are confidential (see Data availability), the repository includes a parametric synthetic-data generator (\texttt{generate\_synthetic\_data.R}) that creates a structurally identical mock dataset, allowing the complete pipeline to be executed and inspected end-to-end without access to the confidential data.
-
-\section{Use of AI tools}
-Generative AI tools were used to assist with language editing and manuscript structure, and to suggest ideas for robustness analyses and figure design that the authors then implemented, and evaluated. No AI tools were used to generate data or conduct statistical analyses. All analyses, interpretations, and conclusions were developed and verified by the authors, who take full responsibility for the content.
 
 \bibliography{references}
 
