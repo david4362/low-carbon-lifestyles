@@ -1,6 +1,6 @@
 # Konsumtionskollen
 
-Analysis pipeline for the manuscript *"Low-carbon lifestyles deliver broad climate benefits strengthened by environmental self-identity"*.
+Analysis pipeline for the manuscript *"Low-carbon lifestyles show substantially lower emissions with no sign of rebound"*.
 
 The project examines whether adopting low-carbon lifestyles — no car, no flying, or non-meat diet — reduces emissions not only directly but also indirectly through other consumption categories, and whether this indirect effect is moderated by environmental self-identity (ESI).
 
@@ -197,10 +197,10 @@ cd ../SI && latexmk -pdf SI.tex
 
 | Figure | File | Location | Description |
 |---|---|---|---|
-| Main Fig 1 | `infravis_fig1_benchmark.png` | main & SI | Direct and indirect emission differences with re-spending benchmark |
-| Main Fig 2 | `infravis_fig2_esi.png` | main & SI | ESI stratification of indirect emission pattern |
-| Main Fig 3 | `infravis_fig3_category.png` | main & SI | Category-level decomposition of indirect differences by ESI |
-| Violin plot | `Residuals distribution.png` | main | Distributional analysis of indirect residuals |
+| Main Fig 1 | `Waterfall_pres_main.png` | main | Direct and indirect emission differences with the re-spending benchmark |
+| Main Fig 2 | `Residuals distribution.png` | main | Distributional (split-violin) analysis of indirect residuals |
+| Main Fig 3 | `Waterfall_pres_esi.png` | main | ESI stratification of the indirect emission pattern |
+| Main Fig 4 | `category_decomposition_esi.png` | main & SI | Category-level decomposition of indirect differences by ESI |
 | ESI distribution | `esi_distribution.png` | SI | Distribution of environmental self-identity in sample |
 | SI Threshold sensitivity | `si_threshold_sensitivity.png` | SI | Robustness to uncategorized spending threshold |
 | SI Forest (diet) | `si_forest_diet.png` | SI | Diet definition robustness |
